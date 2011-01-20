@@ -12,7 +12,8 @@
 #include <boost/mpl/placeholders.hpp>
 #include <boost/mpl/vector.hpp>
 
-// These are all causing errors
+// These includes are all causing errors, Boost bug 5097
+// https://svn.boost.org/trac/boost/ticket/5097
 //#include <boost/fusion/algorithm/transformation/transform.hpp>
 //#include <boost/fusion/include/transform.hpp>
 //#include <boost/fusion/adapted/mpl.hpp>

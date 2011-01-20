@@ -20,6 +20,7 @@ void register_(const FPTR f, std::string) {
 	typedef typename ft::parameter_types<FPTR>::type parameter_types;
 	
 	// TODO: Register function using code<> template
+	// Something like code(func_ptr, "my_func", type<int>() + type<std::string>());
 	
 }
 
