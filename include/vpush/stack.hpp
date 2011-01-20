@@ -56,6 +56,7 @@ struct make_stack_singleton_t {
 	typedef util::singleton<typename make_stack_t<T>::type > type;
 };
 
+// Enable simplified access, e.g. vpush::stack<int>().pop()
 template <typename T>
 inline typename make_stack_t<T>::type& stack() {
 	typedef typename make_stack_singleton_t<T>::type singleton_t;
