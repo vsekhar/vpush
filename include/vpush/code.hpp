@@ -83,11 +83,13 @@ struct basic_code : code_base {
 	}
 };
 
+
 struct code {
 	code(code_base* p) : _code_ptr(p) {}
 	code(const code_base& c) : _code_ptr(&c) {}
 	code(const code& c) : _code_ptr(c._code_ptr) {}
 	operator const code_base&() const { return *_code_ptr; }
+	inline void exec() const { _code_ptr->exec(); }
 private:
 	code();
 	const code_base * _code_ptr;

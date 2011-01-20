@@ -15,7 +15,7 @@ namespace vpush {
 namespace detail {
 
 struct type_checker {
-	type_checker();
+	type_checker() : _types() {}
 	type_checker(util::TypeInfo);
 	type_checker(const type_checker& t) : _types(t._types) {}
 
@@ -31,16 +31,19 @@ struct type_checker {
 			if(stacks()[e.first]->size() < e.second)
 				throw stack_underflow(e.first);
 	}
+	void clear() { _types.clear(); }
+
+	friend type_checker& operator+=(type_checker&, const type_checker&);
+	friend type_checker& operator*=(type_checker&, unsigned int);
+
 private:
 	typedef std::list<util::TypeInfo> types_t;
-	type_checker merge(const type_checker&) const;
-
 	std::list<util::TypeInfo> _types;
 
-	friend bool check_types(const type_checker &);
-	friend type_checker type();
-	friend type_checker operator+(const type_checker&, const type_checker&);
 };
+
+type_checker operator+(const type_checker&, const type_checker&);
+type_checker operator*(const type_checker&, unsigned int);
 
 template <typename T>
 type_checker type() { return type_checker(typeid(T)); }
