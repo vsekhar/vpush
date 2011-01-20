@@ -46,21 +46,21 @@ private:
 	std::vector<T> _stack;
 };
 
-} // namespace detail
-
 template <typename T>
-struct make_stack_t { typedef detail::stack<T> type; };
+struct make_stack_t { typedef stack<T> type; };
 
 template <typename T>
 struct make_stack_singleton_t {
 	typedef util::singleton<typename make_stack_t<T>::type > type;
 };
 
+} // namespace detail
+
 // Enable simplified access, e.g. vpush::stack<int>().pop()
 template <typename T>
-inline typename make_stack_t<T>::type& stack() {
-	typedef typename make_stack_singleton_t<T>::type singleton_t;
-	return static_cast<typename make_stack_t<T>::type&>(singleton_t::instance());
+inline typename detail::make_stack_t<T>::type& stack() {
+	typedef typename detail::make_stack_singleton_t<T>::type singleton_t;
+	return static_cast<typename detail::make_stack_t<T>::type&>(singleton_t::instance());
 }
 
 } // namespace vpush
