@@ -3,12 +3,19 @@
 
 #include <ostream>
 #include <boost/foreach.hpp>
-#include "vpush/util/singleton.hpp"
+#include "vpush/util/typeinfo.hpp"
+#include "vpush/stacks.hpp"
 
 namespace vpush {
+namespace detail {
 
 struct stack_base {
-
+	stack_base(const util::TypeInfo &t) : _typeinfo(t) {
+		stacks()[t] = this;
+	}
+	virtual std::size_t size() const = 0;
+private:
+	util::TypeInfo _typeinfo;
 };
 
 template <typename> struct stack;
@@ -27,27 +34,33 @@ std::ostream& operator<<(std::ostream& o, const stack<T>& s){
 
 template <typename T>
 struct stack : stack_base {
-	stack()
-	T pop() {return _stack.pop_back();}
-	void push(T t) {_stack.push_back(t);}
-	std::size_t size() const {return _stack.size();}
-	util::TypeInfo get_typeinfo() const {return _typeinfo;}
+	stack() : stack_base(typeid(T)) {}
+	inline T pop() {T ret = _stack.back(); _stack.pop_back(); return ret;}
+	inline void push(T t) {_stack.push_back(t);}
+	inline std::size_t size() const { return _stack.size(); }
+	void reserve(std::size_t s) { _stack.reserve(s); }
+	std::size_t capacity() const { return _stack.capacity(); }
+	void clear() { _stack.clear(); }
 	friend std::ostream& operator<< <>(std::ostream&, const stack<T>&);
 private:
 	std::vector<T> _stack;
-	util::TypeInfo _typeinfo(typeid(T));
-};
-
-namespace detail {
-
-// Functor for boost::mpl::for_each to iterate through function parameter types
-struct make_stack {
-	template <class T> inline void operator()(T) {
-		util::singleton<stack<T> >::instance();
-	}
 };
 
 } // namespace detail
+
+template <typename T>
+struct make_stack_t { typedef detail::stack<T> type; };
+
+template <typename T>
+struct make_stack_singleton_t {
+	typedef util::singleton<typename make_stack_t<T>::type > type;
+};
+
+template <typename T>
+inline typename make_stack_t<T>::type& stack() {
+	typedef typename make_stack_singleton_t<T>::type singleton_t;
+	return static_cast<typename make_stack_t<T>::type&>(singleton_t::instance());
+}
 
 } // namespace vpush
 
