@@ -41,8 +41,21 @@ struct stack : stack_base {
 	inline void push(T t) { _stack.push_back(t); }
 	inline T pop() { T ret = _stack.back(); _stack.pop_back(); return ret; }
 	inline T top() const { return _stack.back(); }
+	inline T second() const { return *(++_stack.rbegin()); }
 	inline std::size_t size() const { return _stack.size(); }
 	void clear() { _stack.clear(); }
+
+	// for combinatorial operators
+	// warning: these are undefined if the stack underflows. caller is responsible
+	// for checking stack<>.size() >= 1;
+	inline void push_second(T t) { _stack.insert(++_stack.rbegin(), t); }
+	inline T pop_second() {
+		std::list<T>::const_iterator second = ++_stack.rbegin();
+		T ret = *second;
+		_stack.erase(second);
+		return ret;
+	}
+
 	friend std::ostream& operator<< <>(std::ostream&, const stack<T>&);
 private:
 	std::list<T> _stack;
@@ -72,7 +85,9 @@ inline typename detail::make_stack_t<T>::type& stack() {
 //	int i = vpush::top<int>();		// value remains on stack
 
 template <typename T> inline void push(T t) { stack<T>().push(t); }
+template <typename T> inline void push_second(T t) { stack<T>().push_second(t); }
 template <typename T> inline T pop() { return stack<T>().pop(); }
+template <typename T> inline T pop_second() { return stack<T>().pop_second(); }
 template <typename T> inline T top() { return stack<T>().top(); }
 } // namespace vpush
 

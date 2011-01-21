@@ -14,7 +14,7 @@ struct badtype {
 
 int my_func(int i, int j) { return i+j; }
 badtype badfunc() { return badtype(1); }
-int add_1(int i) { return i+1; }
+int inc(int i) { return i+1; }
 
 int main(int argc, char** argv) {
 	using vpush::push;
@@ -26,13 +26,15 @@ int main(int argc, char** argv) {
 	
 	register_(my_func, "my_func");
 	//register_(badfunc, "bad_func");
-	register_(add_1, "add_1");
+	register_(inc, "inc");
 	std::cout << "Stacks count: " << stacks().size() << std::endl;
 	push(5);
+	push(6);
 	std::cout << "Int stack: " << top<int>() << std::endl;
-	codes["add_1"]->check();
-	codes["add_1"]->exec();
-	std::cout << "add_1: " << pop<int>() << std::endl;
+	std::cout << "Int stack: " << second<int>() << std::endl;
+	codes["inc"]->check();
+	codes["inc"]->exec();
+	std::cout << "inc: " << pop<int>() << std::endl;
 	return 0;
 }
 
