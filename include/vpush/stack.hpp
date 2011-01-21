@@ -79,16 +79,23 @@ inline typename detail::make_stack_t<T>::type& stack() {
 }
 
 // Enable even simpler access, e.g.
-//	int i = 5; vpush::push(i);
-//	char c = 'a'; vpush::push<int>(c);	// perform conversion
-//	int i = vpush::pop<int>();
-//	int i = vpush::top<int>();		// value remains on stack
+//	push(5);
+//	push<int>('a');			// perform conversion char --> int
+//	int i = top<int>();		// value remains on stack
+//	int i = pop<int>();		// value removed from stack
+//	assert(size<int>() == 0);
+//	push(42);
+//	assert(size<int>());
+//	push_second(9);			// push under top element, undefined if stack is empty
+//	assert(top<int>() == 5);
+//	assert(second<int>() == 9);
 
 template <typename T> inline void push(T t) { stack<T>().push(t); }
 template <typename T> inline void push_second(T t) { stack<T>().push_second(t); }
 template <typename T> inline T pop() { return stack<T>().pop(); }
 template <typename T> inline T pop_second() { return stack<T>().pop_second(); }
 template <typename T> inline T top() { return stack<T>().top(); }
+template <typename T> inline T second() { return stack<T>().second(); }
 template <typename T> inline std::size_t size() { return stack<T>().size(); }
 template <typename T> inline void clear() { stack<T>().clear(); }
 
