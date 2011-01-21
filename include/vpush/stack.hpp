@@ -2,6 +2,8 @@
 #define __VPUSH_STACK_HPP__
 
 #include <ostream>
+#include <list>
+
 #include <boost/foreach.hpp>
 #include <vpush/stacks.hpp>
 #include <vpush/util/typeinfo.hpp>
@@ -39,12 +41,10 @@ struct stack : stack_base {
 	inline T pop() {T ret = _stack.back(); _stack.pop_back(); return ret;}
 	inline void push(T t) {_stack.push_back(t);}
 	inline std::size_t size() const { return _stack.size(); }
-	void reserve(std::size_t s) { _stack.reserve(s); }
-	std::size_t capacity() const { return _stack.capacity(); }
 	void clear() { _stack.clear(); }
 	friend std::ostream& operator<< <>(std::ostream&, const stack<T>&);
 private:
-	std::vector<T> _stack;
+	std::list<T> _stack;
 };
 
 template <typename T>
