@@ -1,24 +1,28 @@
 #ifndef __VPUSH_CODE_HPP__
 #define __VPUSH_CODE_HPP__
 
+#include <iostream>
+#include <string>
+
+#include <boost/noncopyable.hpp>
+#include <boost/ref.hpp>
+
 #include <boost/function_types/result_type.hpp>
 #include <boost/function_types/parameter_types.hpp>
-#include <boost/fusion/functional.hpp>
 
-#include <boost/fusion/container/list.hpp>
-#include <boost/fusion/include/list.hpp>
 #include <boost/mpl/for_each.hpp>
 #include <boost/mpl/transform.hpp>
 #include <boost/mpl/placeholders.hpp>
 #include <boost/mpl/vector.hpp>
 
-// These includes are all causing errors, Boost bug 5097
-// https://svn.boost.org/trac/boost/ticket/5097
-//#include <boost/fusion/algorithm/transformation/transform.hpp>
-//#include <boost/fusion/include/transform.hpp>
-//#include <boost/fusion/adapted/mpl.hpp>
-//#include <boost/fusion/include/mpl.hpp>
+#include <boost/fusion/include/list.hpp>
+#include <boost/fusion/include/transform.hpp>
+#include <boost/fusion/include/mpl.hpp>
+#include <boost/fusion/include/as_vector.hpp>
+#include <boost/fusion/functional/invocation/invoke.hpp>
 
+#include <vpush/code_fwd.hpp>
+#include <vpush/codes.hpp>
 #include <vpush/util/typeinfo.hpp>
 #include <vpush/detail/typechecker.hpp>
 #include <vpush/stack.hpp>
@@ -32,68 +36,93 @@ namespace mpl = ::boost::mpl;
 
 typedef void(*void_fptr_t)();
 
-struct code_base {
+struct code_base : boost::noncopyable {
 	code_base(void_fptr_t f, const type_checker& tc) : _fptr(f), _type_checker(tc) {}
 	virtual inline void exec() const { check(); _fptr(); }
 	inline void check() const { _type_checker.check(); }
-private:
+protected:
 	code_base(void_fptr_t f) : _fptr(f), _type_checker() {}
 	void_fptr_t _fptr;
 	type_checker _type_checker;
+	std::string _name;
 };
 
 template <typename T> struct type_wrapper {type_wrapper() {}};
 
 template <typename T>
-struct wrap_types {	typedef type_wrapper<T> type; };
+struct wrap {	typedef type_wrapper<T> type; };
 
-struct get_params {
+struct fill {
 	template <typename SIG> struct result;
-	template <typename THIS, typename T>
-	struct result<THIS(type_wrapper<T>)> {
+
+	template <typename T>
+	struct result<fill(const type_wrapper<T>&)> {
 		typedef T type;
 	};
-	template <typename T> typename result<get_params(type_wrapper<T>)>::type
-	operator()(type_wrapper<T>) const {return stack<T>().pop();}
+
+	// Reference type needed for bf::transform_view
+	template <typename T>
+	struct result<fill(type_wrapper<T>&)> {
+		typedef T type;
+	};
+	
+	// Non-reference type needed for bf::vector
+	template <typename T>
+	struct result<fill(type_wrapper<T>)> {
+		typedef T type;
+	};
+
+	template <typename T> T
+	operator()(const type_wrapper<T>&) const {return stack<T>().pop();}
+
 };
 
 template <typename FPTR>
-struct basic_code : code_base {
-	typedef typename ft::result_type<FPTR>::type return_type;
+struct basic_code : public code_base {
+	typedef typename ft::result_type<FPTR>::type result_type;
 	typedef typename ft::parameter_types<FPTR>::type parameter_types;
 	basic_code(FPTR f) : code_base(reinterpret_cast<void_fptr_t>(f)) {
-		boost::mpl::for_each<parameter_types>(add_typechecker_type(_type_checker));
+		boost::mpl::for_each<parameter_types>(type_checker::adder(_type_checker));
 	}
 	virtual void exec() const {
 		check();	// throws stack_underflow
 		
-		// TODO: This section awaiting a Boost Fusion bug fix #5097
-		// https://svn.boost.org/trac/boost/ticket/5097
-		// In the meantime, build stack functions only
+		typedef typename mpl::transform<parameter_types, wrap<mpl::_1>,
+			mpl::back_inserter<mpl::vector<> > >::type mpl_wrapped_params;
+		typedef typename bf::result_of::as_vector<mpl_wrapped_params>::type wrapped_params;
+		wrapped_params wp;
+		typedef typename bf::result_of::transform<const wrapped_params, fill>::type params_view;
+		typedef typename bf::result_of::as_vector<const params_view>::type params_t;
 		
-		//typedef typename mpl::transform<parameter_types, wrap_types<mpl::_1>,
-		//	mpl::back_inserter<mpl::vector<> > >::type mpl_wrapped_params;
-		//typedef typename bf::result_of::as_vector<mpl_wrapped_params>::type wrapped_params;
-		//wrapped_params wp;
-		//typename typename bf::result_of::transform<wrapped_params, get_params>::type params;
-		//typedef bf::list<> empty_list;
-		//params p = bf::transform(wp, empty_list, get_params());
-		//FPTR function = reinterpret_cast<FPTR>(_fptr);
-		//bf::invoke(function, p);
+		// Something weird is going on here because transform_view stores references
+		// Possibly have a look at http://www.martinecker.com/wiki/index.php?title=Don't_Let_'Em_Fool_You._Or:_Getting_Stored_Types_when_using_Boost.Fusion's_Transform_Algorithm
+		// Or post a minimal problem to the boost list to see how to do it.
+		
+		//params_t params = bf::as_vector(bf::transform(wp, fill()));
+		FPTR function = reinterpret_cast<FPTR>(_fptr);
+		std::cout << "About to invoke function with " << params_t::size::value << "vars" << std::endl;
+		result_type r = bf::invoke(function, bf::as_vector(bf::transform(wp, fill())));
+		std::cout << "About to push result: " << r << std::endl;
+		stack<result_type>().push(r);
+	}
+
+protected:
+	basic_code(FPTR f, const type_checker& tc) : code_base(reinterpret_cast<void_fptr_t>(f), tc) {
+		boost::mpl::for_each<parameter_types>(type_checker::adder(_type_checker));
 	}
 };
 
-
-struct code {
-	code(code_base* p) : _code_ptr(p) {}
-	code(const code_base& c) : _code_ptr(&c) {}
-	code(const code& c) : _code_ptr(c._code_ptr) {}
-	operator const code_base&() const { return *_code_ptr; }
-	inline void exec() const { _code_ptr->exec(); }
-private:
-	code();
-	const code_base * _code_ptr;
+template <typename FPTR>
+struct stack_code : public basic_code<FPTR> {
+	stack_code(FPTR f, const type_checker& tc) : basic_code<FPTR>(f, tc) {}
+	virtual void exec() const {
+		basic_code<FPTR>::check();
+		FPTR func = reinterpret_cast<FPTR>(basic_code<FPTR>::_fptr);
+		func();
+	}
 };
+
+typedef boost::reference_wrapper<code_base> code;
 
 // TODO: Function *template* wrapper, with associated type lists for instantiation
 
