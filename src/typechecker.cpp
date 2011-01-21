@@ -3,10 +3,6 @@
 namespace vpush {
 namespace detail {
 
-type_checker::type_checker(util::TypeInfo t) {
-	add(t);
-}
-
 void type_checker::add(util::TypeInfo t) {
 	_types.push_back(t);
 }
