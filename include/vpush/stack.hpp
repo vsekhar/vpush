@@ -89,6 +89,9 @@ template <typename T> inline void push_second(T t) { stack<T>().push_second(t); 
 template <typename T> inline T pop() { return stack<T>().pop(); }
 template <typename T> inline T pop_second() { return stack<T>().pop_second(); }
 template <typename T> inline T top() { return stack<T>().top(); }
+template <typename T> inline std::size_t size() { return stack<T>().size(); }
+template <typename T> inline void clear() { stack<T>().clear(); }
+
 } // namespace vpush
 
 #endif // __VPUSH_STACK_HPP__
