@@ -43,6 +43,7 @@ struct stack : stack_base {
 	inline T top() const { return _stack.back(); }
 	inline T second() const { return *(++_stack.rbegin()); }
 	inline std::size_t size() const { return _stack.size(); }
+	inline bool empty() const { return _stack.empty(); }
 	void clear() { _stack.clear(); }
 
 	// for combinatorial operators
@@ -97,6 +98,7 @@ template <typename T> inline T pop_second() { return stack<T>().pop_second(); }
 template <typename T> inline T top() { return stack<T>().top(); }
 template <typename T> inline T second() { return stack<T>().second(); }
 template <typename T> inline std::size_t size() { return stack<T>().size(); }
+template <typename T> inline bool empty() { return stack<T>().empty(); }
 template <typename T> inline void clear() { stack<T>().clear(); }
 
 } // namespace vpush
