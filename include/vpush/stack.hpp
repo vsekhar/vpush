@@ -72,35 +72,38 @@ struct make_stack_singleton_t {
 
 } // namespace detail
 
-// Enable simplified access to the stack, e.g. vpush::stack<int>().pop()
+// Short-hand for compile-type stacks by type, e.g. vpush::stack<int>().pop()
 template <typename T>
 inline typename detail::make_stack_t<T>::type& stack() {
 	typedef typename detail::make_stack_singleton_t<T>::type singleton_t;
 	return static_cast<typename detail::make_stack_t<T>::type&>(singleton_t::instance());
 }
 
-// Enable even simpler access, e.g.
-//	push(5);
+// Simple access
+//	push(5);				// auto-detect type int
 //	push<int>('a');			// perform conversion char --> int
 //	int i = top<int>();		// value remains on stack
-//	int i = pop<int>();		// value removed from stack
+//	assert(size<int>() == 1);
+//	i = pop<int>();			// value removed from stack
 //	assert(size<int>() == 0);
-//	push(42);
-//	assert(size<int>());
-//	push_second(9);			// push under top element, undefined if stack is empty
-//	assert(top<int>() == 5);
-//	assert(second<int>() == 9);
 
 template <typename T> inline void push(T t) { stack<T>().push(t); }
-template <typename T> inline void push_second(T t) { stack<T>().push_second(t); }
 template <typename T> inline T pop() { return stack<T>().pop(); }
-template <typename T> inline T pop_second() { return stack<T>().pop_second(); }
 template <typename T> inline T top() { return stack<T>().top(); }
-template <typename T> inline T second() { return stack<T>().second(); }
 template <typename T> inline std::size_t size() { return stack<T>().size(); }
 template <typename T> inline bool empty() { return stack<T>().empty(); }
 template <typename T> inline void clear() { stack<T>().clear(); }
 
+// Non-standard stack manipulation
+//	push(42);
+//	assert(!empty<int>());	// caller is responsible for checking
+//	push_second(24);			// push under top element, undefined if stack is empty
+//	assert(top<int>() == 42);
+//	assert(second<int>() == 24);
+
+template <typename T> inline void push_second(T t) { stack<T>().push_second(t); }
+template <typename T> inline T pop_second() { return stack<T>().pop_second(); }
+template <typename T> inline T second() { return stack<T>().second(); }
 } // namespace vpush
 
 #endif // __VPUSH_STACK_HPP__
