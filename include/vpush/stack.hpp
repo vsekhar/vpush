@@ -3,8 +3,9 @@
 
 #include <ostream>
 #include <boost/foreach.hpp>
-#include "vpush/util/typeinfo.hpp"
-#include "vpush/stacks.hpp"
+#include <vpush/stacks.hpp>
+#include <vpush/util/typeinfo.hpp>
+#include <vpush/util/singleton.hpp>
 
 namespace vpush {
 namespace detail {
