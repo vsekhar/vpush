@@ -1,24 +1,26 @@
 #ifndef __VPUSH_REGISTER_HPP__
 #define __VPUSH_REGISTER_HPP__
 
-#include <boost/function_types/result_type.hpp>
-#include <boost/function_types/parameter_types.hpp>
-#include <boost/mpl/for_each.hpp>
+#include <boost/function_types/function_arity.hpp>
+#include <boost/static_assert.hpp>
 
-#include <vpush/stack.hpp>
-#include <vpush/stacks.hpp>
 #include <vpush/code.hpp>
+#include <vpush/codes.hpp>
 
 namespace vpush {
 
+namespace ft = ::boost::function_types;
+namespace mpl = ::boost::mpl;
+
 template <typename FPTR>
-void register_(const FPTR f, std::string) {
-	// Ensure appropriate type stacks are created
-	namespace ft = ::boost::function_types;
-	namespace mpl = ::boost::mpl;
-	typedef typename ft::result_type<FPTR>::type result_type;
-	typedef typename ft::parameter_types<FPTR>::type parameter_types;
-	
+void register_(FPTR f, std::string name) {
+	codes[name] = new typename detail::basic_code<FPTR>(f);
+}
+
+template <typename FPTR>
+void register_adv(FPTR f, const detail::type_checker& tc, std::string name) {
+	BOOST_STATIC_ASSERT(!ft::function_arity<FPTR>::value);
+	codes[name] = new typename detail::stack_code<FPTR>(f);
 	// TODO: Register function using code<> template
 	// Something like code(func_ptr, "my_func", type<int>() + type<std::string>());
 	
