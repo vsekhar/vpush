@@ -57,12 +57,19 @@ struct make_stack_singleton_t {
 
 } // namespace detail
 
-// Enable simplified access, e.g. vpush::stack<int>().pop()
+// Enable simplified access to the stack, e.g. vpush::stack<int>().pop()
 template <typename T>
 inline typename detail::make_stack_t<T>::type& stack() {
 	typedef typename detail::make_stack_singleton_t<T>::type singleton_t;
 	return static_cast<typename detail::make_stack_t<T>::type&>(singleton_t::instance());
 }
+
+// Enable even simpler access for pushing and popping, e.g. int i = vpush::pop<int>();
+template <typename T>
+inline T pop() { return stack<T>().pop(); }
+
+template <typename T>
+inline void push(T t) { stack<T>().push(t); }
 
 } // namespace vpush
 
