@@ -29,8 +29,7 @@ int main(int argc, char** argv) {
 	register_(add_1, "add_1");
 	std::cout << "Stacks count: " << stacks().size() << std::endl;
 	push(5);
-	std::cout << "Int stack: " << pop<int>() << std::endl;
-	push(5);
+	std::cout << "Int stack: " << top<int>() << std::endl;
 	codes["add_1"]->check();
 	codes["add_1"]->exec();
 	std::cout << "add_1: " << pop<int>() << std::endl;

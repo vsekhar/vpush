@@ -38,8 +38,9 @@ std::ostream& operator<<(std::ostream& o, const stack<T>& s){
 template <typename T>
 struct stack : stack_base {
 	stack() : stack_base(typeid(T)) {}
-	inline T pop() {T ret = _stack.back(); _stack.pop_back(); return ret;}
-	inline void push(T t) {_stack.push_back(t);}
+	inline void push(T t) { _stack.push_back(t); }
+	inline T pop() { T ret = _stack.back(); _stack.pop_back(); return ret; }
+	inline T top() const { return _stack.back(); }
 	inline std::size_t size() const { return _stack.size(); }
 	void clear() { _stack.clear(); }
 	friend std::ostream& operator<< <>(std::ostream&, const stack<T>&);
@@ -64,13 +65,15 @@ inline typename detail::make_stack_t<T>::type& stack() {
 	return static_cast<typename detail::make_stack_t<T>::type&>(singleton_t::instance());
 }
 
-// Enable even simpler access for pushing and popping, e.g. int i = vpush::pop<int>();
-template <typename T>
-inline T pop() { return stack<T>().pop(); }
+// Enable even simpler access, e.g.
+//	int i = 5; vpush::push(i);
+//	char c = 'a'; vpush::push<int>(c);	// perform conversion
+//	int i = vpush::pop<int>();
+//	int i = vpush::top<int>();		// value remains on stack
 
-template <typename T>
-inline void push(T t) { stack<T>().push(t); }
-
+template <typename T> inline void push(T t) { stack<T>().push(t); }
+template <typename T> inline T pop() { return stack<T>().pop(); }
+template <typename T> inline T top() { return stack<T>().top(); }
 } // namespace vpush
 
 #endif // __VPUSH_STACK_HPP__
