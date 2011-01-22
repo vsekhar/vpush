@@ -11,7 +11,7 @@ namespace vpush {
 typedef std::map<util::TypeInfo, detail::stack_base*> stacks_t;
 typedef util::singleton<stacks_t> stacks_singleton;
 
-// This has to be a singleton what we put in it (stacks) are singletons
+// This has to be a singleton b/c stacks are singletons
 inline stacks_t& stacks() { return stacks_singleton::instance(); }
 
 } // namespace vpush
