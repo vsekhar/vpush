@@ -51,7 +51,7 @@ struct stack : stack_base {
 	// for checking stack<>.size() >= 1;
 	inline void push_second(T t) { _stack.insert(++_stack.rbegin(), t); }
 	inline T pop_second() {
-		std::list<T>::const_iterator second = ++_stack.rbegin();
+		typename std::list<T>::const_iterator second = ++_stack.rbegin();
 		T ret = *second;
 		_stack.erase(second);
 		return ret;

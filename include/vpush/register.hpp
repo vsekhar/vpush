@@ -21,9 +21,6 @@ template <typename FPTR>
 void register_adv(FPTR f, const detail::type_checker& tc, std::string name) {
 	BOOST_STATIC_ASSERT(!ft::function_arity<FPTR>::value);
 	codes[name] = new typename detail::stack_code<FPTR>(f);
-	// TODO: Register function using code<> template
-	// Something like code(func_ptr, "my_func", type<int>() + type<std::string>());
-	
 }
 
 } // namespace vpush
