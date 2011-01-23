@@ -6,35 +6,48 @@
 #include <vpush/register.hpp>
 #include <vpush/stacks.hpp>
 
+#include <boost/fusion/include/vector.hpp>
+#include <boost/fusion/functional/invocation/invoke.hpp>
+
 struct badtype {
-	badtype(int) {}
-//private:
+	badtype(int a) : _i(a) {}
+private:
 	badtype();
+	int _i;
+	friend std::ostream& operator<<(std::ostream&, const badtype&);
 };
 
+std::ostream& operator<<(std::ostream& o, const badtype& b) {
+	o << b._i;
+	return o;
+}
+
 int my_func(int i, int j) { return i+j; }
-badtype badfunc() { return badtype(1); }
+badtype badfunc(badtype) { return badtype(1); }
 int inc(int i) { return i+1; }
 
+template <typename T>
+void print_stack() {
+	while(!vpush::empty<T>())
+		std::cout << "value: " << vpush::pop<T>() << std::endl;
+}
+
 int main(int argc, char** argv) {
-	using vpush::push;
-	using vpush::pop;
-	using vpush::stacks;
-	using vpush::register_;
-	using vpush::codes;
-	using vpush::detail::type_checker;
+	using namespace vpush;
 	
 	register_(my_func, "my_func");
-	//register_(badfunc, "bad_func");
+	register_(badfunc, "bad_func");
 	register_(inc, "inc");
 	std::cout << "Stacks count: " << stacks().size() << std::endl;
-	push(5);
-	push(6);
-	std::cout << "Int stack: " << top<int>() << std::endl;
-	std::cout << "Int stack: " << second<int>() << std::endl;
-	codes["inc"]->check();
-	codes["inc"]->exec();
-	std::cout << "inc: " << pop<int>() << std::endl;
+
+	std::cout << "badtype stack:" << std::endl;
+	print_stack<badtype>();
+	push(badtype(7));
+	push(badtype(9));
+	codes["bad_func"]->exec();
+	std::cout << "badtype stack:" << std::endl;
+	print_stack<badtype>();
+
 	return 0;
 }
 
