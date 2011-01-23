@@ -47,8 +47,6 @@ protected:
 	std::string _name;
 };
 
-template <typename T> struct type_wrapper {type_wrapper() {}};
-
 template <typename T>
 struct wrap {	typedef type_wrapper<T> type; };
 
@@ -81,9 +79,13 @@ template <typename FPTR>
 struct basic_code : public code_base {
 	typedef typename ft::result_type<FPTR>::type result_type;
 	typedef typename ft::parameter_types<FPTR>::type parameter_types;
+
 	basic_code(FPTR f) : code_base(reinterpret_cast<void_fptr_t>(f)) {
-		boost::mpl::for_each<parameter_types>(type_checker::adder(_type_checker));
+		typedef typename mpl::transform<parameter_types, type_wrapper<mpl::_1>,
+			mpl::back_inserter<mpl::vector<> > >::type wrapped_types;
+		boost::mpl::for_each<wrapped_types>(type_checker::adder(_type_checker));
 	}
+
 	virtual void exec() const {
 		check();	// throws stack_underflow
 		

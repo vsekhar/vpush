@@ -10,6 +10,7 @@
 #include <vpush/stack.hpp>		// need both stack.hpp and stacks.hpp
 #include <vpush/stacks.hpp>
 #include <vpush/exception.hpp>
+#include <vpush/detail/wrappers.hpp>
 
 namespace vpush {
 namespace detail {
@@ -22,7 +23,8 @@ struct type_checker {
 	struct adder {
 		adder(type_checker& tc)	: _tc(tc) {}
 		template <typename T>
-		void operator()(T) { _tc.add(typeid(T)); }
+		void operator()(type_wrapper<T>) { _tc.add(typeid(T)); }
+
 		type_checker& _tc;
 	};
 
