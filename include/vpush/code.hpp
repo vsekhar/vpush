@@ -66,12 +66,11 @@ struct basic_code : public code_base {
 		check();	// throws stack_underflow
 		
 		typedef typename mpl::transform<parameter_types, popper<mpl::_1>,
-			mpl::back_inserter<mpl::vector<> > >::type param_poppers;
-		typedef typename bf::result_of::as_vector<param_poppers>::type param_poppers_vec;
-		param_poppers_vec poppers;
+			mpl::back_inserter<mpl::vector<> > >::type poppers_t;
+		// Is next line necessary? will MPL seq suffice for bf::invoke()?
+		// typedef typename bf::result_of::as_vector<param_poppers>::type param_poppers_vec;
 		FPTR function = reinterpret_cast<FPTR>(_fptr);
-		result_type r = bf::invoke(function, poppers);
-		push(r);
+		push<result_type>(bf::invoke(function, poppers_t()));
 	}
 
 protected:
