@@ -24,7 +24,6 @@
 #include <vpush/util/typeinfo.hpp>
 #include <vpush/detail/typechecker.hpp>
 #include <vpush/stack.hpp>
-#include <vpush/popper.hpp>
 
 namespace vpush {
 namespace detail {
@@ -56,6 +55,12 @@ struct basic_code : public code_base {
 			mpl::back_inserter<mpl::vector<> > >::type wrapped_types;
 		boost::mpl::for_each<wrapped_types>(type_checker::adder(_type_checker));
 	}
+	
+	//Function object for popping the stack
+	template <typename T>
+	struct popper {
+		operator T() {return pop<T>();}
+	};
 
 	virtual void exec() const {
 		check();	// throws stack_underflow
