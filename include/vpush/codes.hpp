@@ -8,8 +8,10 @@
 namespace vpush {
 
 typedef std::map<std::string, detail::code_base*> codes_t;
+typedef std::map<detail::void_fptr_t, std::string> codenames_t;
 
 extern codes_t codes;
+extern codenames_t codenames;
 
 } // namespace vpush
 

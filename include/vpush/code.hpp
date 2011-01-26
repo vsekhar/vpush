@@ -42,7 +42,6 @@ protected:
 	code_base(void_fptr_t f) : _fptr(f), _type_checker() {}
 	void_fptr_t _fptr;
 	type_checker _type_checker;
-	std::string _name;
 };
 
 template <typename FPTR>
