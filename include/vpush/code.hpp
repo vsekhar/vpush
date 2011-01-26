@@ -87,9 +87,10 @@ struct stack_code : public basic_code<FPTR> {
 	}
 };
 
-typedef boost::reference_wrapper<code_base> code;
-
 } // namespace detail
+
+typedef boost::reference_wrapper<detail::code_base> code;
+
 } // namespace vpush
 
 #endif // __VPUSH_CODE_HPP__

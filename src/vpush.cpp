@@ -44,7 +44,8 @@ int main(int argc, char** argv) {
 	print_stack<badtype>();
 	push(badtype(7));
 	push(badtype(9));
-	codes["bad_func"]->exec();
+	code bad_func = boost::ref(*codes["bad_func"]);
+	bad_func.get().exec();
 	std::cout << "badtype stack:" << std::endl;
 	print_stack<badtype>();
 
