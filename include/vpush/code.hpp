@@ -32,14 +32,23 @@ namespace ft = ::boost::function_types;
 namespace bf = ::boost::fusion;
 namespace mpl = ::boost::mpl;
 
-typedef void(*void_fptr_t)();
+enum element_type {CODE, LITERAL, LIST};
 
-struct code_base : boost::noncopyable {
-	code_base(void_fptr_t f, const type_checker& tc) : _fptr(f), _type_checker(tc) {}
+struct element_base : boost::noncopyable {
+	element_base(element_type t) : _type(t) {}
+	element_type type() const { return _type; }
+	virtual inline void exec() const == 0;
+private:
+	element_type _type;
+};
+
+struct code_base : element_base {
+	code_base(void_fptr_t f, const type_checker& tc) : element_base(CODE), _fptr(f), _type_checker(tc) {}
 	virtual inline void exec() const { check(); _fptr(); }
 	inline void check() const { _type_checker.check(); }
+	inline void_fptr_t get_fptr() const { return _fptr; }
 protected:
-	code_base(void_fptr_t f) : _fptr(f), _type_checker() {}
+	code_base(void_fptr_t f) : element_base(CODE), _fptr(f), _type_checker() {}
 	void_fptr_t _fptr;
 	type_checker _type_checker;
 };
@@ -76,19 +85,19 @@ protected:
 	}
 };
 
-template <typename FPTR>
-struct stack_code : public basic_code<FPTR> {
-	stack_code(FPTR f, const type_checker& tc) : basic_code<FPTR>(f, tc) {}
-	virtual void exec() const {
-		basic_code<FPTR>::check();
-		FPTR func = reinterpret_cast<FPTR>(basic_code<FPTR>::_fptr);
-		func();
-	}
-};
-
 } // namespace detail
 
-typedef boost::reference_wrapper<detail::code_base> code;
+struct code {
+	typedef boost::reference_wrapper<const detail::code_base> code_ref_t;
+
+	code(const detail::code_base& c) : _code(c) {}
+	code(const code& c) : _code(c._code) {}
+	code(const code_ref_t& c) : _code(c.get()) {}
+	void exec() const { _code.get().exec(); }
+	detail::void_fptr_t get_fptr() const { return _code.get().get_fptr(); }
+private:
+	code_ref_t _code;
+};
 
 } // namespace vpush
 

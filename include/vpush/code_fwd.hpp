@@ -5,6 +5,7 @@ namespace vpush {
 namespace detail {
 
 struct code_base;
+typedef void(*void_fptr_t)();
 
 } // namespace detail
 } // namespace vpush
