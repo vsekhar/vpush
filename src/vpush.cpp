@@ -6,6 +6,7 @@
 #include <vpush/register.hpp>
 #include <vpush/stacks.hpp>
 
+#include <boost/any.hpp>
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/functional/invocation/invoke.hpp>
 
@@ -38,14 +39,15 @@ int main(int argc, char** argv) {
 	register_(my_func, "my_func");
 	register_(badfunc, "bad_func");
 	register_(inc, "inc");
+	register_literal<int>(3, "my_int");
 	std::cout << "Stacks count: " << stacks().size() << std::endl;
 
 	std::cout << "badtype stack:" << std::endl;
 	print_stack<badtype>();
 	push(badtype(7));
 	push(badtype(9));
-	code bad_func = boost::ref(*codes["bad_func"]);
-	bad_func.get().exec();
+	code bad_func = get_code("bad_func");
+	bad_func.exec();
 	std::cout << "badtype stack:" << std::endl;
 	print_stack<badtype>();
 

@@ -5,6 +5,7 @@
 #include <list>
 
 #include <boost/foreach.hpp>
+
 #include <vpush/stacks.hpp>
 #include <vpush/util/typeinfo.hpp>
 #include <vpush/util/singleton.hpp>
@@ -48,7 +49,7 @@ struct stack : stack_base {
 
 	// for combinatorial operators
 	// warning: these are undefined if the stack underflows. caller is responsible
-	// for checking stack<>.size() >= 1;
+	// for checking stack<T>.size() >= 1;
 	inline void push_second(T t) { _stack.insert(++_stack.rbegin(), t); }
 	inline T pop_second() {
 		typename std::list<T>::const_iterator second = ++_stack.rbegin();
