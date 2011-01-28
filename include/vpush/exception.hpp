@@ -15,6 +15,11 @@ struct stack_underflow : public std::underflow_error {
 	util::TypeInfo _typeinfo;
 };
 
+struct duplicate_code : public std::runtime_error {
+	duplicate_code(std::string name)
+		: std::runtime_error(std::string("Duplicate code name: ") + name) {}
+};
+
 } // namespace vpush
 
 

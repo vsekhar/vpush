@@ -38,7 +38,7 @@ struct element_base : boost::noncopyable {
 	element_base(element_type t) : _type(t) {}
 	element_type type() const { return _type; }
 	virtual inline void exec() const == 0;
-private:
+protected:
 	element_type _type;
 };
 
@@ -87,16 +87,16 @@ protected:
 
 } // namespace detail
 
-struct code {
-	typedef boost::reference_wrapper<const detail::code_base> code_ref_t;
+struct element {
+	typedef boost::reference_wrapper<const detail::element_base> element_ref_t;
 
-	code(const detail::code_base& c) : _code(c) {}
-	code(const code& c) : _code(c._code) {}
-	code(const code_ref_t& c) : _code(c.get()) {}
-	void exec() const { _code.get().exec(); }
-	detail::void_fptr_t get_fptr() const { return _code.get().get_fptr(); }
+	code(const detail::element_base& c) : _element(e) {}
+	code(const element& e) : _element(e._element) {}
+	code(const element_ref_t& e) : _element(e.get()) {}
+	void exec() const { _element.get().exec(); }
+	detail::element_base* get_base_ptr() const { return &_element.get(); }
 private:
-	code_ref_t _code;
+	element_ref_t _element;
 };
 
 } // namespace vpush

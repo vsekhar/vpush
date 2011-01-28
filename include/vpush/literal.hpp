@@ -27,51 +27,53 @@ converted to when pushing onto the stack:
 #ifndef __VPUSH_LITERAL_HPP__
 #define __VPUSH_LITERAL_HPP__
 
+#include <iostream>
+
 #include <vpush/code.hpp>
 #include <vpush/stack.hpp>
 
 namespace vpush {
 namespace detail {
 
-template <typename STATE, typename RET>
-void literal_func(const STATE& s) { push<RET>(s); }
-
-template <typename STATE, unsigned int has_mutate>
-struct conditional_mutate {
-	static void mutate(STATE& s) {s.mutate();}
+struct literal_base : element_base {
+	// virtual functions for serializing from i/ostream
 };
 
 template <typename STATE>
-struct conditional_mutate<STATE, 0> {
-	static void mutate(STATE&) {}
+struct literal_with_state : literal_base {
+	// virtual functions for serializing from i/ostream, and returning
+	
+private:
+	STATE _state;
+};
+
+struct state_base {
+	virtual void init() = 0;
+	virtual void mutate() = 0;
+};
+
+template <typename T>
+struct default_state {
+	simple_state(const simple_state& s) : _value(s._value) {}
+	simple_state(const T& t) : _value(t) {}
+	void init() { _value = T(); }
+	void mutate() {}
+	typedef T result_type;
+	operator result_type() const { return _value; }
+private:
+	T _value;
 };
 
 template <typename STATE>
 struct literal : element_base {
-	// TODO: if STATE is a class, get its result_type, else result_type=STATE
-	// typedef mpl::if_<mpl::is_class<STATE>, STATE::result_type, STATE>::type result_type;
-	literal(const STATE& s) :
-		code_base(NULL, type_checker()),
-		_state(s)
-	{}
+	typedef STATE::result_type result_type;
+	literal(const STATE& s) : element_base(LITERAL), _state(s) {}
 	
-	void init() {
-		// TODO: conditional compilation to call STATE.mutate() if it exists,
-		//		 no-op if not
-		
-		//_state.init();
-	}
-	void mutate() {
-		// TODO: conditional compilation to call STATE.mutate() if it exists,
-		//		 no-op if not
-		//_state.mutate();
-	}
+	void init() { _state.init(); }
+	void mutate() { _state.mutate(); }
+	virtual void push_state() const { push<result_type>(_state); }
 	
-	virtual void exec() const {
-		literal_func<STATE, result_type>(_state);
-	}
 	
-	// TODO: Add serialization handling (STATE must be serializable)
 
 private:
 	STATE _state;
