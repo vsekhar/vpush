@@ -29,54 +29,28 @@ converted to when pushing onto the stack:
 
 #include <iostream>
 
+#include <boost/any.hpp>
+
 #include <vpush/code.hpp>
 #include <vpush/stack.hpp>
 
 namespace vpush {
 namespace detail {
 
-struct literal_base : element_base {
-	// virtual functions for serializing from i/ostream
-};
-
-template <typename STATE>
-struct literal_with_state : literal_base {
-	// virtual functions for serializing from i/ostream, and returning
-	
-private:
-	STATE _state;
-};
-
-struct state_base {
-	virtual void init() = 0;
-	virtual void mutate() = 0;
-};
+template <typename T>
+void literal_func(const T& state) { push<T>(state); }
 
 template <typename T>
-struct default_state {
-	simple_state(const simple_state& s) : _value(s._value) {}
-	simple_state(const T& t) : _value(t) {}
-	void init() { _value = T(); }
-	void mutate() {}
-	typedef T result_type;
-	operator result_type() const { return _value; }
-private:
-	T _value;
-};
-
-template <typename STATE>
 struct literal : element_base {
-	typedef STATE::result_type result_type;
-	literal(const STATE& s) : element_base(LITERAL), _state(s) {}
-	
-	void init() { _state.init(); }
-	void mutate() { _state.mutate(); }
-	virtual void push_state() const { push<result_type>(_state); }
-	
-	
-
-private:
-	STATE _state;
+	literal(const T& s) : element_base(LITERAL), _state(s) {}
+	virtual void exec() const { push<T>(boost::any_cast<T>(_state)); }
+	virtual std::ostream& save_state(std::ostream& o) const{
+		return o << boost::any_cast<const T&>(_state);
+	}
+	virtual std::istream& load_state(std::istream& i) {
+		return i >> boost::any_cast<T&>(_state);
+	}
+	boost::any _state;
 };
 
 } // namespace detail

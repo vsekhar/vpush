@@ -32,12 +32,14 @@ namespace ft = ::boost::function_types;
 namespace bf = ::boost::fusion;
 namespace mpl = ::boost::mpl;
 
-enum element_type {CODE, LITERAL, LIST};
+enum element_type {CODE, LITERAL, LIST, NAME};
 
 struct element_base : boost::noncopyable {
 	element_base(element_type t) : _type(t) {}
 	element_type type() const { return _type; }
-	virtual inline void exec() const == 0;
+	virtual inline void exec() const = 0;
+	virtual std::ostream& save_state(std::ostream&) const = 0;
+	virtual std::istream& load_state(std::istream&) = 0;
 protected:
 	element_type _type;
 };
@@ -47,6 +49,8 @@ struct code_base : element_base {
 	virtual inline void exec() const { check(); _fptr(); }
 	inline void check() const { _type_checker.check(); }
 	inline void_fptr_t get_fptr() const { return _fptr; }
+	virtual std::ostream& save_state(std::ostream& o) const { return o; }
+	virtual std::istream& load_state(std::istream& i) { return i; }
 protected:
 	code_base(void_fptr_t f) : element_base(CODE), _fptr(f), _type_checker() {}
 	void_fptr_t _fptr;
@@ -90,11 +94,11 @@ protected:
 struct element {
 	typedef boost::reference_wrapper<const detail::element_base> element_ref_t;
 
-	code(const detail::element_base& c) : _element(e) {}
-	code(const element& e) : _element(e._element) {}
-	code(const element_ref_t& e) : _element(e.get()) {}
+	element(const detail::element_base& e) : _element(e) {}
+	element(const element& e) : _element(e._element) {}
+	element(const element_ref_t& e) : _element(e.get()) {}
 	void exec() const { _element.get().exec(); }
-	detail::element_base* get_base_ptr() const { return &_element.get(); }
+	const detail::element_base* get_base_ptr() const { return &_element.get(); }
 private:
 	element_ref_t _element;
 };

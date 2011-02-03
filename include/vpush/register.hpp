@@ -14,7 +14,7 @@ namespace mpl = ::boost::mpl;
 void check_for_dupes(const std::string& name, detail::basic_code* ptr) {
 	if(codes.find(name) != codes.end())
 		throw duplicate_code(name);
-	if(codenames.find(new_code) != codes.end())
+	if(codenames.find(ptr) != codes.end())
 		throw duplicate_code(name);
 }
 
@@ -36,8 +36,8 @@ void register_adv(detail::void_fptr_t f, const detail::type_checker& tc, std::st
 
 template <typename STATE, typename RET = STATE>
 void register_literal(const STATE& i, std::string name) {
-	typename detail::literal<STATE, RET>* new_literal
-		= new typename detail::literal<STATE, RET>(i);
+	typename detail::literal<STATE>* new_literal
+		= new typename detail::literal<STATE>(i);
 	check_for_dupes(name, new_literal);
 	codes[name] = new_literal;
 	codenames[new_literal] = name;
