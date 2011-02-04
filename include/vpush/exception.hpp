@@ -6,6 +6,7 @@
 #include <vpush/util/typeinfo.hpp>
 
 namespace vpush {
+namespace detail {
 
 struct stack_underflow : public std::underflow_error {
 	stack_underflow(util::TypeInfo t)
@@ -20,6 +21,7 @@ struct duplicate_code : public std::runtime_error {
 		: std::runtime_error(std::string("Duplicate code name: ") + name) {}
 };
 
+} // namespace detail
 } // namespace vpush
 
 

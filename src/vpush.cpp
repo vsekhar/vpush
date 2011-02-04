@@ -3,53 +3,30 @@
 #include <vector>
 #include <string>
 
-#include <vpush/register.hpp>
-#include <vpush/stacks.hpp>
+#include <vpush/env.hpp>
 
-#include <boost/any.hpp>
-#include <boost/fusion/include/vector.hpp>
-#include <boost/fusion/functional/invocation/invoke.hpp>
-
-struct badtype {
-	badtype(int a) : _i(a) {}
-private:
-	badtype();
-	int _i;
-	friend std::ostream& operator<<(std::ostream&, const badtype&);
-};
-
-std::ostream& operator<<(std::ostream& o, const badtype& b) {
-	o << b._i;
-	return o;
-}
-
-int my_func(int i, int j) { return i+j; }
-badtype badfunc(badtype) { return badtype(1); }
-int inc(int i) { return i+1; }
-
-template <typename T>
-void print_stack() {
-	while(!vpush::empty<T>())
-		std::cout << "value: " << vpush::pop<T>() << std::endl;
-}
+int my_func(vpush::Env& e) {return 0;}
 
 int main(int argc, char** argv) {
+	using std::cout;
+	using std::cin;
+	using std::endl;
 	using namespace vpush;
 	
-	register_(my_func, "my_func");
-	register_(badfunc, "bad_func");
-	register_(inc, "inc");
-	register_literal<int>(3, "my_int");
-	std::cout << "Stacks count: " << stacks().size() << std::endl;
-
-	std::cout << "badtype stack:" << std::endl;
-	print_stack<badtype>();
-	push(badtype(7));
-	push(badtype(9));
-	code bad_func = get_code("bad_func");
-	bad_func.exec();
-	std::cout << "badtype stack:" << std::endl;
-	print_stack<badtype>();
+	Env e;
+	e.make_stack<int>();
+	e.push_second(1);
+	e.push_second(2);
+	e.push_second(3);
+	e.push_second(4);
+	e.push_second(5);
+	cout << "Stack: " << e.list_stack<int>() << endl;
+	cout << "size: " << e.size<int>() << endl;
+	cout << "Int: " << e.pop_second<int>() << endl;
+	cout << "Int: " << e.pop<int>() << endl;
+	cout << "Stack: " << e.list_stack<int>() << endl;
+	cout << "size: " << e.size<int>() << endl;
+	e.register_("my_func", my_func);
 
 	return 0;
 }
