@@ -8,13 +8,12 @@
 #include <stdexcept>
 
 #include <boost/assert.hpp>
-#include <boost/foreach.hpp>
-#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/assign/ptr_map_inserter.hpp>
 
 #include <vpush/env_fwd.hpp>
 #include <vpush/exception.hpp>
 #include <vpush/detail/stack.hpp>
+#include <vpush/detail/functions.hpp>
 #include <vpush/detail/types.hpp>
 #include <vpush/util/typeinfo.hpp>
 
@@ -23,7 +22,7 @@ namespace vpush {
 
 struct Env {
 	Env() : stacks() {}
-	Env(const Env& e) : stacks(e.stacks) {}
+	Env(const Env& e) : stacks(e.stacks), functions(e.functions) {}
 
 	template <typename T>
 	inline void make_stack() {

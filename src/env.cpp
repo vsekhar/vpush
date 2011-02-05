@@ -1,9 +1,11 @@
+#include <boost/foreach.hpp>
+
 #include <vpush/env.hpp>
 
 namespace vpush {
 
 void Env::register_(std::string name, detail::op_func_t f) {
-	detail::functions_t::const_iterator i = functions.find(name);
+	detail::function_t i = functions.find(name);
 	BOOST_ASSERT(i == functions.end());
 	functions[name] = f;
 }
