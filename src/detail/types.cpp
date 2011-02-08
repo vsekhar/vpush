@@ -9,35 +9,35 @@
 namespace vpush {
 namespace detail {
 
-void types::add(util::TypeInfo t) {
+void type_container::add(util::TypeInfo t) {
 	_types.push_back(t);
 }
 
-types& operator+=(types& me, const types& other) {
-	std::copy(other._types.begin(), other._types.end(), me._types.end());
-	return me;
+type_container& type_container::operator+=(const type_container& other) {
+	std::copy(other._types.begin(), other._types.end(), std::back_inserter(_types));
+	return *this;
 }
 
-types& operator*=(types& me, unsigned int count) {
+type_container& type_container::operator*=(unsigned int count) {
 	if(count == 0)
-		me.clear();
+		clear();
 	else {
-		types temp(me);
+		type_container temp(*this);
 		for(unsigned int i=1; i < count; ++i)
-			me += temp;
+			*this += temp;
 	}
-	return me;
+	return *this;
 }
 
-types operator+(const types& c1, const types& c2) {
-	types ret;
+type_container operator+(const type_container& c1, const type_container& c2) {
+	type_container ret;
 	ret += c1;
 	ret += c2;
 	return ret;
 }
 
-types operator*(const types& c1, unsigned int count) {
-	types ret;
+type_container operator*(const type_container& c1, unsigned int count) {
+	type_container ret;
 	ret *= count;
 	return ret;
 }

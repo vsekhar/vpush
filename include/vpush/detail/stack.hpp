@@ -29,9 +29,6 @@ struct stack : stack_base, std::list<T> {
 
 typedef boost::ptr_map<util::TypeInfo, stack_base> stacks_t;
 
-typedef int(*op_func_t)(Env&);
-typedef std::map<std::string, op_func_t> functions_t;
-
 } // namespace detail
 } // namespace vpush
 

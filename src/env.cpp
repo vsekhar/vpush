@@ -4,13 +4,15 @@
 
 namespace vpush {
 
-void Env::register_(std::string name, detail::op_func_t f) {
-	detail::function_t i = functions.find(name);
-	BOOST_ASSERT(i == functions.end());
-	functions[name] = f;
+void Env::register_(std::string name, detail::op_func_t f, const detail::type_container& t) {
+	using detail::functions_by_name;
+	functions_by_name& funcs = functions.get<detail::byName>();
+	functions_by_name::const_iterator i = funcs.find(name);
+	BOOST_ASSERT(i == funcs.end());
+	funcs.insert(detail::function_entry(name, f, t));
 }
 
-void Env::check_stacks(const detail::types& t) {
+void Env::check_stacks(const detail::type_container& t) {
 	std::map<util::TypeInfo, unsigned int> type_count;
 	BOOST_FOREACH(const util::TypeInfo& type, t._types)
 		++type_count[type];
@@ -23,6 +25,16 @@ void Env::check_stacks(const detail::types& t) {
 		if(i->second->size() < e.second)
 			throw detail::stack_underflow(e.first);
 	}
+}
+
+int Env::run(const std::string& name) {
+	using detail::functions_by_name;
+	functions_by_name& funcs = functions.get<detail::byName>();
+	functions_by_name::const_iterator i = funcs.find(name);
+	if(i == funcs.end())
+		throw detail::no_such_function(name);
+	check_stacks(i->func_types);
+	return i->func(*this);
 }
 
 } // namespace vpush

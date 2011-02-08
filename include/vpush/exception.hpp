@@ -21,6 +21,16 @@ struct duplicate_code : public std::runtime_error {
 		: std::runtime_error(std::string("Duplicate code name: ") + name) {}
 };
 
+struct no_such_stack : public std::runtime_error {
+	no_such_stack(util::TypeInfo t)
+		: std::runtime_error(std::string("No such stack: ") + t.get().name() + " (try env.make_stack())") {}
+};
+
+struct no_such_function : public std::runtime_error {
+	no_such_function(const std::string name)
+		: std::runtime_error(std::string("No such function: ") + name + " (check for env.register_(...))") {}
+};
+
 } // namespace detail
 } // namespace vpush
 

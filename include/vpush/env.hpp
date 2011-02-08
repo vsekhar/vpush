@@ -95,8 +95,10 @@ struct Env {
 		return ss.str();
 	}
 
-	void register_(std::string, detail::op_func_t);
-	void check_stacks(const detail::types&);
+	void register_(std::string n, detail::op_func_t f) {register_(n, f, detail::type_container());}
+	void register_(std::string, detail::op_func_t, const detail::type_container&);
+	void check_stacks(const detail::type_container&);
+	int run(const std::string&);
 
 
 private:
@@ -104,7 +106,8 @@ private:
 	inline detail::stack<T>& get_stack() {
 		detail::stacks_t::iterator stack = stacks.find(typeid(T));
 	#ifdef _DEBUG
-		BOOST_ASSERT(stack != stacks.end());
+		if(stack == stacks.end())
+			throw detail::no_such_stack(typeid(T));
 		BOOST_ASSERT((stack->first) == util::TypeInfo(typeid(T)));
 	#endif
 		return static_cast<typename detail::stack<T>& >(*stack->second);
@@ -114,7 +117,8 @@ private:
 	inline const detail::stack<T>& get_stack() const {
 		detail::stacks_t::const_iterator stack = stacks.find(typeid(T));
 	#ifdef _DEBUG
-		BOOST_ASSERT(stack != stacks.end());
+		if(stack == stacks.end())
+			throw detail::no_such_stack(typeid(T));
 		BOOST_ASSERT((stack->first) == util::TypeInfo(typeid(T)));
 	#endif
 		return static_cast<const typename detail::stack<T>& >(*stack->second);
