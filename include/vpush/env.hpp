@@ -3,6 +3,7 @@
 
 #include <string>
 #include <sstream>
+#include <ostream>
 #include <list>
 #include <map>
 #include <stdexcept>
@@ -79,22 +80,30 @@ struct Env {
 	inline void clear() { get_stack<T>().clear(); }
 	
 	template <typename T>
-	std::string list_stack() const {
-		std::stringstream ss;
+	std::ostream& list_stack(std::ostream& o) const {
 		bool first = true;
 		const typename detail::stack<T>& stack = get_stack<T>();
 		typename detail::stack<T>::const_reverse_iterator i = stack.rbegin();
-		while(i != stack.rend()) {
+		for(typename detail::stack<T>::const_reverse_iterator i = stack.rbegin();
+			i != stack.rend();
+			i++)
+		{
 			if(!first)
-				ss << ", ";
+				o << " ";
 			else
 				first = false;
-			ss << *i;
-			i++;
+			o << *i;
 		}
-		return ss.str();
+		return o;
 	}
 
+	template <typename T>
+	std::string list_stack() const {
+		std::stringstream ss;
+		list_stack<T>(ss);
+		return ss.str();
+	}
+	
 	void register_(std::string n, detail::op_func_t f) {register_(n, f, detail::type_container());}
 	void register_(std::string, detail::op_func_t, const detail::type_container&);
 	void check_stacks(const detail::type_container&);

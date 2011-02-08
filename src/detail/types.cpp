@@ -45,5 +45,3 @@ type_container operator*(const type_container& c1, unsigned int count) {
 } // namespace detail
 } // namespace vpush
 
-
-
