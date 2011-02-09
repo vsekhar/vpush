@@ -55,6 +55,8 @@ public:
 	void add(const std::string&, op_func_t, const type_container&);
 	function get(const std::string&);
 	function get(op_func_t);
+	int run(const std::string&, Env&);
+	int run(op_func_t, Env&);
 
 private:
 	typedef functions_container::index<byName>::type functions_by_name;

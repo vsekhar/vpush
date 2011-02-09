@@ -1,5 +1,6 @@
 #include <vpush/detail/functions.hpp>
 #include <vpush/exception.hpp>
+#include <vpush/env.hpp>
 
 namespace vpush {
 namespace detail {
@@ -31,6 +32,18 @@ function functions_t::get(op_func_t fptr) {
 	f.fptr = i->func;
 	f.types = i->func_types;
 	return f;
+}
+
+int functions_t::run(const std::string& name, Env& env) {
+	function f = get(name);
+	env.check_stacks(f.types);
+	return f.fptr(env);
+}
+
+int functions_t::run(op_func_t fptr, Env& env) {
+	function f = get(fptr);
+	env.check_stacks(f.types);
+	return f.fptr(env);
 }
 
 

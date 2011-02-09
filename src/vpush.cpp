@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <vpush/env.hpp>
+#include <vpush/detail/functions.hpp>
 
 int my_func(vpush::Env& e) {return 0;}
 int my_pusher(vpush::Env& e) {
@@ -26,17 +27,18 @@ int main(int argc, char** argv) {
 	using namespace vpush;
 	
 	Env e;
+	vpush::detail::functions_t functions;
 
-	e.register_("my_func", my_func);
-	e.register_("my_pusher", my_pusher);
-	e.register_("my_popper", my_popper, type<int>());
-	e.register_("my_adder", my_adder, type<int>() * 2);
+	functions.add("my_func", my_func);
+	functions.add("my_pusher", my_pusher);
+	functions.add("my_popper", my_popper, type<int>());
+	functions.add("my_adder", my_adder, type<int>() * 2);
 
 	e.make_stack<int>();
 	e.push_second(1);
 	e.push_second(2);
-	e.run("my_adder");
-	e.run("my_popper");
+	functions.run("my_adder", e);
+	functions.run("my_popper", e);
 	e.push_second(3);
 	e.push_second(4);
 	e.push_second(5);
@@ -46,8 +48,7 @@ int main(int argc, char** argv) {
 	cout << "Int: " << e.pop<int>() << endl;
 	cout << "Stack: " << e.list_stack<int>() << endl;
 	cout << "size: " << e.size<int>() << endl;
-	e.run("my_func");
-	//e.run("my_pusher");
+	functions.run("my_func", e);
 	
 
 	return 0;

@@ -4,10 +4,6 @@
 
 namespace vpush {
 
-void Env::register_(std::string name, detail::op_func_t f, const detail::type_container& t) {
-	functions.add(name, f, t);
-}
-
 void Env::check_stacks(const detail::type_container& t) {
 	std::map<util::TypeInfo, unsigned int> type_count;
 	BOOST_FOREACH(const util::TypeInfo& type, t._types)
@@ -21,18 +17,6 @@ void Env::check_stacks(const detail::type_container& t) {
 		if(i->second->size() < e.second)
 			throw detail::stack_underflow(e.first);
 	}
-}
-
-int Env::run(const std::string& name) {
-	detail::function func = functions.get(name);
-	check_stacks(func.types);
-	return func.fptr(*this);
-}
-
-int Env::run(detail::op_func_t f) {
-	detail::function func = functions.get(f);
-	check_stacks(func.types);
-	return func.fptr(*this);
 }
 
 } // namespace vpush

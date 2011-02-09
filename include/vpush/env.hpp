@@ -11,7 +11,6 @@
 #include <vpush/env_fwd.hpp>
 #include <vpush/exception.hpp>
 #include <vpush/detail/stack.hpp>
-#include <vpush/detail/functions.hpp>
 #include <vpush/detail/types.hpp>
 #include <vpush/util/typeinfo.hpp>
 
@@ -20,7 +19,7 @@ namespace vpush {
 
 struct Env {
 	Env() : stacks() {}
-	Env(const Env& e) : stacks(e.stacks), functions(e.functions) {}
+	Env(const Env& e) : stacks(e.stacks) {}
 
 	template <typename T>
 	inline void make_stack() {
@@ -101,11 +100,7 @@ struct Env {
 		return ss.str();
 	}
 	
-	void register_(std::string n, detail::op_func_t f) {register_(n, f, detail::type_container());}
-	void register_(std::string, detail::op_func_t, const detail::type_container&);
 	void check_stacks(const detail::type_container&);
-	int run(const std::string&);
-	int run(detail::op_func_t);
 
 
 private:
@@ -132,7 +127,6 @@ private:
 	}
 	
 	detail::stacks_t stacks;
-	detail::functions_t functions;
 };
 
 } // namespace vpush
