@@ -6,6 +6,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/assign/ptr_map_inserter.hpp>
+#include <boost/serialization/access.hpp>
 
 #include <vpush/detail/stack.hpp>
 #include <vpush/detail/types.hpp>
@@ -77,6 +78,15 @@ private:
 	stack_container_t _stacks;
 	//stack<exec_type> _exec_stack;
 	//stack<code_type> _code_stack;
+	
+	friend class ::boost::serialization::access;
+	template <typename ARCHIVE>
+	void serialize(ARCHIVE & ar, const unsigned int) {
+		ar & _stacks;
+		//ar & _exec_stack;
+		//ar & _code_stack;
+	}
+	
 };
 
 } // namespace detail

@@ -74,7 +74,7 @@ struct Env {
 	detail::stacks_t stacks;
 
 private:
-	friend class boost::serialization::access;
+	friend class ::boost::serialization::access;
 	template <typename ARCHIVE>
 	void serialize(ARCHIVE & ar, const unsigned int) {
 		ar & stacks;
