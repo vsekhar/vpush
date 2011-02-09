@@ -29,10 +29,10 @@ int main(int argc, char** argv) {
 	Env e;
 	vpush::detail::functions_t functions;
 
-	functions.add("my_func", my_func);
-	functions.add("my_pusher", my_pusher);
-	functions.add("my_popper", my_popper, type<int>());
-	functions.add("my_adder", my_adder, type<int>() * 2);
+	VPUSH_ADD(functions, my_func, VPUSH_VOID);
+	VPUSH_ADD(functions, my_pusher, VPUSH_VOID);
+	VPUSH_ADD(functions, my_popper, type<int>());
+	VPUSH_ADD(functions, my_adder, type<int>() * 2);
 
 	e.make_stack<int>();
 	e.make_stack<int>();

@@ -6,9 +6,13 @@
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/member.hpp>
+#include <boost/preprocessor/stringize.hpp>
 
 #include <vpush/env_fwd.hpp>
 #include <vpush/detail/types.hpp>
+
+#define VPUSH_VOID	(vpush::detail::type_container())
+#define	VPUSH_ADD(funcs, func, types) funcs.add(BOOST_PP_STRINGIZE(func), func, types)
 
 namespace vpush {
 namespace detail {
