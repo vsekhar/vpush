@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include <boost/archive/text_oarchive.hpp>
+
 #include <vpush/env.hpp>
 #include <vpush/detail/functions.hpp>
 
@@ -52,6 +54,11 @@ int main(int argc, char** argv) {
 	cout << "Stack: " << e.stacks.list<int>() << endl;
 	cout << "size: " << e.size<int>() << endl;
 	functions.run("my_func", e);
+	{
+		cout << "Serialization:" << endl;
+		boost::archive::text_oarchive toa(cout);
+//		toa << e;
+	}
 	
 
 	return 0;
