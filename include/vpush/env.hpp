@@ -12,6 +12,8 @@
 namespace vpush {
 
 struct Env {
+	// TODO: access global singleton of wrapped stack types and create stacks
+	// automatically (eliminating need for stacks.make<>()), see stack.hpp
 	Env() : stacks() {}
 	Env(const Env& e) : stacks(e.stacks) {}
 

@@ -6,6 +6,14 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/base_object.hpp>
+#include <boost/serialization/export.hpp>
+#include <boost/preprocessor/stringize.hpp>
+
+#include <vpush/util/typeinfo.hpp>
+
+// TODO: cause this to register a wrapped stack type in some singleton
+// for use in the Env constructor, to automatically create the declared stacks
+#define VPUSH_STACK(t)	BOOST_CLASS_EXPORT_GUID(::vpush::detail::stack<t>, BOOST_PP_STRINGIZE(vpush::stack<t>))
 
 namespace vpush {
 namespace detail {
@@ -13,12 +21,14 @@ namespace detail {
 struct stack_base {
 	virtual std::size_t size() const = 0;
 	virtual bool empty() const = 0;
+	virtual util::TypeInfo get_type() const = 0;
 	virtual stack_base* clone() const = 0;
 	virtual ~stack_base() {}
+private:
+	friend class ::boost::serialization::access;
+	template <typename ARCHIVE>
+	void serialize(ARCHIVE&, const unsigned int) {}
 };
-
-// This causes ptr_map to fail to instantiate stack_base. Is it needed?
-//BOOST_SERIALIZATION_ASSUME_ABSTRACT(stack_base)
 
 // for ptr_containers
 stack_base* new_clone(const stack_base&);
@@ -29,6 +39,7 @@ struct stack : stack_base, std::vector<T> {
 	typedef std::vector<T> base_t;
 	virtual std::size_t size() const { return base_t::size(); }
 	virtual bool empty() const { return base_t::empty(); }
+	virtual util::TypeInfo get_type() const { return typeid(T); }
 	virtual stack_base* clone() const { return new stack<T>(*this); }
 private:
 	friend class ::boost::serialization::access;

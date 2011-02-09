@@ -81,13 +81,33 @@ private:
 	//stack<code_type> _code_stack;
 	
 	friend class ::boost::serialization::access;
+	
 	template <typename ARCHIVE>
-	void serialize(ARCHIVE & ar, const unsigned int) {
-		ar & _stacks;
-		//ar & _exec_stack;
-		//ar & _code_stack;
+	void save(ARCHIVE & ar, const unsigned int) const {
+		const std::size_t stack_count = _stacks.size();
+		ar << stack_count;
+		for(stack_container_t::const_iterator i = _stacks.begin();
+			i != _stacks.end();
+			i++
+		) {
+			const stack_base* s = i->second;
+			ar << s;
+		}
+		
 	}
 	
+	template <typename ARCHIVE>
+	void load(ARCHIVE & ar, const unsigned int) {
+		std::size_t stack_count;
+		ar >> stack_count;
+		for(std::size_t i = 0; i < stack_count; i++) {
+			stack_base* s;
+			ar >> s;
+			_stacks.insert(s->get_type(), s);
+		}
+	}
+	
+	BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
 
 } // namespace detail

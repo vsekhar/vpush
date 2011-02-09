@@ -22,6 +22,8 @@ int my_adder(vpush::Env& e) {
 	return 0;
 }
 
+VPUSH_STACK(int)
+
 int main(int argc, char** argv) {
 	using std::cout;
 	using std::cin;
@@ -57,7 +59,7 @@ int main(int argc, char** argv) {
 	{
 		cout << "Serialization:" << endl;
 		boost::archive::text_oarchive toa(cout);
-//		toa << e;
+		toa << e;
 	}
 	
 
