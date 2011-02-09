@@ -18,9 +18,6 @@ typedef boost::ptr_map<util::TypeInfo, stack_base> stack_container_t;
 
 struct stacks_t {
 
-	stacks_t();
-	stacks_t(const stacks_t&);
-
 	template <typename T>
 	inline void make() {
 		boost::assign::ptr_map_insert<stack<T> >(_stacks)(typeid(T));
@@ -78,6 +75,8 @@ struct stacks_t {
 
 private:
 	stack_container_t _stacks;
+	//stack<exec_type> _exec_stack;
+	//stack<code_type> _code_stack;
 };
 
 } // namespace detail
