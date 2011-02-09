@@ -57,14 +57,16 @@ class functions_t {
 public:
 	inline void add(const std::string& n, op_func_t f) { add(n, f, type_container()); }
 	void add(const std::string&, op_func_t, const type_container&);
-	function get(const std::string&);
-	function get(op_func_t);
-	int run(const std::string&, Env&);
-	int run(op_func_t, Env&);
+	function get(const std::string&) const;
+	function get(op_func_t) const;
+	int run(const std::string&, Env&) const;
+	int run(op_func_t, Env&) const;
 
 private:
-	typedef functions_container::index<byName>::type functions_by_name;
-	typedef functions_container::index<byFptr>::type functions_by_fptr;
+	typedef const functions_container::index<byName>::type functions_by_name;
+	typedef const functions_container::index<byFptr>::type functions_by_fptr;
+
+	typedef functions_container::index<byName>::type functions_by_name_mutable;
 	functions_container _container;
 };
 
