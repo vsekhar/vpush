@@ -108,6 +108,7 @@ struct Env {
 	void register_(std::string, detail::op_func_t, const detail::type_container&);
 	void check_stacks(const detail::type_container&);
 	int run(const std::string&);
+	int run(detail::op_func_t);
 
 
 private:

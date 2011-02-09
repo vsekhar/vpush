@@ -29,5 +29,11 @@ int Env::run(const std::string& name) {
 	return func.fptr(*this);
 }
 
+int Env::run(detail::op_func_t f) {
+	detail::function func = functions.get(f);
+	check_stacks(func.types);
+	return func.fptr(*this);
+}
+
 } // namespace vpush
 
