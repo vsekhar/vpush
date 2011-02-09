@@ -35,6 +35,8 @@ int main(int argc, char** argv) {
 	functions.add("my_adder", my_adder, type<int>() * 2);
 
 	e.make_stack<int>();
+	e.make_stack<int>();
+	cout << "Stacks: " << e.stack_count() << endl;
 	e.push_second(1);
 	e.push_second(2);
 	functions.run("my_adder", e);
