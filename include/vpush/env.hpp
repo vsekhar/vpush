@@ -7,6 +7,7 @@
 
 #include <boost/assert.hpp>
 #include <boost/assign/ptr_map_inserter.hpp>
+#include <boost/serialization/access.hpp>
 
 #include <vpush/env_fwd.hpp>
 #include <vpush/exception.hpp>
@@ -104,6 +105,12 @@ struct Env {
 
 
 private:
+//	friend ::boost::serialization::access;
+	
+	template <typename ARCHIVE>
+	void serialize(ARCHIVE & ar, const unsigned int) {
+		ar & stacks;
+	}
 	template <typename T>
 	inline detail::stack<T>& get_stack() {
 		detail::stacks_t::iterator stack = stacks.find(typeid(T));
