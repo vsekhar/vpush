@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
 	e.register_("my_func", my_func);
 	e.register_("my_pusher", my_pusher);
 	e.register_("my_popper", my_popper, type<int>());
-	e.register_("my_adder", my_adder, type<int>() + type<int>());
+	e.register_("my_adder", my_adder, type<int>() * 2);
 
 	e.make_stack<int>();
 	e.push_second(1);
