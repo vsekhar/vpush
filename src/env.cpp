@@ -5,11 +5,7 @@
 namespace vpush {
 
 void Env::register_(std::string name, detail::op_func_t f, const detail::type_container& t) {
-	using detail::functions_by_name;
-	functions_by_name& funcs = functions.get<detail::byName>();
-	functions_by_name::const_iterator i = funcs.find(name);
-	BOOST_ASSERT(i == funcs.end());
-	funcs.insert(detail::function_entry(name, f, t));
+	functions.add(name, f, t);
 }
 
 void Env::check_stacks(const detail::type_container& t) {
@@ -28,13 +24,9 @@ void Env::check_stacks(const detail::type_container& t) {
 }
 
 int Env::run(const std::string& name) {
-	using detail::functions_by_name;
-	functions_by_name& funcs = functions.get<detail::byName>();
-	functions_by_name::const_iterator i = funcs.find(name);
-	if(i == funcs.end())
-		throw detail::no_such_function(name);
-	check_stacks(i->func_types);
-	return i->func(*this);
+	detail::function func = functions.get(name);
+	check_stacks(func.types);
+	return func.fptr(*this);
 }
 
 } // namespace vpush

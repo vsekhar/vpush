@@ -44,10 +44,25 @@ typedef multi_index_container <
 			member<function_entry, op_func_t, &function_entry::func>
 		>
 	>
-> functions_t;
+> functions_container;
 
-typedef functions_t::index<byName>::type functions_by_name;
-typedef functions_t::index<byFptr>::type functions_by_type;
+struct function {
+	op_func_t fptr;
+	type_container types;
+};
+
+class functions_t {
+public:
+	inline void add(const std::string& n, op_func_t f) { add(n, f, type_container()); }
+	void add(const std::string&, op_func_t, const type_container&);
+	function get(const std::string&);
+	function get(op_func_t);
+
+private:
+	typedef functions_container::index<byName>::type functions_by_name;
+	typedef functions_container::index<byFptr>::type functions_by_fptr;
+	functions_container _container;
+};
 
 } // namespace detail
 } // namespace vpush
