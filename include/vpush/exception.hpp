@@ -23,7 +23,7 @@ struct duplicate_code : public std::runtime_error {
 
 struct no_such_stack : public std::runtime_error {
 	no_such_stack(util::TypeInfo t)
-		: std::runtime_error(std::string("No such stack: ") + t.get().name() + " (try env.make_stack())") {}
+		: std::runtime_error(std::string("No such stack: ") + t.get().name() + " (use env.make_stack())") {}
 };
 
 struct no_such_function : public std::runtime_error {
