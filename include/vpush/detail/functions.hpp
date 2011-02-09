@@ -2,8 +2,6 @@
 #define __VPUSH_DETAIL_FUNCTIONS_HPP__
 
 #include <string>
-#include <map>
-#include <utility>
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>

@@ -4,9 +4,6 @@
 #include <string>
 #include <sstream>
 #include <ostream>
-#include <list>
-#include <map>
-#include <stdexcept>
 
 #include <boost/assert.hpp>
 #include <boost/assign/ptr_map_inserter.hpp>

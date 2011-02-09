@@ -1,9 +1,4 @@
 #include <iostream>
-#include <list>
-#include <vector>
-#include <string>
-
-#include <boost/mpl/vector.hpp>
 
 #include <vpush/env.hpp>
 
@@ -29,8 +24,6 @@ int main(int argc, char** argv) {
 	using std::cin;
 	using std::endl;
 	using namespace vpush;
-	using vpush::type;
-	namespace mpl = ::boost::mpl;
 	
 	Env e;
 
