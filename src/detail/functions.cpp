@@ -1,3 +1,5 @@
+#include <boost/foreach.hpp>
+
 #include <vpush/detail/functions.hpp>
 #include <vpush/exception.hpp>
 #include <vpush/env.hpp>
@@ -34,6 +36,24 @@ function functions_t::get(op_func_t fptr) const {
 	return f;
 }
 
+bool functions_t::contains(const std::string& name) const {
+	functions_by_name& funcs = _container.get<detail::byName>();
+	functions_by_name::const_iterator i = funcs.find(name);
+	if(i == funcs.end())
+		return false;
+	else
+		return true;
+}
+
+bool functions_t::contains(op_func_t fptr) const {
+	functions_by_fptr& funcs = _container.get<detail::byFptr>();
+	functions_by_fptr::const_iterator i = funcs.find(fptr);
+	if(i == funcs.end())
+		return false;
+	else
+		return true;
+}
+
 int functions_t::run(const std::string& name, Env& env) const {
 	function f = get(name);
 	env.stacks.check(f.types);
@@ -46,6 +66,13 @@ int functions_t::run(op_func_t fptr, Env& env) const {
 	return f.fptr(env);
 }
 
+bool functions_t::is_superset_of(const functions_t& other) const {
+	functions_by_seq& f2 = other._container.get<detail::bySeq>();
+	BOOST_FOREACH(const function_entry& fe, f2)
+		if(!contains(fe.name) || !contains(fe.func))
+			return false;
+	return true;
+}
 
 } // namespace detail
 } // namespace vpush

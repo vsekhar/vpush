@@ -5,6 +5,7 @@
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/sequenced_index.hpp>
 #include <boost/multi_index/member.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
@@ -29,6 +30,7 @@ private:
 	function_entry();
 };
 
+struct bySeq;
 struct byName;
 struct byFptr;
 
@@ -37,6 +39,7 @@ using namespace ::boost::multi_index;
 typedef multi_index_container <
 	function_entry,
 	indexed_by<
+		sequenced<tag<bySeq> >,
 		hashed_unique<
 			tag<byName>,
 			member<function_entry, std::string, &function_entry::name>
@@ -59,10 +62,15 @@ public:
 	void add(const std::string&, op_func_t, const type_container&);
 	function get(const std::string&) const;
 	function get(op_func_t) const;
+	bool contains(const std::string&) const;
+	bool contains(op_func_t) const;
+
 	int run(const std::string&, Env&) const;
 	int run(op_func_t, Env&) const;
+	bool is_superset_of(const functions_t&) const;
 
 private:
+	typedef const functions_container::index<bySeq>::type functions_by_seq;
 	typedef const functions_container::index<byName>::type functions_by_name;
 	typedef const functions_container::index<byFptr>::type functions_by_fptr;
 
