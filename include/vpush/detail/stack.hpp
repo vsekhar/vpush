@@ -3,11 +3,6 @@
 
 #include <vector>
 
-#include <boost/ptr_container/ptr_map.hpp>
-
-#include <vpush/util/typeinfo.hpp>
-#include <vpush/env_fwd.hpp>
-
 namespace vpush {
 namespace detail {
 

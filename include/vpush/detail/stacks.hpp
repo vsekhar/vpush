@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include <boost/assert.hpp>
+#include <boost/ptr_container/ptr_map.hpp>
 #include <boost/assign/ptr_map_inserter.hpp>
 #include <boost/serialization/access.hpp>
 

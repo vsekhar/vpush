@@ -8,9 +8,6 @@
 #include <vpush/env_fwd.hpp>
 #include <vpush/exception.hpp>
 #include <vpush/detail/stacks.hpp>
-#include <vpush/detail/types.hpp>
-#include <vpush/util/typeinfo.hpp>
-
 
 namespace vpush {
 
