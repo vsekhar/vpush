@@ -19,8 +19,8 @@
 namespace vpush {
 
 struct Env {
-	Env() : stacks() {}
-	Env(const Env& e) : stacks(e.stacks) {}
+	Env() : stacks() { make_code_stacks(); }
+	Env(const Env& e) : stacks(e.stacks) { make_code_stacks(); }
 
 	template <typename T>
 	inline void make_stack() {
@@ -101,11 +101,19 @@ struct Env {
 		return ss.str();
 	}
 	
+	inline std::size_t stack_count() const { return stacks.size(); }
+	
 	void check_stacks(const detail::type_container&);
 
 
 private:
 	friend class boost::serialization::access;
+	
+	void make_code_stacks() {
+		// NB: code_type != exec_type (but should be cross convertible)
+		// make_stack<detail::code_type>();
+		// make_stack<detail::exec_type>();
+	}
 	
 	template <typename ARCHIVE>
 	void serialize(ARCHIVE & ar, const unsigned int) {
