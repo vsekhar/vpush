@@ -34,21 +34,22 @@ int main(int argc, char** argv) {
 	VPUSH_ADD(functions, my_popper, type<int>());
 	VPUSH_ADD(functions, my_adder, type<int>() * 2);
 
-	e.make_stack<int>();
-	e.make_stack<int>();
-	cout << "Stacks: " << e.stack_count() << endl;
+	e.stacks.make<int>();
+	e.stacks.make<int>();
+	cout << "Stacks: " << e.stacks.count() << endl;
 	e.push_second(1);
 	e.push_second(2);
+	functions.run("my_pusher", e);
 	functions.run("my_adder", e);
 	functions.run("my_popper", e);
 	e.push_second(3);
 	e.push_second(4);
 	e.push_second(5);
-	cout << "Stack: " << e.list_stack<int>() << endl;
+	cout << "Stack: " << e.stacks.list<int>() << endl;
 	cout << "size: " << e.size<int>() << endl;
 	cout << "Int: " << e.pop_second<int>() << endl;
 	cout << "Int: " << e.pop<int>() << endl;
-	cout << "Stack: " << e.list_stack<int>() << endl;
+	cout << "Stack: " << e.stacks.list<int>() << endl;
 	cout << "size: " << e.size<int>() << endl;
 	functions.run("my_func", e);
 	

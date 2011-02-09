@@ -1,5 +1,5 @@
-#ifndef __VPUSH_STACK_HPP__
-#define __VPUSH_STACK_HPP__
+#ifndef __VPUSH_DETAIL_STACK_HPP__
+#define __VPUSH_DETAIL_STACK_HPP__
 
 #include <vector>
 
@@ -29,8 +29,6 @@ struct stack : stack_base, std::vector<T> {
 	virtual bool empty() const { return base_t::empty(); }
 	virtual stack_base* clone() const { return new stack<T>(*this); }
 };
-
-typedef boost::ptr_map<util::TypeInfo, stack_base> stacks_t;
 
 } // namespace detail
 } // namespace vpush

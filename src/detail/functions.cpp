@@ -36,13 +36,13 @@ function functions_t::get(op_func_t fptr) {
 
 int functions_t::run(const std::string& name, Env& env) {
 	function f = get(name);
-	env.check_stacks(f.types);
+	env.stacks.check(f.types);
 	return f.fptr(env);
 }
 
 int functions_t::run(op_func_t fptr, Env& env) {
 	function f = get(fptr);
-	env.check_stacks(f.types);
+	env.stacks.check(f.types);
 	return f.fptr(env);
 }
 
