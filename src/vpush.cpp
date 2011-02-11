@@ -22,7 +22,9 @@ int my_adder(vpush::Env& e) {
 	return 0;
 }
 
-VPUSH_STACK(int)
+//VPUSH_STACK(int);
+BOOST_CLASS_EXPORT_GUID(::vpush::detail::stack<int>, BOOST_PP_STRINGIZE(vpush::stack<int>));
+::vpush::detail::stack_factories::get_mutable_instance().insert(new ::vpush::detail::stack_factory<int>());
 
 int main(int argc, char** argv) {
 	using std::cout;
@@ -38,8 +40,6 @@ int main(int argc, char** argv) {
 	VPUSH_ADD(functions, my_popper, type<int>());
 	VPUSH_ADD(functions, my_adder, type<int>() * 2);
 
-	e.stacks.make<int>();
-	e.stacks.make<int>();
 	cout << "Stacks: " << e.stacks.count() << endl;
 	e.push_second(1);
 	e.push_second(2);

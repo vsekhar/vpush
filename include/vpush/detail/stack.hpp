@@ -11,10 +11,6 @@
 
 #include <vpush/util/typeinfo.hpp>
 
-// TODO: cause this to register a wrapped stack type in some singleton
-// for use in the Env constructor, to automatically create the declared stacks
-#define VPUSH_STACK(t)	BOOST_CLASS_EXPORT_GUID(::vpush::detail::stack<t>, BOOST_PP_STRINGIZE(vpush::stack<t>))
-
 namespace vpush {
 namespace detail {
 

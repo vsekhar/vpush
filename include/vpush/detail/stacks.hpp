@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include <boost/assert.hpp>
+#include <boost/ptr_container/ptr_list.hpp>
 #include <boost/ptr_container/serialize_ptr_map.hpp>
 #include <boost/assign/ptr_map_inserter.hpp>
 #include <boost/serialization/access.hpp>
@@ -12,19 +13,39 @@
 #include <vpush/detail/stack.hpp>
 #include <vpush/detail/types.hpp>
 #include <vpush/exception.hpp>
+#include <vpush/util/singleton.hpp>
+
+///////////////////////////////////////////////////////////////////////////////
+// Compile-time stack factories (for registration)
+///////////////////////////////////////////////////////////////////////////////
 
 namespace vpush {
 namespace detail {
 
-typedef boost::ptr_map<util::TypeInfo, stack_base> stack_container_t;
+struct stack_factory_base {
+	virtual stack_base* construct() const = 0;
+};
+
+template <typename T>
+struct stack_factory {
+	virtual stack_base* construct() const { return new stack<T>(); }
+};
+
+typedef boost::ptr_list<stack_factory_base> stack_factory_container_t;
+typedef util::singleton<stack_factory_container_t> stack_factories;
+
+// TODO: update 
+#define VPUSH_STACK(t)	BOOST_CLASS_EXPORT_GUID(::vpush::detail::stack<t>, BOOST_PP_STRINGIZE(vpush::stack<t>)); \
+						::vpush::detail::stack_factories::instance().insert(new ::vpush::detail::stack_factory<t>())
+
+///////////////////////////////////////////////////////////////////////////////
+// Run-time stack containers (embedded in Env/Org objects)
+///////////////////////////////////////////////////////////////////////////////
 
 struct stacks_t {
 
-	template <typename T>
-	inline void make() {
-		boost::assign::ptr_map_insert<stack<T> >(_stacks)(typeid(T));
-	}
-	
+	stacks_t();
+
 	std::size_t count() const { return _stacks.size(); }
 	
 	template <typename T>
@@ -76,6 +97,7 @@ struct stacks_t {
 	void check(const detail::type_container&);
 
 private:
+	typedef boost::ptr_map<util::TypeInfo, stack_base> stack_container_t;
 	stack_container_t _stacks;
 	//stack<exec_type> _exec_stack;
 	//stack<code_type> _code_stack;
