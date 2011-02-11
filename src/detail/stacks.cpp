@@ -10,12 +10,6 @@
 namespace vpush {
 namespace detail {
 
-stacks_t::stacks_t() {
-	const stack_factory_container_t& sc = stack_factories::instance();
-	BOOST_FOREACH(const stack_base& s, sc)
-		_stacks.insert(s.construct());
-}
-
 void stacks_t::check(const detail::type_container& t) {
 	std::map<util::TypeInfo, std::size_t> type_count;
 	BOOST_FOREACH(const util::TypeInfo& type, t._types)

@@ -3,6 +3,7 @@
 #include <boost/archive/text_oarchive.hpp>
 
 #include <vpush/env.hpp>
+#include <vpush/user_type.hpp>
 #include <vpush/detail/functions.hpp>
 
 int my_func(vpush::Env& e) {return 0;}
@@ -22,9 +23,27 @@ int my_adder(vpush::Env& e) {
 	return 0;
 }
 
-//VPUSH_STACK(int);
-BOOST_CLASS_EXPORT_GUID(::vpush::detail::stack<int>, BOOST_PP_STRINGIZE(vpush::stack<int>));
-::vpush::detail::stack_factories::get_mutable_instance().insert(new ::vpush::detail::stack_factory<int>());
+struct my_type {
+	my_type(int a) : i(a) {}
+	int i;
+	template <typename A> void serialize(A& ar, const unsigned int) {
+		ar & i;
+	}
+};
+
+int my_type_pusher(vpush::Env& e) {
+	e.push(my_type(1984));
+	return 0;
+}
+
+int my_type_popper(vpush::Env& e) {
+	my_type m = e.pop<my_type>();
+	std::cout << "Popped my_type! " << m.i << std::endl;
+	return 0;
+}
+
+VPUSH_EXPORT(int, "int");
+VPUSH_EXPORT(my_type, "my_type");
 
 int main(int argc, char** argv) {
 	using std::cout;
@@ -33,12 +52,16 @@ int main(int argc, char** argv) {
 	using namespace vpush;
 	
 	Env e;
+	e.stacks.make<int>();
+	e.stacks.make<my_type>();
 	vpush::detail::functions_t functions;
 
 	VPUSH_ADD(functions, my_func, VPUSH_VOID);
 	VPUSH_ADD(functions, my_pusher, VPUSH_VOID);
 	VPUSH_ADD(functions, my_popper, type<int>());
 	VPUSH_ADD(functions, my_adder, type<int>() * 2);
+	VPUSH_ADD(functions, my_type_pusher, VPUSH_VOID);
+	VPUSH_ADD(functions, my_type_popper, type<my_type>());
 
 	cout << "Stacks: " << e.stacks.count() << endl;
 	e.push_second(1);
@@ -46,6 +69,8 @@ int main(int argc, char** argv) {
 	functions.run("my_pusher", e);
 	functions.run("my_adder", e);
 	functions.run("my_popper", e);
+	functions.run("my_type_pusher", e);
+	functions.run("my_type_popper", e);
 	e.push_second(3);
 	e.push_second(4);
 	e.push_second(5);
