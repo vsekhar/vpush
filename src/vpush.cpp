@@ -1,93 +1,50 @@
 #include <iostream>
+#include <fstream>
 
+#include <boost/mpl/vector.hpp>
+
+#include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
 #include <vpush/env.hpp>
-#include <vpush/user_type.hpp>
-#include <vpush/detail/functions.hpp>
-
-int my_func(vpush::Env& e) {return 0;}
-int my_pusher(vpush::Env& e) {
-	e.push<int>(42);
-	return 0;
-}
-
-int my_popper(vpush::Env& e) {
-	int i = e.pop<int>();
-	std::cout << "Popper! " << i << std::endl;
-	return 0;
-}
-
-int my_adder(vpush::Env& e) {
-	e.push<int>(e.pop<int>() + e.pop<int>());
-	return 0;
-}
-
-struct my_type {
-	my_type(int a) : i(a) {}
-	int i;
-	template <typename A> void serialize(A& ar, const unsigned int) {
-		ar & i;
-	}
-};
-
-int my_type_pusher(vpush::Env& e) {
-	e.push(my_type(1984));
-	return 0;
-}
-
-int my_type_popper(vpush::Env& e) {
-	my_type m = e.pop<my_type>();
-	std::cout << "Popped my_type! " << m.i << std::endl;
-	return 0;
-}
-
-VPUSH_EXPORT(int, "int");
-VPUSH_EXPORT(my_type, "my_type");
 
 int main(int argc, char** argv) {
 	using std::cout;
 	using std::cin;
 	using std::endl;
 	using namespace vpush;
+
+	typedef boost::mpl::vector<int, char>::type my_types;
+	Env<my_types> e;
+	e.push<int>(7);
+	e.push<int>(31);
+	e.push<int>(47);
+	e.push<int>(42);
+	e.push<char>('c');
 	
-	Env e;
-	e.stacks.make<int>();
-	e.stacks.make<my_type>();
-	vpush::detail::functions_t functions;
-
-	VPUSH_ADD(functions, my_func, VPUSH_VOID);
-	VPUSH_ADD(functions, my_pusher, VPUSH_VOID);
-	VPUSH_ADD(functions, my_popper, type<int>());
-	VPUSH_ADD(functions, my_adder, type<int>() * 2);
-	VPUSH_ADD(functions, my_type_pusher, VPUSH_VOID);
-	VPUSH_ADD(functions, my_type_popper, type<my_type>());
-
-	cout << "Stacks: " << e.stacks.count() << endl;
-	e.push_second(1);
-	e.push_second(2);
-	functions.run("my_pusher", e);
-	functions.run("my_adder", e);
-	functions.run("my_popper", e);
-	functions.run("my_type_pusher", e);
-	functions.run("my_type_popper", e);
-	e.push_second(3);
-	e.push_second(4);
-	e.push_second(5);
-	cout << "Stack: " << e.stacks.list<int>() << endl;
-	cout << "size: " << e.size<int>() << endl;
-	cout << "Int: " << e.pop_second<int>() << endl;
-	cout << "Int: " << e.pop<int>() << endl;
-	cout << "Stack: " << e.stacks.list<int>() << endl;
-	cout << "size: " << e.size<int>() << endl;
-	functions.run("my_func", e);
 	{
-		cout << "Serialization:" << endl;
-		boost::archive::text_oarchive toa(cout);
-		toa << e;
+		// Save the Env with 4 'ints' and 1 'char' in its stacks
+		std::ofstream out("tmp");
+		boost::archive::text_oarchive ar(out);
+		ar & e;
 	}
 	
-
+	cout << "Int stack size: " << e.size<int>() << endl;	// 4
+	cout << "Char stack size: " << e.size<char>() << endl;	// 1
+	
+	Env<my_types> e2;
+	{
+		// Should load ba
+		std::ifstream in("tmp");
+		boost::archive::text_iarchive ar(in);
+		ar & e2;
+	}
+	
+	cout << "Int stack size: " << e2.size<int>() << endl;
+	cout << "Int: " << e2.pop<int>() << endl;
+	cout << "Int stack size: " << e2.size<int>() << endl;
+	cout << "Char stack size: " << e2.size<char>() << endl;
+	
 	return 0;
 }
 
