@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 
 #include <boost/mpl/vector.hpp>
 
@@ -14,27 +15,27 @@ int main(int argc, char** argv) {
 	using std::endl;
 	using namespace vpush;
 
-	typedef boost::mpl::vector<int, char>::type my_types;
+	typedef boost::mpl::vector<int, std::string, char>::type my_types;
 	Env<my_types> e;
 	e.push<int>(7);
 	e.push<int>(31);
 	e.push<int>(47);
 	e.push<int>(42);
 	e.push<char>('c');
+	e.push<std::string>("hello world");
 	
 	{
-		// Save the Env with 4 'ints' and 1 'char' in its stacks
 		std::ofstream out("tmp");
 		boost::archive::text_oarchive ar(out);
 		ar & e;
 	}
 	
-	cout << "Int stack size: " << e.size<int>() << endl;	// 4
-	cout << "Char stack size: " << e.size<char>() << endl;	// 1
+	cout << "Int stack size: " << e.size<int>() << endl;
+	cout << "Char stack size: " << e.size<char>() << endl;
+	cout << "String stack size: " << e.size<std::string>() << endl;
 	
 	Env<my_types> e2;
 	{
-		// Should load ba
 		std::ifstream in("tmp");
 		boost::archive::text_iarchive ar(in);
 		ar & e2;
@@ -44,6 +45,8 @@ int main(int argc, char** argv) {
 	cout << "Int: " << e2.pop<int>() << endl;
 	cout << "Int stack size: " << e2.size<int>() << endl;
 	cout << "Char stack size: " << e2.size<char>() << endl;
+	cout << "String stack size: " << e2.size<std::string>() << endl;
+	cout << "String: " << e2.pop<std::string>() << endl;
 	
 	return 0;
 }
