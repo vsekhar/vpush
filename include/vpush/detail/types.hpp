@@ -4,9 +4,7 @@
 #include <list>
 
 #include <boost/mpl/for_each.hpp>
-#include <boost/mpl/identity.hpp>
 
-#include <vpush/env_fwd.hpp>
 #include <vpush/util/typeinfo.hpp>
 
 namespace vpush {

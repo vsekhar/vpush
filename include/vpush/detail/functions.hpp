@@ -9,7 +9,7 @@
 #include <boost/multi_index/member.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
-#include <vpush/env_fwd.hpp>
+#include <vpush/env.hpp>
 #include <vpush/detail/types.hpp>
 
 #define VPUSH_VOID	(vpush::detail::type_container())
