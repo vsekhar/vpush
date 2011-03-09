@@ -1,19 +1,12 @@
 #ifndef __vpush_env_hpp__
 #define __vpush_env_hpp__
 
-#include <vector>
-
 #include <boost/serialization/access.hpp>
-#include <boost/serialization/vector.hpp>
 
 #include <vpush/detail/stack.hpp>
 #include <vpush/exception.hpp>
 
 namespace vpush {
-
-namespace mpl = ::boost::mpl;
-
-template <typename> struct wrap {};
 
 struct Env {
 
