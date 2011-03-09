@@ -8,41 +8,33 @@
 #include <boost/archive/text_oarchive.hpp>
 
 #include <vpush/env.hpp>
+#include <vpush/env_ext.hpp>
 
-// Template for registering stack_manipulating functions
-template <class ENV>
-struct my_stack_funcs {
-	static unsigned int stack_func(ENV& e) {
-		e.template pop<int>();
-		return 0;
-	}
-	
-	static void register_(ENV& e) {
-		e.register_(stack_func, "stack_func");
-	}
-};
+using std::cout;
+using std::endl;
 
-// Simple function
-unsigned int func(int i) {
-	return 0;
+using vpush::Env;
+using vpush::ExtendedEnv;
+using vpush::get_stack;
+using vpush::size;
+using vpush::clear;
+using vpush::pop;
+using vpush::push;
+using vpush::pop_second;
+using vpush::push_second;
+
+unsigned int func(Env& e) {
+	return pop<int>(e);
 }
 
 int main(int argc, char** argv) {
-	using std::cout;
-	using std::cin;
-	using std::endl;
-	using namespace vpush;
-
-	typedef boost::mpl::vector<int, std::string, char>::type my_types;
-	typedef Env<my_types> MyEnv;
-	MyEnv e;
-	e.push<int>(7);
-	e.push<int>(31);
-	e.push<int>(47);
-	e.push<int>(42);
-	e.push<char>('c');
-	e.push<std::string>("hello world");
-	e.multi_reg<my_stack_funcs>();
+	ExtendedEnv e, e2;
+	push<int>(e, 7);
+	push<int>(e, 31);
+	push<int>(e, 47);
+	push<int>(e, 42);
+	push<char>(e, 'c');
+	push<std::string>(e, "hello world");
 	
 	{
 		std::ofstream out("tmp");
@@ -50,23 +42,22 @@ int main(int argc, char** argv) {
 		ar & e;
 	}
 	
-	cout << "Int stack size: " << e.size<int>() << endl;
-	cout << "Char stack size: " << e.size<char>() << endl;
-	cout << "String stack size: " << e.size<std::string>() << endl;
+	cout << "Int stack size: " << size<int>(e) << endl;
+	cout << "Char stack size: " << size<char>(e) << endl;
+	cout << "String stack size: " << size<std::string>(e) << endl;
 	
-	MyEnv e2;
 	{
 		std::ifstream in("tmp");
 		boost::archive::text_iarchive ar(in);
 		ar & e2;
 	}
 	
-	cout << "Int stack size: " << e2.size<int>() << endl;
-	cout << "Int: " << e2.pop<int>() << endl;
-	cout << "Int stack size: " << e2.size<int>() << endl;
-	cout << "Char stack size: " << e2.size<char>() << endl;
-	cout << "String stack size: " << e2.size<std::string>() << endl;
-	cout << "String: " << e2.pop<std::string>() << endl;
+	cout << "Int stack size: " << size<int>(e2) << endl;
+	cout << "Int: " << pop<int>(e2) << endl;
+	cout << "Int stack size: " << size<int>(e2) << endl;
+	cout << "Char stack size: " << size<char>(e2) << endl;
+	cout << "String stack size: " << size<std::string>(e2) << endl;
+	cout << "String: " << pop<std::string>(e2) << endl;
 	
 	return 0;
 }
