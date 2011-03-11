@@ -5,6 +5,7 @@
 #include <boost/archive/text_oarchive.hpp>
 
 #include <vpush/vpush.hpp>
+#include <vpush/detail/toroidal.hpp>
 
 using std::cout;
 using std::endl;
@@ -54,6 +55,17 @@ int main(int argc, char** argv) {
 	cout << "Char stack size: " << size<char>(e2) << endl;
 	cout << "String stack size: " << size<std::string>(e2) << endl;
 	cout << "String: " << pop<std::string>(e2) << endl;
+	
+	vpush::detail::toroidal_dimension x(3.7);
+	cout << "Toroidal: " << (x+0.4).get() << endl;
+	x += 19.2;
+	cout << "Toroidal: " << x.get() << endl;
+	x -= 6.95;
+	cout << "Toroidal: " << x.get() << endl;
+	if(vpush::detail::toroidal_dimension(3.7) < 0.9)
+		cout << "toroidal(3.7) < toroidal(0.9): yes" << endl;
+	else
+		cout << "error in toroidal comparison";
 	
 	return 0;
 }
