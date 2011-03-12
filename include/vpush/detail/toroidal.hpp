@@ -1,7 +1,8 @@
 #ifndef __VPUSH_DETAIL_TOROIDAL_HPP__
 #define __VPUSH_DETAIL_TOROIDAL_HPP__
 
-#include <utility>
+#include <utility>	// for remaining comparison operators
+#include <ostream>
 
 namespace vpush {
 namespace detail {
@@ -9,7 +10,8 @@ namespace detail {
 double modf(double);
 
 struct toroidal_dimension {
-	toroidal_dimension(double d) : value(modf(d)) {}
+	toroidal_dimension() : value() {}
+	toroidal_dimension(double d) : value(d) {}
 	inline double get() const { return value; }
 
 	// don't want type coercion as it leads to unusual expressions:
@@ -21,15 +23,25 @@ struct toroidal_dimension {
 	toroidal_dimension& operator-=(const toroidal_dimension&);
 	toroidal_dimension& operator*=(const toroidal_dimension&);
 	toroidal_dimension& operator/=(const toroidal_dimension&);
+	toroidal_dimension& operator*=(double);
+	toroidal_dimension& operator/=(double);
 	
 private:
+	friend std::ostream& operator<<(std::ostream&, const toroidal_dimension&);
 	double value;
 };
+
+std::ostream& operator<<(std::ostream&, const toroidal_dimension&);
 
 toroidal_dimension operator+(const toroidal_dimension&, const toroidal_dimension&);
 toroidal_dimension operator-(const toroidal_dimension&, const toroidal_dimension&);
 toroidal_dimension operator*(const toroidal_dimension&, const toroidal_dimension&);
 toroidal_dimension operator/(const toroidal_dimension&, const toroidal_dimension&);
+
+toroidal_dimension operator*(const toroidal_dimension&, double);
+toroidal_dimension operator/(const toroidal_dimension&, double);
+
+toroidal_dimension operator*(double, const toroidal_dimension&);
 
 } // namespace detail
 } // namespace vpush

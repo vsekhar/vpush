@@ -32,6 +32,16 @@ toroidal_dimension& toroidal_dimension::operator/=(const toroidal_dimension& rhs
 	value = modf(value);
 }
 
+toroidal_dimension& toroidal_dimension::operator*=(double d) {
+	value *= d;
+	value = modf(value);
+}
+
+toroidal_dimension& toroidal_dimension::operator/=(double d) {
+	value /= d;
+	value = modf(value);
+}
+
 toroidal_dimension operator+(const toroidal_dimension& lhs, const toroidal_dimension& rhs) {
 	return toroidal_dimension(lhs) += rhs;
 }
@@ -46,6 +56,22 @@ toroidal_dimension operator*(const toroidal_dimension& lhs, const toroidal_dimen
 
 toroidal_dimension operator/(const toroidal_dimension& lhs, const toroidal_dimension& rhs) {
 	return toroidal_dimension(lhs) /= rhs;
+}
+
+toroidal_dimension operator*(double d, const toroidal_dimension& rhs) {
+	return toroidal_dimension(rhs) *= d;
+}
+
+toroidal_dimension operator*(const toroidal_dimension& lhs, double d) {
+	return toroidal_dimension(lhs) *= d;
+}
+
+toroidal_dimension operator/(const toroidal_dimension& lhs, double d) {
+	return toroidal_dimension(lhs) /= d;
+}
+
+std::ostream& operator<<(std::ostream& o, const toroidal_dimension& t) {
+	return o << t.value;
 }
 
 } // namespace detail
