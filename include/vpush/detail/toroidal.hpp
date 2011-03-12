@@ -4,6 +4,9 @@
 #include <utility>	// for remaining comparison operators
 #include <ostream>
 
+#include <boost/numeric/ublas/vector.hpp>
+#include <boost/numeric/ublas/io.hpp>
+
 namespace vpush {
 namespace detail {
 
@@ -42,6 +45,8 @@ toroidal_dimension operator*(const toroidal_dimension&, double);
 toroidal_dimension operator/(const toroidal_dimension&, double);
 
 toroidal_dimension operator*(double, const toroidal_dimension&);
+
+typedef ::boost::numeric::ublas::bounded_vector<toroidal_dimension, 3> toroidal_vector;
 
 } // namespace detail
 } // namespace vpush

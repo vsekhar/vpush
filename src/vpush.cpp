@@ -66,6 +66,18 @@ int main(int argc, char** argv) {
 		cout << "toroidal(3.7) < toroidal(0.9): yes" << endl;
 	else
 		cout << "error in toroidal comparison";
+		
+	vpush::detail::toroidal_vector v;
+	v[0] = 1.7;
+	v[1] = 2.1;
+	v[2] = 3.2;
+	cout << "Toroidal vector: " << v << endl; // "[3](0.7,0.1,0.2)"
+	vpush::detail::toroidal_vector v2;
+	v2[0] = 0.7;
+	v2[1] = 6.5;
+	v2[2] = 4.7;
+	cout << "Addition: " << v + v2 << endl;	  // "[3](0.4,0.6,0.9)"
+	cout << "Constant multiplication: " << v * 2 << endl; // ERROR: "[3](0,0,0)"
 	
 	return 0;
 }
