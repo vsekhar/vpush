@@ -24,3 +24,6 @@ a.out
 Debug/
 Release/
 
+# Temp data
+tmp
+
