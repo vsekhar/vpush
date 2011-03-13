@@ -14,7 +14,8 @@ double modf(double);
 
 struct toroidal_dimension {
 	toroidal_dimension() : value() {}
-	toroidal_dimension(double d) : value(d) {}
+	toroidal_dimension(const toroidal_dimension& t) : value(t.value) {}
+	toroidal_dimension(double d) : value(modf(d)) {}
 	inline double get() const { return value; }
 
 	// don't want type coercion as it leads to unusual expressions:
