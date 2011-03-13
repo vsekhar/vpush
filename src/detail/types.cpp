@@ -3,7 +3,6 @@
 #include <boost/foreach.hpp>
 
 #include <vpush/detail/types.hpp>
-#include <vpush/env.hpp>
 #include <vpush/exception.hpp>
 
 namespace vpush {

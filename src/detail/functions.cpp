@@ -2,7 +2,6 @@
 
 #include <vpush/detail/functions.hpp>
 #include <vpush/exception.hpp>
-#include <vpush/env.hpp>
 
 namespace vpush {
 namespace detail {

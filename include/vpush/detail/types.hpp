@@ -4,6 +4,7 @@
 #include <list>
 
 #include <boost/mpl/for_each.hpp>
+#include <boost/mpl/placeholders.hpp>
 
 #include <vpush/util/typeinfo.hpp>
 
