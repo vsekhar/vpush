@@ -1,24 +1,22 @@
-#ifndef __VPUSH_ENV_EXT_HPP__
-#define __VPUSH_ENV_EXT_HPP__
+#ifndef __VPUSH_PROTEIN_EXT_HPP__
+#define __VPUSH_PROTEIN_EXT_HPP__
 
 #include <string>
 
-#include <boost/serialization/base_object.hpp>
-
-#include <vpush/env.hpp>
+#include <vpush/protein.hpp>
 
 namespace vpush {
 
 /******************************************************************************
-	How to extend the environment to new types:
+	How to extend the protein to new types:
 	
 	Types must be copyable and serializable.
 
 ******************************************************************************/
 
-// 1. New Env struct
-struct ExtendedEnv : Env {
-	typedef Env base_type;
+// 1. New Protein struct
+struct ExtendedProtein : Protein {
+	typedef Protein base_type;
 
 	// 2. New stacks to contain the additional types
 	detail::stack<std::string> string_stack;
@@ -45,11 +43,11 @@ private:
 };
 
 // 5. Stack access
-template <> inline detail::stack<std::string>& get_stack(Env& e) {
-	return static_cast<ExtendedEnv&>(e).string_stack;
+template <> inline detail::stack<std::string>& get_stack(Protein& e) {
+	return static_cast<ExtendedProtein&>(e).string_stack;
 }
-template <> inline detail::stack<char>& get_stack(Env& e) {
-	return static_cast<ExtendedEnv&>(e).char_stack;
+template <> inline detail::stack<char>& get_stack(Protein& e) {
+	return static_cast<ExtendedProtein&>(e).char_stack;
 }
 
 } // namespace vpush

@@ -6,12 +6,13 @@
 
 #include <vpush/vpush.hpp>
 #include <vpush/detail/toroidal.hpp>
+#include <vpush/detail/functions.hpp>
 
 using std::cout;
 using std::endl;
 
-using vpush::Env;
-using vpush::ExtendedEnv;
+using vpush::Protein;
+using vpush::ExtendedProtein;
 using vpush::get_stack;
 using vpush::size;
 using vpush::clear;
@@ -20,12 +21,18 @@ using vpush::push;
 using vpush::pop_second;
 using vpush::push_second;
 
-unsigned int func(Env& e) {
-	return pop<int>(e);
+double func(Protein& e) {
+	pop<int>(e);
+	return 1;
+}
+
+double func2(Protein& e) {
+	push<int>(e, 81);
+	return 1;
 }
 
 int main(int argc, char** argv) {
-	ExtendedEnv e, e2;
+	ExtendedProtein e, e2;
 	push<int>(e, 7);
 	push<int>(e, 31);
 	push<int>(e, 47);
@@ -56,28 +63,13 @@ int main(int argc, char** argv) {
 	cout << "String stack size: " << size<std::string>(e2) << endl;
 	cout << "String: " << pop<std::string>(e2) << endl;
 	
-	vpush::detail::toroidal_dimension x(3.7);
-	cout << "Toroidal: " << (x+0.4).get() << endl;
-	x += 19.2;
-	cout << "Toroidal: " << x.get() << endl;
-	x -= 6.95;
-	cout << "Toroidal: " << x.get() << endl;
-	if(vpush::detail::toroidal_dimension(3.7) < 0.9)
-		cout << "toroidal(3.7) < toroidal(0.9): yes" << endl;
-	else
-		cout << "error in toroidal comparison";
-		
-	vpush::detail::toroidal_vector v;
-	v[0] = 1.7;
-	v[1] = 2.1;
-	v[2] = 3.2;
-	cout << "Toroidal vector: " << v << endl; // "[3](0.7,0.1,0.2)"
-	vpush::detail::toroidal_vector v2;
-	v2[0] = 0.7;
-	v2[1] = 6.5;
-	v2[2] = 4.7;
-	cout << "Addition: " << v + v2 << endl;	  // "[3](0.4,0.6,0.9)"
-	cout << "Constant multiplication: " << v * 2 << endl; // ERROR: "[3](0,0,0)"
+	using vpush::functions;
+	functions.add("FUNC", func, vpush::type<int>());
+	functions.add("FUNC2", func2);
+	functions.get_fptr("FUNC")(e);
+	functions.get_fptr("FUNC2")(e);
+	cout << "Int stack size: " << size<int>(e) << endl;
+	cout << "Int: " << pop<int>(e) << endl;
 	
 	return 0;
 }

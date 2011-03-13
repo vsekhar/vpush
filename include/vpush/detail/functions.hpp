@@ -9,16 +9,15 @@
 #include <boost/multi_index/member.hpp>
 #include <boost/preprocessor/stringize.hpp>
 
-#include <vpush/env.hpp>
+#include <vpush/protein_fwd.hpp>
 #include <vpush/detail/types.hpp>
+#include <vpush/detail/code.hpp>
 
 #define VPUSH_VOID	(vpush::detail::type_container())
 #define	VPUSH_ADD(funcs, func, types) funcs.add(BOOST_PP_STRINGIZE(func), func, types)
 
 namespace vpush {
 namespace detail {
-
-typedef signed int(*op_func_t)(Env&);
 
 struct function_entry {
 	function_entry(const std::string& n, op_func_t f, const type_container& t)
@@ -51,22 +50,15 @@ typedef multi_index_container <
 	>
 > functions_container;
 
-struct function {
-	op_func_t fptr;
-	type_container types;
-};
-
 class functions_t {
 public:
 	inline void add(const std::string& n, op_func_t f) { add(n, f, type_container()); }
 	void add(const std::string&, op_func_t, const type_container&);
-	function get(const std::string&) const;
-	function get(op_func_t) const;
+	op_func_t get_fptr(const std::string&) const;
+	type_container get_types(op_func_t) const;
 	bool contains(const std::string&) const;
 	bool contains(op_func_t) const;
 
-	int run(const std::string&, Env&) const;
-	int run(op_func_t, Env&) const;
 	bool is_superset_of(const functions_t&) const;
 
 private:
@@ -79,6 +71,9 @@ private:
 };
 
 } // namespace detail
+
+extern detail::functions_t functions;
+
 } // namespace vpush
 
 #endif // __VPUSH_DETAIL_FUNCTIONS_HPP__
