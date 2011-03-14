@@ -1,12 +1,17 @@
 #ifndef __VPUSH_PROTEIN_HPP__
 #define __VPUSH_PROTEIN_HPP__
 
+#include <vector>
+#include <string>
+
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/base_object.hpp>
 #include <boost/ref.hpp>
+#include <boost/foreach.hpp>
 
 #include <vpush/protein_fwd.hpp>
 #include <vpush/detail/stack.hpp>
+#include <vpush/detail/codestack.hpp>
 #include <vpush/detail/toroidal.hpp>
 #include <vpush/detail/code.hpp>
 #include <vpush/detail/functions.hpp>
@@ -14,34 +19,19 @@
 
 namespace vpush {
 
-struct CodeProtein {
+struct Protein {
 	void reset() {
 		code_stack.clear();
 		exec_stack.clear();
-	}
-	
-	detail::stack<detail::Code> code_stack;
-	detail::stack<detail::Exec> exec_stack;
-
-private:
-	friend class ::boost::serialization::access;
-	template <class A> void serialize(A& a, unsigned int) {
-		// TODO: do conversions using vpush::functions;
-		// TODO: separate load/save
-		// a & code_stack;
-		// a & exec_stack;
-	}
-};
-
-struct Protein : CodeProtein {
-	typedef CodeProtein base_type;
-	void reset() {
-		base_type::reset();
 		bool_stack.clear();
 		int_stack.clear();
 		double_stack.clear();
 		unbound_name_stack.clear();
 	}
+
+	// code stacks
+	detail::codestack<detail::Code> code_stack;
+	detail::codestack<detail::Exec> exec_stack;
 
 	// data stacks
 	detail::stack<bool> bool_stack;
@@ -55,11 +45,13 @@ struct Protein : CodeProtein {
 private:
 	friend class ::boost::serialization::access;
 	template <class A> void serialize(A& a, unsigned int) {
-		a & ::boost::serialization::base_object<base_type>(*this);
+		a & code_stack;
+		a & exec_stack;
 		a & bool_stack;
 		a & int_stack;
 		a & double_stack;
 		a & unbound_name_stack;
+		a & location;
 	}
 
 }; // struct Protein
