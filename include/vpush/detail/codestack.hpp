@@ -36,6 +36,7 @@ private:
 	}
 	
 	template <class A> void load(A& a, unsigned int) {
+		std::vector<T>::clear();
 		std::size_t count = 0;
 		a >> count;
 
