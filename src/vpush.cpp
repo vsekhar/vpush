@@ -20,6 +20,8 @@ using vpush::pop;
 using vpush::push;
 using vpush::pop_second;
 using vpush::push_second;
+using vpush::detail::Code;
+using vpush::detail::Exec;
 
 double func(Protein& e) {
 	pop<int>(e);
@@ -40,6 +42,11 @@ int main(int argc, char** argv) {
 	push<char>(e, 'c');
 	push<std::string>(e, "hello world");
 	
+	using vpush::functions;
+	functions.add("FUNC", func, vpush::type<int>());
+	functions.add("FUNC2", func2);
+	push<Code>(e, functions.get_fptr("FUNC"));
+
 	{
 		std::ofstream out("tmp");
 		boost::archive::text_oarchive ar(out);
@@ -63,9 +70,6 @@ int main(int argc, char** argv) {
 	cout << "String stack size: " << size<std::string>(e2) << endl;
 	cout << "String: " << pop<std::string>(e2) << endl;
 	
-	using vpush::functions;
-	functions.add("FUNC", func, vpush::type<int>());
-	functions.add("FUNC2", func2);
 	functions.get_fptr("FUNC")(e);
 	functions.get_fptr("FUNC2")(e);
 	cout << "Int stack size: " << size<int>(e) << endl;

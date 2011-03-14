@@ -1,13 +1,16 @@
 #ifndef __VPUSH_STACKOPS_HPP__
 #define __VPUSH_STACKOPS_HPP__
 
+#include <vpush/detail/stack.hpp>
+#include <vpush/detail/codestack.hpp>
+
 namespace vpush {
 
 template <> inline detail::stack<bool>& get_stack(Protein& e) { return e.bool_stack; }
 template <> inline detail::stack<int>& get_stack(Protein& e) { return e.int_stack; }
 template <> inline detail::stack<double>& get_stack(Protein& e) { return e.double_stack; }
-// template <> inline detail::stack<Code>& get_stack(Protein& e) { return e.code_stack; }
-// template <> inline detail::stack<Exec>& get_stack(Protein& e) { return e.exec_stack; }
+template <> inline detail::stack<detail::Code>& get_stack(Protein& e) { return e.code_stack; }
+template <> inline detail::stack<detail::Exec>& get_stack(Protein& e) { return e.exec_stack; }
 // template <> inline detail::stack<Name>& get_stack(Protein& e) { return e.name_stack; }
 
 /* stack-wide operations queries & operations */
