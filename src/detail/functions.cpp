@@ -38,6 +38,10 @@ std::string functions_t::get_name(const op_func_t& fptr) const {
 	return i->name;
 }
 
+Exec functions_t::get_code(const std::string& name) const {
+	return Exec(get_fptr(name));
+}
+
 bool functions_t::contains(const std::string& name) const {
 	functions_by_name& funcs = _container.get<byName>();
 	return funcs.find(name) != funcs.end();
