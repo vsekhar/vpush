@@ -14,7 +14,6 @@
 #include <vpush/detail/code.hpp>
 
 #define VPUSH_VOID	(vpush::detail::type_container())
-#define	VPUSH_ADD(funcs, func, types) funcs.add(BOOST_PP_STRINGIZE(func), func, types)
 
 namespace vpush {
 namespace detail {
@@ -55,7 +54,8 @@ public:
 	inline void add(const std::string& n, op_func_t f) { add(n, f, type_container()); }
 	void add(const std::string&, op_func_t, const type_container&);
 	op_func_t get_fptr(const std::string&) const;
-	type_container get_types(op_func_t) const;
+	type_container get_types(const op_func_t&) const;
+	std::string get_name(const op_func_t&) const;
 	bool contains(const std::string&) const;
 	bool contains(op_func_t) const;
 

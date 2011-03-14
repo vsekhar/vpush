@@ -11,7 +11,7 @@ namespace vpush {
 namespace detail {
 
 template <typename T>
-struct stack : public std::vector<T> {
+struct stack : std::vector<T> {
 private:
 	friend class ::boost::serialization::access;
 	template <typename A> void serialize(A& a, unsigned int) {

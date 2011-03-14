@@ -22,12 +22,20 @@ op_func_t functions_t::get_fptr(const std::string& name) const {
 	return i->func;
 }
 
-type_container functions_t::get_types(op_func_t fptr) const {
+type_container functions_t::get_types(const op_func_t& fptr) const {
 	functions_by_fptr& funcs = _container.get<byFptr>();
 	functions_by_fptr::const_iterator i = funcs.find(fptr);
 	if(i == funcs.end())
 		throw no_such_function("(binary fptr)");
 	return i->func_types;
+}
+
+std::string functions_t::get_name(const op_func_t& fptr) const {
+	functions_by_fptr& funcs = _container.get<byFptr>();
+	functions_by_fptr::const_iterator i = funcs.find(fptr);
+	if(i == funcs.end())
+		throw no_such_function("(binary fptr)");
+	return i->name;
 }
 
 bool functions_t::contains(const std::string& name) const {
