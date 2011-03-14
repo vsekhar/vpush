@@ -7,6 +7,8 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/io.hpp>
 
+#include <boost/serialization/access.hpp>
+
 namespace vpush {
 namespace detail {
 
@@ -32,6 +34,8 @@ struct toroidal_dimension {
 	
 private:
 	friend std::ostream& operator<<(std::ostream&, const toroidal_dimension&);
+	friend class ::boost::serialization::access;
+	template <typename A> void serialize(A& a, unsigned int) {a & value;}
 	double value;
 };
 
