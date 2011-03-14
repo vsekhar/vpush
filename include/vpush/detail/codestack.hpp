@@ -21,15 +21,15 @@ private:
 	template <class A> void save(A& a, unsigned int) const {
 		std::size_t count = std::vector<T>::size();
 		a << count;
-		for(typename std::vector<T>::const_iterator i = std::vector<T>::begin();
-			i != std::vector<T>::end(); ++i) {
+		for(std::size_t i = 0; i < count; ++i) {
 				std::string name;
-				if(i->type == T::OPEN)
+				const T& code = (*this)[i];
+				if(code.type == T::OPEN)
 					name = "(";
-				else if(i->type == T::CLOSE)
+				else if(code.type == T::CLOSE)
 					name = ")";
 				else {
-					name = functions.get_name(i->fptr);
+					name = functions.get_name(code.fptr);
 				}
 				a << name;
 			}
