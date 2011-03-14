@@ -70,10 +70,9 @@ int main(int argc, char** argv) {
 	cout << "String stack size: " << size<std::string>(e2) << endl;
 	cout << "String: " << pop<std::string>(e2) << endl;
 	
-	functions.get_fptr("FUNC")(e);
-	functions.get_fptr("FUNC2")(e);
-	cout << "Int stack size: " << size<int>(e) << endl;
-	cout << "Int: " << pop<int>(e) << endl;
+	pop<Code>(e2).fptr(e2);
+	cout << "Int stack size: " << size<int>(e2) << endl;
+	cout << "Int: " << pop<int>(e2) << endl;
 	
 	return 0;
 }
