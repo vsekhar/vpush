@@ -39,6 +39,7 @@ int main(int argc, char** argv) {
 	push<int>(e, 31);
 	push<int>(e, 47);
 	push<int>(e, 42);
+	push_second<int>(e, 77);
 	push<char>(e, 'c');
 	push<std::string>(e, "hello world");
 	
@@ -66,7 +67,7 @@ int main(int argc, char** argv) {
 	}
 	
 	cout << "Int stack size: " << size<int>(e2) << endl;
-	cout << "Int: " << pop<int>(e2) << endl;
+	cout << "Int: " << pop_second<int>(e2) << endl;
 	cout << "Int stack size: " << size<int>(e2) << endl;
 	cout << "Char stack size: " << size<char>(e2) << endl;
 	cout << "String stack size: " << size<std::string>(e2) << endl;

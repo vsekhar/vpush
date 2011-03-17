@@ -40,29 +40,41 @@ inline T pop(Protein& p) {
 }
 
 /* non-standard stack operations (for combinatorics operators) */
+
 template <typename T>
-void inline push_second(Protein& p, const T& t) {
+void inline push_i(Protein& p, const T& t, int i) {
 	detail::stack<T>& stack = get_stack<T>(p);
+	// if stack isn't as big as i, push at bottom
+	if(i < 0)
+		throw detail::stack_underflow(typeid(T));
+
+	i = (unsigned)i < stack.size() ? i : stack.size();
 	typename detail::stack<T>::reverse_iterator itr = stack.rbegin();
-	if(!stack.empty()) itr++;
+	itr += i;
 	stack.insert(itr.base(), t);
 }
 
 template <typename T>
-inline T pop_second(Protein& p) {
+inline T pop_i(Protein& p, int i) {
 	detail::stack<T>& stack = get_stack<T>(p);
-	if(stack.size() < 2) throw detail::stack_underflow(typeid(T));
+	if(i < 0 || stack.size() < ((unsigned)i)+1)
+		throw detail::stack_underflow(typeid(T));
 
 	// some funny iterator arithmetic for converting between
 	// reverse and forward iterators
-	typename detail::stack<T>::reverse_iterator second
-		= ++stack.rbegin();
-	T ret = *second;
-	stack.erase(--second.base());
+	typename detail::stack<T>::reverse_iterator itr
+		= stack.rbegin() + i;
+	T ret = *itr;
+	stack.erase(--itr.base());
 	return ret;
 }
 
 template <typename T>
+void inline push_second(Protein& p, const T& t) { push_i<T>(p, t, 1); }
+
+template <typename T>
+inline T pop_second(Protein& p) { return pop_i<T>(p, 1); }
+
 template <typename T>
 std::ostream& print_stack(Protein& p, std::ostream& o) {
 	bool first = true;
