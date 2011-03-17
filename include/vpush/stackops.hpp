@@ -23,9 +23,9 @@ template <typename T> inline bool empty(Protein& p) { return get_stack<T>(p).emp
 template <typename T> inline void clear(Protein& p) { get_stack<T>(p).clear(); }
 
 /* non-modifying element access */
-template <typename T> inline T& top(Protein& p) { return get_stack<T>(p).back(); }
-template <class T>    inline T& first(Protein& p) { return top<T>(p); }
-template <class T>    inline T& second(Protein& p) { return *(++get_stack<T>(p).rbegin()); }
+template <typename T> inline T top(Protein& p) { return get_stack<T>(p).back(); }
+template <class T>    inline T first(Protein& p) { return top<T>(p); }
+template <class T>    inline T second(Protein& p) { return *(++get_stack<T>(p).rbegin()); }
 
 /* modifying element access (pushing and popping) */
 template <typename T> inline void push(Protein& p, const T& v) { get_stack<T>(p).push_back(v); }
