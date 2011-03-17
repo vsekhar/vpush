@@ -1,6 +1,10 @@
 #ifndef __VPUSH_STACKOPS_HPP__
 #define __VPUSH_STACKOPS_HPP__
 
+#include <ostream>
+
+#include <boost/foreach.hpp>
+
 #include <vpush/detail/stack.hpp>
 #include <vpush/detail/codestack.hpp>
 
@@ -56,6 +60,20 @@ inline T pop_second(Protein& p) {
 	T ret = *second;
 	stack.erase(--second.base());
 	return ret;
+}
+
+template <typename T>
+template <typename T>
+std::ostream& print_stack(Protein& p, std::ostream& o) {
+	bool first = true;
+	BOOST_FOREACH(const T& t, get_stack<T>(p)) {
+		if(first)
+			first = false;
+		else
+			o << ", ";
+		o << t;
+	}
+	return o;
 }
 
 } // namespace vpush

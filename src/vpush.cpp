@@ -53,6 +53,8 @@ int main(int argc, char** argv) {
 		ar & e;
 	}
 	
+	vpush::print_stack<int>(e, cout) << endl;
+	
 	cout << "Int stack size: " << size<int>(e) << endl;
 	cout << "Char stack size: " << size<char>(e) << endl;
 	cout << "String stack size: " << size<std::string>(e) << endl;
