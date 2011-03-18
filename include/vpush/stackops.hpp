@@ -4,17 +4,20 @@
 #include <ostream>
 
 #include <boost/foreach.hpp>
+#include <boost/fusion/container/map.hpp>
 
 #include <vpush/detail/stack.hpp>
 #include <vpush/detail/codestack.hpp>
 
 namespace vpush {
 
-template <> inline detail::stack<bool>& get_stack(Protein& p) { return p.bool_stack; }
-template <> inline detail::stack<int>& get_stack(Protein& p) { return p.int_stack; }
-template <> inline detail::stack<double>& get_stack(Protein& p) { return p.double_stack; }
-template <> inline detail::stack<detail::Code>& get_stack(Protein& p) { return p.code_stack; }
-template <> inline detail::stack<detail::Exec>& get_stack(Protein& p) { return p.exec_stack; }
+namespace fus = ::boost::fusion;
+
+template <> inline detail::stack<bool>& get_stack(Protein& p) { return fus::at_key<bool>(p.stacks); }
+template <> inline detail::stack<int>& get_stack(Protein& p) { return fus::at_key<int>(p.stacks); }
+template <> inline detail::stack<double>& get_stack(Protein& p) { return fus::at_key<double>(p.stacks); }
+template <> inline detail::stack<detail::Code>& get_stack(Protein& p) { return fus::at_key<detail::Code>(p.stacks); }
+template <> inline detail::stack<detail::Exec>& get_stack(Protein& p) { return fus::at_key<detail::Exec>(p.stacks); }
 // template <> inline detail::stack<Name>& get_stack(Protein& p) { return p.name_stack; }
 
 /* stack-wide operations queries & operations */

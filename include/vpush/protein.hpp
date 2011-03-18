@@ -8,6 +8,8 @@
 #include <boost/serialization/base_object.hpp>
 #include <boost/ref.hpp>
 #include <boost/foreach.hpp>
+#include <boost/fusion/container/map.hpp>
+#include <boost/fusion/algorithm/iteration/for_each.hpp>
 
 #include <vpush/protein_fwd.hpp>
 #include <vpush/detail/stack.hpp>
@@ -19,25 +21,47 @@
 
 namespace vpush {
 
+namespace fus = ::boost::fusion;
+
+struct size_accumulator {
+	size_accumulator(const std::size_t& start) : value(start) {}
+	template <typename C>
+	void operator()(const T& t) { value+=t.size(); }
+	std::size_t value;
+};
+
+struct clearer {
+	template <typename C> void operator()(T& t) { t.clear(); }
+};
+
+template <typename A>
+struct serializer {
+	serializer(A& ar) : archive(ar) {}
+	template <typename C> void operator()(C& c) { archive & c; }
+	A& archive;
+};
+
 struct Protein {
 	void reset() {
-		code_stack.clear();
-		exec_stack.clear();
-		bool_stack.clear();
-		int_stack.clear();
-		double_stack.clear();
-		unbound_name_stack.clear();
+		fus::for_each(stacks, clearer());
+	}
+	
+	std::size_t size() const {
+		size_accumulator s(0);
+		fus::for_each(stacks, s);
+		return s.value;
 	}
 
-	// code stacks
-	detail::codestack<detail::Code> code_stack;
-	detail::codestack<detail::Exec> exec_stack;
-
-	// data stacks
-	detail::stack<bool> bool_stack;
-	detail::stack<int> int_stack;
-	detail::stack<double> double_stack;
-	detail::stack<std::string> unbound_name_stack;
+	// code and data stacks
+	typedef fus::map<
+		fus::pair<detail::Code, detail::codestack<detail::Code> >
+		, fus::pair<detail::Exec, detail::codestack<detail::Exec> >
+		, fus::pair<bool, detail::stack<bool> >
+		, fus::pair<int, detail::stack<int> >
+		, fus::pair<double, detail::stack<double> >
+		, fus::pair<std::string, detail::stack<std::string> >
+	> stacks_t
+	stacks_t stacks;
 	
 	// co-ordinates
 	detail::toroidal_vector location;
@@ -45,13 +69,7 @@ struct Protein {
 private:
 	friend class ::boost::serialization::access;
 	template <class A> void serialize(A& a, unsigned int) {
-		a & code_stack;
-		a & exec_stack;
-		a & bool_stack;
-		a & int_stack;
-		a & double_stack;
-		a & unbound_name_stack;
-		a & location;
+		fus::for_each(stacks, serializer<A>(a));
 	}
 
 }; // struct Protein

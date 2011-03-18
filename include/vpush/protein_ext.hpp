@@ -19,16 +19,24 @@ struct ExtendedProtein : Protein {
 	typedef Protein base_type;
 
 	// 2. New stacks to contain the additional types
-	detail::stack<std::string> string_stack;
-	detail::stack<char> char_stack;
-
+	// code and data stacks
+	typedef fus::map<
+		fus::pair<std::string, detail::stack<std::string> >
+		, fus::pair<char, detail::stack<char> >
+	> stacks_t
+	stacks_t stacks;
+	
 	// 3. Reset the additional stacks
 	void reset() {
-		string_stack.clear();
-		char_stack.clear();
-		
-		// don't forget to reset the stacks in the base class
-		base_type::reset();
+		fus::for_each(stacks, clearer());
+		base_type::reset();		// base
+	}
+	
+	std::size_t size() const {
+		size_accumulator s(0);
+		fus::for_each(stacks, s);
+		s.value += base_type::size();	// base
+		return s.value;
 	}
 	
 private:
@@ -37,17 +45,17 @@ private:
 	friend class ::boost::serialization::access;
 	template <typename A> void serialize(A& a, unsigned int) {
 		a & ::boost::serialization::base_object<base_type>(*this);
-		a & string_stack;
-		a & char_stack;
+		fus::for_each(stacks, serializer<A>(a));
 	}
 };
 
-// 5. Stack access
-template <> inline detail::stack<std::string>& get_stack(Protein& e) {
-	return static_cast<ExtendedProtein&>(e).string_stack;
+// 5. Stack access (can you define these inside the template to templatize both at once?
+inline ExtendedProtein& do_cast(Protein& p) { return static_cast<ExtendedProtein&>(p);}
+template <> inline detail::stack<std::string>& get_stack(Protein& p) {
+	return fus::at_key<std::string>(do_cast(p).stacks);
 }
 template <> inline detail::stack<char>& get_stack(Protein& e) {
-	return static_cast<ExtendedProtein&>(e).char_stack;
+	return fus::at_key<char>(do_cast(p).stacks);
 }
 
 } // namespace vpush
