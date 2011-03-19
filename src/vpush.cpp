@@ -5,8 +5,6 @@
 #include <boost/archive/text_oarchive.hpp>
 
 #include <vpush/vpush.hpp>
-#include <vpush/detail/toroidal.hpp>
-#include <vpush/detail/functions.hpp>
 
 using std::cout;
 using std::endl;
