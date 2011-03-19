@@ -66,15 +66,16 @@ struct Protein {
 	> stacks_t;
 	stacks_t stacks;
 	
-	// co-ordinates
-	detail::toroidal_vector location;
-	
 	template <typename STACK_T, typename EXT_PROTEIN = Protein>
 	inline detail::stack<STACK_T>& get() {
 		EXT_PROTEIN& c = static_cast<EXT_PROTEIN&>(*this);
 		return fus::at_key<STACK_T>(c.stacks);
 	}
 
+	// parameters
+	detail::toroidal_vector location;
+	double energy;
+	
 private:
 	friend class ::boost::serialization::access;
 	template <class A> void serialize(A& a, unsigned int) {
