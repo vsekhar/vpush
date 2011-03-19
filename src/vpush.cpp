@@ -13,7 +13,7 @@ using std::endl;
 
 using vpush::Protein;
 using vpush::ExtendedProtein;
-using vpush::get_stack;
+using vpush::stack;
 using vpush::size;
 using vpush::clear;
 using vpush::pop;
@@ -53,12 +53,11 @@ int main(int argc, char** argv) {
 		boost::archive::text_oarchive ar(out);
 		ar & e;
 	}
-	
-	vpush::print_stack<int>(e, cout) << endl;
-	
-	cout << "Int stack size: " << size<int>(e) << endl;
-	cout << "Char stack size: " << size<char>(e) << endl;
-	cout << "String stack size: " << size<std::string>(e) << endl;
+
+	cout << "Original:" << endl;
+	cout << size<int>(e) << " ints: " << stack<int>(e) << endl;
+	cout << size<char>(e) << " chars: " << stack<char>(e) << endl;
+	cout << size<std::string>(e) << " strings: " << stack<std::string>(e) << endl;
 	
 	{
 		std::ifstream in("tmp");
@@ -66,16 +65,19 @@ int main(int argc, char** argv) {
 		ar & e2;
 	}
 	
-	cout << "Int stack size: " << size<int>(e2) << endl;
-	cout << "Int: " << pop_second<int>(e2) << endl;
-	cout << "Int stack size: " << size<int>(e2) << endl;
-	cout << "Char stack size: " << size<char>(e2) << endl;
-	cout << "String stack size: " << size<std::string>(e2) << endl;
-	cout << "String: " << pop<std::string>(e2) << endl;
+	cout << endl << "New:" << endl;
+	cout << size<int>(e2) << " ints: " << stack<int>(e2) << endl;
+	cout << size<char>(e2) << " chars: " << stack<char>(e2) << endl;
+	cout << size<std::string>(e2) << " strings: " << stack<std::string>(e2) << endl;
+
+	cout << "Popping second int: " << pop_second<int>(e2) << endl;
+	cout << size<int>(e2) << " ints: " << stack<int>(e2) << endl;
+	cout << "Popping string: " << pop<std::string>(e2) << endl;
+	cout << size<std::string>(e2) << " strings: " << stack<std::string>(e2) << endl;
 	
+	cout << "Running code..." << endl;
 	pop<Code>(e2).fptr(e2);
-	cout << "Int stack size: " << size<int>(e2) << endl;
-	cout << "Int: " << pop<int>(e2) << endl;
+	cout << size<int>(e2) << " ints: " << stack<int>(e2) << endl;
 	
 	return 0;
 }
