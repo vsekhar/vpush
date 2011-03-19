@@ -50,10 +50,10 @@ private:
 };
 
 // 5. Stack access (add the casting)
-template <> inline detail::stack<std::string>& get_stack(Protein& p) {
+template <> inline detail::stack<std::string>& stack(Protein& p) {
 	return p.get<std::string, ExtendedProtein>();
 }
-template <> inline detail::stack<char>& get_stack(Protein& p) {
+template <> inline detail::stack<char>& stack(Protein& p) {
 	return p.get<char, ExtendedProtein>();
 }
 

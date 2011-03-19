@@ -84,16 +84,16 @@ private:
 }; // struct Protein
 
 // stack access
-template <typename T> inline detail::stack<T>& get_stack(Protein&) {
+template <typename T> inline detail::stack<T>& stack(Protein&) {
 	throw detail::no_such_stack(typeid(T));
 }
 
-template <> inline detail::stack<bool>& get_stack(Protein& p) { return p.get<bool>(); }
-template <> inline detail::stack<int>& get_stack(Protein& p) { return p.get<int>(); }
-template <> inline detail::stack<double>& get_stack(Protein& p) { return p.get<double>(); }
-template <> inline detail::stack<detail::Code>& get_stack(Protein& p) { return p.get<detail::Code>(); }
-template <> inline detail::stack<detail::Exec>& get_stack(Protein& p) { return p.get<detail::Exec>(); }
-// template <> inline detail::stack<Name>& get_stack(Protein& p) { return p.name_stack; }
+template <> inline detail::stack<bool>& stack(Protein& p) { return p.get<bool>(); }
+template <> inline detail::stack<int>& stack(Protein& p) { return p.get<int>(); }
+template <> inline detail::stack<double>& stack(Protein& p) { return p.get<double>(); }
+template <> inline detail::stack<detail::Code>& stack(Protein& p) { return p.get<detail::Code>(); }
+template <> inline detail::stack<detail::Exec>& stack(Protein& p) { return p.get<detail::Exec>(); }
+// template <> inline detail::stack<Name>& stack(Protein& p) { return p.name_stack; }
 
 } // namespace vpush
 

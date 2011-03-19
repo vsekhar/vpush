@@ -14,24 +14,24 @@ namespace vpush {
 namespace fus = ::boost::fusion;
 
 /* stack-wide operations queries & operations */
-template <typename T> inline std::size_t size(Protein& p) { return get_stack<T>(p).size(); }
-template <typename T> inline bool empty(Protein& p) { return get_stack<T>(p).empty(); }
-template <typename T> inline void clear(Protein& p) { get_stack<T>(p).clear(); }
+template <typename T> inline std::size_t size(Protein& p) { return stack<T>(p).size(); }
+template <typename T> inline bool empty(Protein& p) { return stack<T>(p).empty(); }
+template <typename T> inline void clear(Protein& p) { stack<T>(p).clear(); }
 
 /* non-modifying element access */
-template <typename T> inline T top(Protein& p) { return get_stack<T>(p).back(); }
+template <typename T> inline T top(Protein& p) { return stack<T>(p).back(); }
 template <class T>    inline T first(Protein& p) { return top<T>(p); }
-template <class T>    inline T second(Protein& p) { return *(++get_stack<T>(p).rbegin()); }
+template <class T>    inline T second(Protein& p) { return *(++stack<T>(p).rbegin()); }
 
 /* modifying element access (pushing and popping) */
-template <typename T> inline void push(Protein& p, const T& v) { get_stack<T>(p).push_back(v); }
+template <typename T> inline void push(Protein& p, const T& v) { stack<T>(p).push_back(v); }
 
 template <typename T>
 inline T pop(Protein& p) {
-	detail::stack<T>& stack = get_stack<T>(p);
-	if(stack.empty()) throw detail::stack_underflow(typeid(T));
-	T ret(stack.back());
-	stack.pop_back();
+	detail::stack<T>& s = stack<T>(p);
+	if(s.empty()) throw detail::stack_underflow(typeid(T));
+	T ret(s.back());
+	s.pop_back();
 	return ret;
 }
 
@@ -39,29 +39,29 @@ inline T pop(Protein& p) {
 
 template <typename T>
 void inline push_i(Protein& p, const T& t, int i) {
-	detail::stack<T>& stack = get_stack<T>(p);
+	detail::stack<T>& s = stack<T>(p);
 	// if stack isn't as big as i, push at bottom
 	if(i < 0)
 		throw detail::stack_underflow(typeid(T));
 
-	i = (unsigned)i < stack.size() ? i : stack.size();
-	typename detail::stack<T>::reverse_iterator itr = stack.rbegin();
+	i = (unsigned)i < s.size() ? i : s.size();
+	typename detail::stack<T>::reverse_iterator itr = s.rbegin();
 	itr += i;
-	stack.insert(itr.base(), t);
+	s.insert(itr.base(), t);
 }
 
 template <typename T>
 inline T pop_i(Protein& p, int i) {
-	detail::stack<T>& stack = get_stack<T>(p);
-	if(i < 0 || stack.size() < ((unsigned)i)+1)
+	detail::stack<T>& s = stack<T>(p);
+	if(i < 0 || s.size() < ((unsigned)i)+1)
 		throw detail::stack_underflow(typeid(T));
 
 	// some funny iterator arithmetic for converting between
 	// reverse and forward iterators
 	typename detail::stack<T>::reverse_iterator itr
-		= stack.rbegin() + i;
+		= s.rbegin() + i;
 	T ret = *itr;
-	stack.erase(--itr.base());
+	s.erase(--itr.base());
 	return ret;
 }
 
