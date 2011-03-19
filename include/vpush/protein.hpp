@@ -73,7 +73,9 @@ struct Protein {
 	}
 
 	// parameters
-	detail::toroidal_vector location;
+	detail::toroidal_dimension x;
+	detail::toroidal_dimension y;
+	detail::toroidal_dimension z;
 	double energy;
 	
 private:
