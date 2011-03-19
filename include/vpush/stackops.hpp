@@ -71,19 +71,6 @@ void inline push_second(Protein& p, const T& t) { push_i<T>(p, t, 1); }
 template <typename T>
 inline T pop_second(Protein& p) { return pop_i<T>(p, 1); }
 
-template <typename T>
-std::ostream& print_stack(Protein& p, std::ostream& o) {
-	bool first = true;
-	BOOST_FOREACH(const T& t, get_stack<T>(p)) {
-		if(first)
-			first = false;
-		else
-			o << ", ";
-		o << t;
-	}
-	return o;
-}
-
 } // namespace vpush
 
 #endif
