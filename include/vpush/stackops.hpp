@@ -71,6 +71,11 @@ void inline push_second(Protein& p, const T& t) { push_i<T>(p, t, 1); }
 template <typename T>
 inline T pop_second(Protein& p) { return pop_i<T>(p, 1); }
 
+template <typename T>
+inline void swap(Protein& p, std::size_t a, std::size_t b) {
+	std::swap(*(stack<T>(p).rbegin() + a), *(stack<T>(p).rbegin() + b));
+}
+
 } // namespace vpush
 
 #endif

@@ -72,6 +72,9 @@ int main(int argc, char** argv) {
 
 	cout << "Popping second int: " << pop_second<int>(e2) << endl;
 	cout << size<int>(e2) << " ints: " << stack<int>(e2) << endl;
+	cout << "Swapping first and third" << endl;
+	vpush::swap<int>(e2, 0, 2);
+	cout << size<int>(e2) << " ints: " << stack<int>(e2) << endl;
 	cout << "Popping string: " << pop<std::string>(e2) << endl;
 	cout << size<std::string>(e2) << " strings: " << stack<std::string>(e2) << endl;
 	
