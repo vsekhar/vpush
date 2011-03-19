@@ -13,13 +13,6 @@ namespace vpush {
 
 namespace fus = ::boost::fusion;
 
-template <> inline detail::stack<bool>& get_stack(Protein& p) { return fus::at_key<bool>(p.stacks); }
-template <> inline detail::stack<int>& get_stack(Protein& p) { return fus::at_key<int>(p.stacks); }
-template <> inline detail::stack<double>& get_stack(Protein& p) { return fus::at_key<double>(p.stacks); }
-template <> inline detail::stack<detail::Code>& get_stack(Protein& p) { return fus::at_key<detail::Code>(p.stacks); }
-template <> inline detail::stack<detail::Exec>& get_stack(Protein& p) { return fus::at_key<detail::Exec>(p.stacks); }
-// template <> inline detail::stack<Name>& get_stack(Protein& p) { return p.name_stack; }
-
 /* stack-wide operations queries & operations */
 template <typename T> inline std::size_t size(Protein& p) { return get_stack<T>(p).size(); }
 template <typename T> inline bool empty(Protein& p) { return get_stack<T>(p).empty(); }

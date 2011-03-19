@@ -23,7 +23,7 @@ struct ExtendedProtein : Protein {
 	typedef fus::map<
 		fus::pair<std::string, detail::stack<std::string> >
 		, fus::pair<char, detail::stack<char> >
-	> stacks_t
+	> stacks_t;
 	stacks_t stacks;
 	
 	// 3. Reset the additional stacks
@@ -49,13 +49,12 @@ private:
 	}
 };
 
-// 5. Stack access (can you define these inside the template to templatize both at once?
-inline ExtendedProtein& do_cast(Protein& p) { return static_cast<ExtendedProtein&>(p);}
+// 5. Stack access (add the casting)
 template <> inline detail::stack<std::string>& get_stack(Protein& p) {
-	return fus::at_key<std::string>(do_cast(p).stacks);
+	return p.get<std::string, ExtendedProtein>();
 }
-template <> inline detail::stack<char>& get_stack(Protein& e) {
-	return fus::at_key<char>(do_cast(p).stacks);
+template <> inline detail::stack<char>& get_stack(Protein& p) {
+	return p.get<char, ExtendedProtein>();
 }
 
 } // namespace vpush
