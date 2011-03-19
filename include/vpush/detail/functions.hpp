@@ -7,13 +7,10 @@
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
 #include <boost/multi_index/member.hpp>
-#include <boost/preprocessor/stringize.hpp>
 
 #include <vpush/protein_fwd.hpp>
 #include <vpush/detail/types.hpp>
 #include <vpush/detail/code.hpp>
-
-#define VPUSH_VOID	(vpush::detail::type_container())
 
 namespace vpush {
 namespace detail {
