@@ -40,10 +40,10 @@ inline T pop(Protein& p) {
 template <typename T>
 void inline push_i(Protein& p, const T& t, int i) {
 	detail::stack<T>& s = stack<T>(p);
-	// if stack isn't as big as i, push at bottom
 	if(i < 0)
 		throw detail::stack_underflow(typeid(T));
 
+	// if stack isn't as big as i, push at bottom
 	i = (unsigned)i < s.size() ? i : s.size();
 	typename detail::stack<T>::reverse_iterator itr = s.rbegin();
 	itr += i;
