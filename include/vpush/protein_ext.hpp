@@ -50,6 +50,11 @@ private:
 };
 
 // 5. Stack access (add the casting)
+// ** Possible SEGFAULT **: if there is a mis-match between the functions
+//                          specializations here and the actual stacks in the
+//                          extended Protein, the static_cast in p.get<>() will
+//                          segfault (this design was chosen for speed)
+
 template <> inline detail::stack<std::string>& stack(Protein& p) {
 	return p.get<std::string, ExtendedProtein>();
 }
