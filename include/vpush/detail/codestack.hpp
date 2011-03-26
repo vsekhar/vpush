@@ -37,20 +37,24 @@ private:
 	}
 	
 	template <class A> void load(A& a, unsigned int) {
-		std::vector<T>::clear();
+		std::vector<T> new_vec;
 		std::size_t count = 0;
+
 		a >> count;
+		new_vec.reserve(count);
 
 		for(std::size_t i = 0; i < count; ++i) {
 			std::string name;
 			a >> name;
 			if(name == "(")
-				std::vector<T>::push_back(T(T::OPEN));
+				new_vec.push_back(T(T::OPEN));
 			else if(name == ")")
-				std::vector<T>::push_back(T(T::CLOSE));
+				new_vec.push_back(T(T::CLOSE));
 			else
-				std::vector<T>::push_back(T(functions.get_fptr(name)));
+				new_vec.push_back(T(functions.get_fptr(name)));
 		}
+		
+		this->swap(new_vec);
 	}
 	
 	BOOST_SERIALIZATION_SPLIT_MEMBER()
