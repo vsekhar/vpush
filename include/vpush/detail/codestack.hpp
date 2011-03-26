@@ -22,17 +22,18 @@ private:
 		std::size_t count = std::vector<T>::size();
 		a << count;
 		for(std::size_t i = 0; i < count; ++i) {
-				std::string name;
-				const T& code = (*this)[i];
-				if(code.type == T::OPEN)
-					name = "(";
-				else if(code.type == T::CLOSE)
-					name = ")";
-				else {
-					name = functions.get_name(code.fptr);
-				}
-				a << name;
-			}
+			std::string name;
+			const T& code = (*this)[i];
+
+			if(code.type == T::OPEN)
+				name = "(";
+			else if(code.type == T::CLOSE)
+				name = ")";
+			else
+				name = functions.get_name(code.fptr);
+
+			a << name;
+		}
 	}
 	
 	template <class A> void load(A& a, unsigned int) {
