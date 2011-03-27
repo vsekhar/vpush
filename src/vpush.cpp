@@ -20,6 +20,9 @@ using vpush::pop_second;
 using vpush::push_second;
 using vpush::detail::Code;
 using vpush::detail::Exec;
+using vpush::functions;
+
+namespace library = ::vpush::library;
 
 double func(Protein& p) {
 	pop<int>(p);
@@ -41,7 +44,7 @@ int main(int argc, char** argv) {
 	push<char>(p, 'c');
 	push<std::string>(p, "hello world");
 	
-	using vpush::functions;
+	library::initialize();
 	functions.add("FUNC", func, vpush::type<int>());
 	functions.add("FUNC2", func2);
 	push<Code>(p, functions.get_fptr("FUNC"));
