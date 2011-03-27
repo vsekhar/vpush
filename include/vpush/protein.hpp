@@ -77,6 +77,7 @@ struct Protein {
 	detail::toroidal_dimension y;
 	detail::toroidal_dimension z;
 	double energy;
+	bool terminated;
 	
 private:
 	friend class ::boost::serialization::access;
