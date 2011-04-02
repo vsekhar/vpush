@@ -67,6 +67,7 @@ int main(int argc, char** argv) {
 		std::ofstream out("tmp");
 		boost::archive::text_oarchive ar(out);
 		ar & soup[0];
+		ar & soup;
 	}
 
 	ExtendedProtein p2;
@@ -74,8 +75,8 @@ int main(int argc, char** argv) {
 		std::ifstream in("tmp");
 		boost::archive::text_iarchive ar(in);
 		ar & p2;
+		ar & soup;
 	}
-	soup.push_back(p2);
 	
 	cout << endl << "New:" << endl;
 	cout << size<int>(p2) << " ints: " << stack<int>(p2) << endl;

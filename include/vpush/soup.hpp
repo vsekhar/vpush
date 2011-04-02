@@ -1,6 +1,8 @@
 #ifndef __VPUSH_SOUP_HPP__
 #define __VPUSH_SOUP_HPP__
 
+#include <boost/serialization/access.hpp>
+
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
@@ -60,6 +62,8 @@ struct soup_t {
 	}
 	
 private:
+	friend class ::boost::serialization::access;
+	template <typename A> void serialize(A& a, unsigned int) { a & container; }
 	soup_container container;
 };
 
