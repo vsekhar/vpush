@@ -40,9 +40,23 @@ typedef multi_index_container <
 			member<Protein, double, &Protein::energy>
 		>
 	>
-> Soup_t;
+> soup_container;
 
-extern Soup_t soup;
+struct soup_t {
+	void add(std::size_t);
+	void set_size(std::size_t);
+	inline std::size_t size() const { return container.size(); }
+	inline const ExtendedProtein& operator[](std::size_t n) const {
+		soup_container::const_iterator itr = container.get<bySeq>().begin();
+		for(std::size_t i=0; i < n; ++i) ++itr;
+		return *itr;
+	}
+	
+private:
+	soup_container container;
+};
+
+extern soup_t soup;
 
 } // namespace vpush
 

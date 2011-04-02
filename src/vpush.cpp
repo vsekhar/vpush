@@ -21,6 +21,7 @@ using vpush::push_second;
 using vpush::detail::Code;
 using vpush::detail::Exec;
 using vpush::functions;
+using vpush::soup;
 
 namespace library = ::vpush::library;
 
@@ -36,6 +37,7 @@ double func2(Protein& p) {
 
 int main(int argc, char** argv) {
 	ExtendedProtein p, p2;
+	soup.add(2);
 	push<int>(p, 7);
 	push<int>(p, 31);
 	push<int>(p, 47);
