@@ -35,9 +35,15 @@ double func2(Protein& p) {
 	return 1;
 }
 
+template <typename T>
+struct pusher {
+	pusher(T i) : _val(i) {}
+	void operator()(ExtendedProtein& e) { push<T>(e, _val); }
+	T _val;
+};
+
 int main(int argc, char** argv) {
-	ExtendedProtein p, p2;
-	soup.add(2);
+	ExtendedProtein p;
 	push<int>(p, 7);
 	push<int>(p, 31);
 	push<int>(p, 47);
@@ -51,22 +57,25 @@ int main(int argc, char** argv) {
 	functions.add("FUNC2", func2);
 	push<Code>(p, functions.get_fptr("FUNC"));
 
-	{
-		std::ofstream out("tmp");
-		boost::archive::text_oarchive ar(out);
-		ar & p;
-	}
-
 	cout << "Original:" << endl;
 	cout << size<int>(p) << " ints: " << stack<int>(p) << endl;
 	cout << size<char>(p) << " chars: " << stack<char>(p) << endl;
 	cout << size<std::string>(p) << " strings: " << stack<std::string>(p) << endl;
 	
+	soup.push_back(p);
+	{
+		std::ofstream out("tmp");
+		boost::archive::text_oarchive ar(out);
+		ar & soup[0];
+	}
+
+	ExtendedProtein p2;
 	{
 		std::ifstream in("tmp");
 		boost::archive::text_iarchive ar(in);
 		ar & p2;
 	}
+	soup.push_back(p2);
 	
 	cout << endl << "New:" << endl;
 	cout << size<int>(p2) << " ints: " << stack<int>(p2) << endl;
