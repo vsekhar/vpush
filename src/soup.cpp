@@ -19,6 +19,13 @@ void soup_t::set_size(std::size_t n) {
 	}
 }
 
+const ExtendedProtein& soup_t::operator[](std::size_t n) const {
+	soup_container::const_iterator itr = container.get<bySeq>().begin();
+	for(std::size_t i=0; i < n; ++i) ++itr;
+	return *itr;
+}
+
+
 soup_t soup;
 
 } // namespace vpush
