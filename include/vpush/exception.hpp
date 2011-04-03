@@ -31,6 +31,11 @@ struct no_such_function : public std::runtime_error {
 		: std::runtime_error(std::string("No such function: ") + name + " (check for env.register_(...))") {}
 };
 
+struct no_functions : public std::runtime_error {
+	no_functions()
+		: std::runtime_error("No functions") {}
+};
+
 } // namespace detail
 } // namespace vpush
 

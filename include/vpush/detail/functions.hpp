@@ -6,6 +6,7 @@
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
+#include <boost/multi_index/random_access_index.hpp>
 #include <boost/multi_index/member.hpp>
 
 #include <vpush/protein_fwd.hpp>
@@ -26,6 +27,7 @@ private:
 };
 
 struct bySeq;
+struct byRAC;
 struct byName;
 struct byFptr;
 
@@ -35,6 +37,7 @@ typedef multi_index_container <
 	function_entry,
 	indexed_by<
 		sequenced<tag<bySeq> >,
+		random_access<tag<byRAC> >,
 		hashed_unique<
 			tag<byName>,
 			member<function_entry, std::string, &function_entry::name>
@@ -54,6 +57,7 @@ public:
 	type_container get_types(const op_func_t&) const;
 	std::string get_name(const op_func_t&) const;
 	Exec get_code(const std::string&) const;
+	Exec get_random_code() const;
 	bool contains(const std::string&) const;
 	bool contains(op_func_t) const;
 
@@ -61,6 +65,7 @@ public:
 
 private:
 	typedef const functions_container::index<bySeq>::type functions_by_seq;
+	typedef const functions_container::index<byRAC>::type functions_by_rac;
 	typedef const functions_container::index<byName>::type functions_by_name;
 	typedef const functions_container::index<byFptr>::type functions_by_fptr;
 

@@ -2,6 +2,7 @@
 
 #include <vpush/detail/functions.hpp>
 #include <vpush/exception.hpp>
+#include <vpush/util/random.hpp>
 
 namespace vpush {
 namespace detail {
@@ -40,6 +41,15 @@ std::string functions_t::get_name(const op_func_t& fptr) const {
 
 Exec functions_t::get_code(const std::string& name) const {
 	return Exec(get_fptr(name));
+}
+
+Exec functions_t::get_random_code() const {
+#ifdef _DEBUG
+	if(!_container.size())
+		throw no_functions();
+#endif
+	util::RandomInt ri(0, _container.size()-1);
+	return _container.get<byRAC>()[ri()].func;
 }
 
 bool functions_t::contains(const std::string& name) const {
