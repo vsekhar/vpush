@@ -8,6 +8,7 @@
 
 #include <vpush/detail/stack.hpp>
 #include <vpush/detail/codestack.hpp>
+#include <vpush/protein.hpp>
 
 namespace vpush {
 
