@@ -2,7 +2,7 @@
 
 #include <boost/numeric/conversion/converter.hpp>
 
-#include <vpush/library/arithmetic.hpp>
+#include <vpush/library.hpp>
 #include <vpush/detail/functions.hpp>
 #include <vpush/stackops.hpp>
 

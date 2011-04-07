@@ -4,10 +4,22 @@
 namespace vpush {
 namespace library {
 
+// main initialization
 void initialize();
 
+///////////////////////////////
+// sub-library initializations
+///////////////////////////////
+
+namespace arithmetic {
+void initialize();
 }
-}
+
+
+
+
+} // namespace library
+} // namespace vpush
 
 #endif
 
