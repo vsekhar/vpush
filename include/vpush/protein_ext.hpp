@@ -21,8 +21,8 @@ struct ExtendedProtein : Protein {
 	// 2. New stacks to contain the additional types
 	// code and data stacks
 	typedef fus::map<
-		fus::pair<std::string, detail::stack<std::string> >
-		, fus::pair<char, detail::stack<char> >
+		fus::pair<std::string, detail::stack<std::string> >,
+		fus::pair<char, detail::stack<char> >
 	> stacks_t;
 	stacks_t stacks;
 	

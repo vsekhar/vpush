@@ -57,12 +57,12 @@ struct Protein {
 
 	// code and data stacks
 	typedef fus::map<
-		fus::pair<detail::Code, detail::codestack<detail::Code> >
-		, fus::pair<detail::Exec, detail::codestack<detail::Exec> >
-		, fus::pair<bool, detail::stack<bool> >
-		, fus::pair<int, detail::stack<int> >
-		, fus::pair<double, detail::stack<double> >
-		, fus::pair<std::string, detail::stack<std::string> >
+		fus::pair<detail::Code, detail::codestack<detail::Code> >,
+		fus::pair<detail::Exec, detail::codestack<detail::Exec> >,
+		fus::pair<bool, detail::stack<bool> >,
+		fus::pair<int, detail::stack<int> >,
+		fus::pair<double, detail::stack<double> >,
+		fus::pair<std::string, detail::stack<std::string> >
 	> stacks_t;
 	stacks_t stacks;
 	
