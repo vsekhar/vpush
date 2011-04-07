@@ -4,6 +4,7 @@ usrdirs = Split("""
 src
 src/util
 src/detail
+src/library
 """)
 
 ### END USER MODIFIABLES ###
