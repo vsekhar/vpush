@@ -14,7 +14,7 @@ namespace vpush {
 
 namespace fus = ::boost::fusion;
 
-/* stack-wide operations queries & operations */
+/* stack-wide queries & operations */
 template <typename T> inline std::size_t size(Protein& p) { return stack<T>(p).size(); }
 template <typename T> inline bool empty(Protein& p) { return stack<T>(p).empty(); }
 template <typename T> inline void clear(Protein& p) { stack<T>(p).clear(); }
