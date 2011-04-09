@@ -15,8 +15,9 @@ namespace arithmetic {
 void initialize();
 }
 
-
-
+namespace basic {
+void initialize();
+}
 
 } // namespace library
 } // namespace vpush
