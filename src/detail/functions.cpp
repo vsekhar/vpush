@@ -43,7 +43,7 @@ Exec functions_t::get_code(const std::string& name) const {
 	return Exec(get_fptr(name));
 }
 
-Exec functions_t::get_random_code() const {
+Exec functions_t::get_random() const {
 #ifdef _DEBUG
 	if(!_container.size())
 		throw no_functions();

@@ -55,7 +55,10 @@ int main(int argc, char** argv) {
 	library::initialize();
 	functions.add("FUNC", func, vpush::type<int>());
 	functions.add("FUNC2", func2);
-	push<Code>(p, functions.get_fptr("FUNC"));
+	for(unsigned int i=0; i < 25; ++i) {
+		Exec e = functions.get_random();
+		push<Code>(p, e);
+	}
 
 	cout << "Original:" << endl;
 	cout << size<int>(p) << " ints: " << stack<int>(p) << endl;
