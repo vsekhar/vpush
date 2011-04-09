@@ -15,11 +15,10 @@
 #include <boost/fusion/algorithm/iteration/for_each.hpp>
 
 #include <vpush/protein_fwd.hpp>
+#include <vpush/detail/code.hpp>
 #include <vpush/detail/stack.hpp>
 #include <vpush/detail/codestack.hpp>
 #include <vpush/detail/toroidal.hpp>
-#include <vpush/detail/code.hpp>
-#include <vpush/detail/functions.hpp>
 #include <vpush/exception.hpp>
 
 namespace vpush {
@@ -88,10 +87,6 @@ private:
 }; // struct Protein
 
 // stack access
-template <typename T> inline detail::stack<T>& stack(Protein&) {
-	throw detail::no_such_stack(typeid(T));
-}
-
 template <> inline detail::stack<bool>& stack(Protein& p) { return p.get<bool>(); }
 template <> inline detail::stack<int>& stack(Protein& p) { return p.get<int>(); }
 template <> inline detail::stack<double>& stack(Protein& p) { return p.get<double>(); }

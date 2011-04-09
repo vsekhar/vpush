@@ -2,11 +2,19 @@
 
 #include <vpush/detail/functions.hpp>
 #include <vpush/detail/code.hpp>
+#include <vpush/detail/types.hpp>
 #include <vpush/exception.hpp>
 #include <vpush/util/random.hpp>
 
 namespace vpush {
 namespace detail {
+
+function_entry::function_entry(const std::string& n, op_func_t f, const type_container& t)
+	: name(n), func(f), func_types(t) {}
+
+void functions_t::add(const std::string& n, op_func_t f) {
+	add(n, f, type_container());
+}
 
 void functions_t::add(const std::string& name, op_func_t f, const type_container& t) {
 	functions_by_name_mutable& funcs = _container.get<byName>();

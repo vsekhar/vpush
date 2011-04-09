@@ -17,8 +17,7 @@ namespace vpush {
 namespace detail {
 
 struct function_entry {
-	function_entry(const std::string& n, op_func_t f, const type_container& t)
-		: name(n), func(f), func_types(t) {}
+	function_entry(const std::string&, op_func_t, const type_container&);
 	std::string name;
 	op_func_t func;
 	type_container func_types;
@@ -51,7 +50,7 @@ typedef multi_index_container <
 
 class functions_t {
 public:
-	inline void add(const std::string& n, op_func_t f) { add(n, f, type_container()); }
+	void add(const std::string&, op_func_t);
 	void add(const std::string&, op_func_t, const type_container&);
 	op_func_t get_fptr(const std::string&) const;
 	type_container get_types(const op_func_t&) const;

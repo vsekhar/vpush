@@ -8,6 +8,8 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/base_object.hpp>
 
+#include <vpush/detail/stack_fwd.hpp>
+
 namespace vpush {
 namespace detail {
 

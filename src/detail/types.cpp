@@ -1,6 +1,7 @@
 #include <map>
 
 #include <boost/foreach.hpp>
+#include <boost/assign/ptr_map_inserter.hpp>
 
 #include <vpush/detail/types.hpp>
 #include <vpush/exception.hpp>
@@ -8,19 +9,24 @@
 namespace vpush {
 namespace detail {
 
-void type_container::add(util::TypeInfo t) {
-	_types.push_back(t);
-}
-
 type_container& type_container::operator+=(const type_container& other) {
-	std::copy(other._types.begin(), other._types.end(), std::back_inserter(_types));
+
+	for(types_t::const_iterator i = other._types.begin();
+		i != other._types.end(); ++i) {
+
+		if(_types.find(i->first) != _types.end())
+			_types.at(i->first).count += i->second->count;
+		else
+			_types.insert(i, ++types_t::const_iterator(i));
+	}
+
 	return *this;
 }
 
 type_container& type_container::operator*=(unsigned int count) {
 	if(count == 0)
 		clear();
-	else {
+	else if(count > 1) {
 		type_container temp(*this);
 		for(unsigned int i=1; i < count; ++i)
 			*this += temp;
