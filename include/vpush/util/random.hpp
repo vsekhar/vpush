@@ -42,7 +42,7 @@ struct RandomInt {
 		dist(lowest, highest), die(default_generator, dist) {}
 	int operator()() { return die(); }
 	boost::uniform_int<> dist;
-	boost::variate_generator<time_seeded_mersenne_t, boost::uniform_int<> > die;
+	boost::variate_generator<time_seeded_mersenne_t&, boost::uniform_int<> > die;
 };
 
 } // namespace util
