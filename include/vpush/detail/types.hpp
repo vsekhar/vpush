@@ -81,6 +81,7 @@ struct type_container {
 	}
 
 	void clear() { _types.clear(); }
+	bool check(Protein& p) const;
 
 	type_container& operator+=(const type_container&);
 	type_container& operator*=(unsigned int);

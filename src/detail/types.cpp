@@ -9,6 +9,14 @@
 namespace vpush {
 namespace detail {
 
+bool type_container::check(Protein& p) const {
+	for(types_t::const_iterator i = _types.begin();
+		i != _types.end(); ++i)
+		if(!(i->second->check(p)))
+			return false;
+	return true;
+}
+
 type_container& type_container::operator+=(const type_container& other) {
 
 	for(types_t::const_iterator i = other._types.begin();
