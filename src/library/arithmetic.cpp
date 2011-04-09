@@ -11,6 +11,12 @@ namespace library {
 namespace arithmetic {
 
 template <typename T>
+double zero(Protein& p) { push<T>(p, 0); return 1; }
+
+template <typename T>
+double one(Protein& p) { push<T>(p, 1); return 1; }
+
+template <typename T>
 double add(Protein& p) { push<T>(p, pop<T>(p) + pop<T>(p)); return 1; }
 
 template <typename T>
@@ -54,6 +60,12 @@ double to_double(Protein &p) { push<double>(p, pop<int>(p)); return 1; }
 void initialize() {
 	using vpush::functions;
 	using vpush::type;
+
+	functions.add("ZERO.INT", zero<int>);
+	functions.add("ZERO.DBL", zero<double>);
+	functions.add("ONE.INT", one<int>);
+	functions.add("ONE.DBL", one<double>);
+
 	functions.add("ADD.INT", add<int>, type<int>() * 2);
 	functions.add("SUBTRACT.INT", subtract<int>, type<int>() * 2);
 	functions.add("MULTIPLY.INT", multiply<int>, type<int>() * 2);
@@ -66,6 +78,7 @@ void initialize() {
 	
 	functions.add("POW.DBL", pow, type<double>() * 2);
 	functions.add("MOD.INT", mod, type<int>() * 2);
+
 	functions.add("TO_INT.DBL", to_int, type<double>());
 	functions.add("TO_DBL.INT", to_double, type<int>());
 }
