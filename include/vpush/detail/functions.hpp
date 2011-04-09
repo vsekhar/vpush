@@ -11,7 +11,7 @@
 
 #include <vpush/protein_fwd.hpp>
 #include <vpush/detail/types.hpp>
-#include <vpush/detail/code.hpp>
+#include <vpush/detail/code_fwd.hpp>
 
 namespace vpush {
 namespace detail {
@@ -57,7 +57,7 @@ public:
 	type_container get_types(const op_func_t&) const;
 	std::string get_name(const op_func_t&) const;
 	Exec get_code(const std::string&) const;
-	Exec get_random_code() const;
+	Exec get_random() const;
 	bool contains(const std::string&) const;
 	bool contains(op_func_t) const;
 

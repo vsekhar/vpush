@@ -1,12 +1,12 @@
 #ifndef __VPUSH_DETAIL_CODE_HPP__
 #define __VPUSH_DETAIL_CODE_HPP__
 
-#include <vpush/protein_fwd.hpp>
+#include <ostream>
+
+#include <vpush/detail/code_fwd.hpp>
 
 namespace vpush {
 namespace detail {
-
-typedef double(*op_func_t)(Protein&);
 
 struct Code {
 	enum codetype {CODE, OPEN, CLOSE};
@@ -25,6 +25,8 @@ struct Exec : public Code {
 	Exec(const Code& c) : Code(c) {}
 	Exec(const Exec& e) : Code(e) {}
 };
+
+std::ostream& operator<<(std::ostream&, const Code&);
 
 } // namespace detail
 } // namespace vpush

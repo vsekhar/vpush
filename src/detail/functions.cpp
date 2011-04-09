@@ -1,6 +1,7 @@
 #include <boost/foreach.hpp>
 
 #include <vpush/detail/functions.hpp>
+#include <vpush/detail/code.hpp>
 #include <vpush/exception.hpp>
 #include <vpush/util/random.hpp>
 
