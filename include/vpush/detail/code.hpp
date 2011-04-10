@@ -26,6 +26,8 @@ struct Exec : public Code {
 	Exec(const Exec& e) : Code(e) {}
 };
 
+inline bool operator==(const Code& c1, const Code& c2) { return c1.fptr==c2.fptr && c1.type==c2.type; }
+
 std::ostream& operator<<(std::ostream&, const Code&);
 
 } // namespace detail
