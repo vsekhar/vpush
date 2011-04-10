@@ -40,16 +40,16 @@ double run_protein(Protein& p) {
 	while(!empty<Exec>(p) && p.energy > 0) {
 		Exec e = pop<Exec>(p);
 		
-		if(e.type == Exec::OPEN)
-			unwind(p);	// eats all matched brackets
-		else if (e.type == Exec::CLOSE)
-			throw detail::unmatched_brackets(); // should never see any here
-		else {
-			// regular op-code, so run it
-			const detail::type_container& types
-				= vpush::functions.get_types(e.fptr);
-			if(types.check(p))
-				p.energy -= e.fptr(p);
+		switch(e.type) {
+			case Exec::OPEN:	unwind(p);
+								break;
+			case Exec::CLOSE:	throw detail::unmatched_brackets();
+								break;
+			default:			const detail::type_container& types
+									= vpush::functions.get_types(e.fptr);
+								if(types.check(p))
+									p.energy -= e.fptr(p);
+								break;
 		}
 	}
 	
