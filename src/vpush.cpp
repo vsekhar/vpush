@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
 	Protein p;
 	push<int>(p, 7);
 	push<int>(p, 31);
-	push<int>(p, 47);
+	push<int>(p, 0);
 	push<int>(p, 42);
 	push_second<int>(p, 77);
 	push<std::string>(p, "hello world");
@@ -40,7 +40,8 @@ int main(int argc, char** argv) {
 		push<Exec>(p, e);
 	}
 	p.energy = 2;
-	push<Exec>(p, functions.get_code("EAT.STRING"));
+	push<int>(p, 2);
+	push<Exec>(p, functions.get_code("MAKELIST.EXEC"));
 
 	cout << "Original:" << endl;
 	cout << size<int>(p) << " ints: " << stack<int>(p) << endl;
@@ -76,7 +77,10 @@ int main(int argc, char** argv) {
 	
 	cout << "Code: " << stack<Code>(p2) << endl;
 	cout << "Exec: " << stack<Exec>(p2) << endl;
+	cout << "Running..." << endl;
 	vpush::run_protein(p2);
+	cout << "Code: " << stack<Code>(p2) << endl;
+	cout << "Exec: " << stack<Exec>(p2) << endl;	
 	cout << size<int>(p2) << " ints: " << stack<int>(p2) << endl;
 	
 	return 0;

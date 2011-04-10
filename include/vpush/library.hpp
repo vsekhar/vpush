@@ -11,11 +11,15 @@ void initialize();
 // sub-library initializations
 ///////////////////////////////
 
-namespace arithmetic {
+namespace basic {
 void initialize();
 }
 
-namespace basic {
+namespace code {
+void initialize();
+}
+
+namespace arithmetic {
 void initialize();
 }
 

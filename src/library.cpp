@@ -5,6 +5,7 @@ namespace library {
 
 void initialize() {
 	basic::initialize();
+	code::initialize();
 	arithmetic::initialize();
 }
 
