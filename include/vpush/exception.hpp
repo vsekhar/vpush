@@ -36,6 +36,11 @@ struct no_functions : public std::runtime_error {
 		: std::runtime_error("No functions") {}
 };
 
+struct unmatched_brackets : public std::runtime_error {
+	unmatched_brackets()
+		: std::runtime_error(std::string("Unmatched brackets")) {}
+};
+
 } // namespace detail
 } // namespace vpush
 

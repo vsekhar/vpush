@@ -1,3 +1,7 @@
+#include <vector>
+#include <algorithm>
+#include <iterator>
+
 #include <vpush/engine.hpp>
 #include <vpush/stackops.hpp>
 #include <vpush/exception.hpp>
@@ -5,19 +9,53 @@
 
 namespace vpush {
 
-double run_protein(Protein& p) {
+void unwind(Protein& p) {
 	using detail::Exec;
 	
-	// unsigned int bracket_level = 0;
+	std::vector<Exec> temp_vec;
+	unsigned int bracket_level = 0;
 	
 	while(!empty<Exec>(p)) {
 		Exec e = pop<Exec>(p);
-		const detail::type_container& types
-			= vpush::functions.get_types(e.fptr);
-		if(types.check(p))
-			e.fptr(p);
+		if(e.type == Exec::OPEN)
+			++bracket_level;
+		else if(e.type == Exec::CLOSE) {
+			if(bracket_level)
+				--bracket_level;
+			else
+				break; // done (eat the CLOSE op-code)
+		}
+		temp_vec.push_back(e);
 	}
-	return 0;
+	
+	if(bracket_level)
+		throw detail::unmatched_brackets();
+	
+	std::reverse_copy(temp_vec.begin(), temp_vec.end(), std::back_inserter(stack<Exec>(p)));
+}
+
+double run_protein(Protein& p) {
+	using detail::Exec;
+
+	while(!empty<Exec>(p) && p.energy > 0) {
+		Exec e = pop<Exec>(p);
+		
+		if(e.type == Exec::OPEN)
+			unwind(p);	// eats all matched brackets
+		else if (e.type == Exec::CLOSE)
+			throw detail::unmatched_brackets(); // should never see any here
+		else {
+			// regular op-code, so run it
+			const detail::type_container& types
+				= vpush::functions.get_types(e.fptr);
+			if(types.check(p))
+				p.energy -= e.fptr(p);
+		}
+	}
+	
+	//fitness testing?
+
+	return 0; // fitness
 }
 
 } // namespace vpush

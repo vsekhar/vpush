@@ -38,8 +38,9 @@ int main(int argc, char** argv) {
 	library::initialize();
 	for(unsigned int i=0; i < 25; ++i) {
 		Exec e = functions.get_random();
-		push<Code>(p, e);
+		push<Exec>(p, e);
 	}
+	p.energy = 2;
 
 	cout << "Original:" << endl;
 	cout << size<int>(p) << " ints: " << stack<int>(p) << endl;
@@ -75,9 +76,9 @@ int main(int argc, char** argv) {
 	cout << "Popping string: " << pop<std::string>(p2) << endl;
 	cout << size<std::string>(p2) << " strings: " << stack<std::string>(p2) << endl;
 	
-	cout << "Running code: " << endl;
-	cout << stack<Code>(p2) << endl;
-	pop<Code>(p2).fptr(p2);
+	cout << "Code: " << stack<Code>(p2) << endl;
+	cout << "Exec: " << stack<Exec>(p2) << endl;
+	vpush::run_protein(p2);
 	cout << size<int>(p2) << " ints: " << stack<int>(p2) << endl;
 	
 	return 0;

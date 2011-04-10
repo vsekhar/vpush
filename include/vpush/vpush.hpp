@@ -6,7 +6,7 @@
 #include <vpush/soup.hpp>
 #include <vpush/stackops.hpp>
 #include <vpush/library.hpp>
-
+#include <vpush/engine.hpp>
 
 #endif
 
