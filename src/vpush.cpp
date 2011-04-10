@@ -25,23 +25,6 @@ using vpush::soup;
 
 namespace library = ::vpush::library;
 
-double func(Protein& p) {
-	pop<int>(p);
-	return 1;
-}
-
-double func2(Protein& p) {
-	push<int>(p, 81);
-	return 1;
-}
-
-template <typename T>
-struct pusher {
-	pusher(T i) : _val(i) {}
-	void operator()(ExtendedProtein& e) { push<T>(e, _val); }
-	T _val;
-};
-
 int main(int argc, char** argv) {
 	ExtendedProtein p;
 	push<int>(p, 7);
@@ -53,8 +36,6 @@ int main(int argc, char** argv) {
 	push<std::string>(p, "hello world");
 	
 	library::initialize();
-	functions.add("FUNC", func, vpush::type<int>());
-	functions.add("FUNC2", func2);
 	for(unsigned int i=0; i < 25; ++i) {
 		Exec e = functions.get_random();
 		push<Code>(p, e);
