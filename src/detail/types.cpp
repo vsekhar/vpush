@@ -45,8 +45,7 @@ type_container& type_container::operator*=(unsigned int count) {
 }
 
 type_container operator+(const type_container& c1, const type_container& c2) {
-	type_container ret;
-	ret += c1;
+	type_container ret(c1);
 	ret += c2;
 	return ret;
 }
