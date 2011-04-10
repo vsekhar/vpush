@@ -35,11 +35,11 @@ int main(int argc, char** argv) {
 	push<std::string>(p, "hello world");
 	
 	library::initialize();
-	for(unsigned int i=0; i < 10; ++i) {
+	for(unsigned int i=0; i < 1000; ++i) {
 		Exec e = functions.get_random();
 		push<Exec>(p, e);
 	}
-	p.energy = 20;
+	p.energy = 500;
 	push<int>(p, 4);
 	push<int>(p, 8);
 	push<Exec>(p, functions.get_code("DO_RANGE.EXEC"));
@@ -60,7 +60,10 @@ int main(int argc, char** argv) {
 		ar & soup;
 	}
 	
-	vpush::run_protein(p2, true);
+	for(unsigned int i = 0; i < 100; ++i) {
+		Protein run(p2);
+		vpush::run_protein(run);
+	}
 	
 	return 0;
 }
