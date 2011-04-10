@@ -40,7 +40,10 @@ double pow(Protein& p) {
 }
 
 double mod(Protein& p) {
-	push<int>(p, pop<int>(p) % pop<int>(p));
+	if(top<int>(p) <= 0)
+		return 0;
+	int divisor = pop<int>(p);
+	push<int>(p, pop<int>(p) % divisor);
 	return 1;
 }
 
