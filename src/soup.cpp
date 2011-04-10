@@ -4,7 +4,7 @@ namespace vpush {
 
 void soup_t::add(std::size_t n) {
 	for(std::size_t i = 0; i < n; ++i)
-		container.push_back(ExtendedProtein());
+		container.push_back(Protein());
 }
 
 void soup_t::set_size(std::size_t n) {
@@ -19,7 +19,7 @@ void soup_t::set_size(std::size_t n) {
 	}
 }
 
-const ExtendedProtein& soup_t::operator[](std::size_t n) const {
+const Protein& soup_t::operator[](std::size_t n) const {
 	soup_container::const_iterator itr = container.get<bySeq>().begin();
 	for(std::size_t i=0; i < n; ++i) ++itr;
 	return *itr;

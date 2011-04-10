@@ -10,7 +10,7 @@ using std::cout;
 using std::endl;
 
 using vpush::Protein;
-using vpush::ExtendedProtein;
+using vpush::Protein;
 using vpush::stack;
 using vpush::size;
 using vpush::clear;
@@ -26,13 +26,12 @@ using vpush::soup;
 namespace library = ::vpush::library;
 
 int main(int argc, char** argv) {
-	ExtendedProtein p;
+	Protein p;
 	push<int>(p, 7);
 	push<int>(p, 31);
 	push<int>(p, 47);
 	push<int>(p, 42);
 	push_second<int>(p, 77);
-	push<char>(p, 'c');
 	push<std::string>(p, "hello world");
 	
 	library::initialize();
@@ -41,10 +40,10 @@ int main(int argc, char** argv) {
 		push<Exec>(p, e);
 	}
 	p.energy = 2;
+	push<Exec>(p, functions.get_code("EAT.STRING"));
 
 	cout << "Original:" << endl;
 	cout << size<int>(p) << " ints: " << stack<int>(p) << endl;
-	cout << size<char>(p) << " chars: " << stack<char>(p) << endl;
 	cout << size<std::string>(p) << " strings: " << stack<std::string>(p) << endl;
 	
 	soup.push_back(p);
@@ -55,7 +54,7 @@ int main(int argc, char** argv) {
 		ar & soup;
 	}
 
-	ExtendedProtein p2;
+	Protein p2;
 	{
 		std::ifstream in("tmp");
 		boost::archive::text_iarchive ar(in);
@@ -65,7 +64,6 @@ int main(int argc, char** argv) {
 	
 	cout << endl << "New:" << endl;
 	cout << size<int>(p2) << " ints: " << stack<int>(p2) << endl;
-	cout << size<char>(p2) << " chars: " << stack<char>(p2) << endl;
 	cout << size<std::string>(p2) << " strings: " << stack<std::string>(p2) << endl;
 
 	cout << "Popping second int: " << pop_second<int>(p2) << endl;

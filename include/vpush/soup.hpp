@@ -9,7 +9,7 @@
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/mem_fun.hpp>
 
-#include <vpush/protein_ext.hpp>
+#include <vpush/protein.hpp>
 
 namespace vpush {
 
@@ -22,7 +22,7 @@ struct byZ;
 struct byEnergy;
 
 typedef multi_index_container <
-	ExtendedProtein,
+	Protein,
 	indexed_by<
 		sequenced<tag<bySeq> >,
 		ordered_non_unique<
@@ -47,12 +47,12 @@ typedef multi_index_container <
 struct soup_t {
 	void add(std::size_t);
 	void set_size(std::size_t);
-	const ExtendedProtein& operator[](std::size_t) const;
+	const Protein& operator[](std::size_t) const;
 
-	inline void push_back(const ExtendedProtein& e) { container.push_back(e); }
+	inline void push_back(const Protein& e) { container.push_back(e); }
 	inline std::size_t size() const { return container.size(); }
 	
-	typedef void (*modifier)(ExtendedProtein&);
+	typedef void (*modifier)(Protein&);
 	
 	template <typename T>
 	inline bool modify(std::size_t n, T func) {

@@ -66,10 +66,9 @@ struct Protein {
 	> stacks_t;
 	stacks_t stacks;
 	
-	template <typename STACK_T, typename EXT_PROTEIN = Protein>
+	template <typename STACK_T>
 	inline detail::stack<STACK_T>& get() {
-		EXT_PROTEIN& c = static_cast<EXT_PROTEIN&>(*this);
-		return fus::at_key<STACK_T>(c.stacks);
+		return fus::at_key<STACK_T>(this->stacks);
 	}
 
 	// parameters
@@ -91,11 +90,12 @@ private:
 }; // struct Protein
 
 // stack access
+template <> inline detail::stack<detail::Code>& stack(Protein& p) { return p.get<detail::Code>(); }
+template <> inline detail::stack<detail::Exec>& stack(Protein& p) { return p.get<detail::Exec>(); }
 template <> inline detail::stack<bool>& stack(Protein& p) { return p.get<bool>(); }
 template <> inline detail::stack<int>& stack(Protein& p) { return p.get<int>(); }
 template <> inline detail::stack<double>& stack(Protein& p) { return p.get<double>(); }
-template <> inline detail::stack<detail::Code>& stack(Protein& p) { return p.get<detail::Code>(); }
-template <> inline detail::stack<detail::Exec>& stack(Protein& p) { return p.get<detail::Exec>(); }
+template <> inline detail::stack<std::string>& stack(Protein& p) { return p.get<std::string>(); }
 // template <> inline detail::stack<Name>& stack(Protein& p) { return p.name_stack; }
 
 } // namespace vpush
