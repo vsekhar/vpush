@@ -43,10 +43,6 @@ int main(int argc, char** argv) {
 	push<int>(p, 2);
 	push<Exec>(p, functions.get_code("MAKELIST.EXEC"));
 
-	cout << "Original:" << endl;
-	cout << size<int>(p) << " ints: " << stack<int>(p) << endl;
-	cout << size<std::string>(p) << " strings: " << stack<std::string>(p) << endl;
-	
 	soup.push_back(p);
 	{
 		std::ofstream out("tmp");
@@ -64,18 +60,6 @@ int main(int argc, char** argv) {
 	}
 	
 	vpush::run_protein(p2, true);
-	cout << endl << "New:" << endl;
-	cout << size<int>(p2) << " ints: " << stack<int>(p2) << endl;
-	cout << size<std::string>(p2) << " strings: " << stack<std::string>(p2) << endl;
-
-	cout << "Popping second int: " << pop_second<int>(p2) << endl;
-	cout << size<int>(p2) << " ints: " << stack<int>(p2) << endl;
-	cout << "Swapping first and third" << endl;
-	vpush::swap<int>(p2, 0, 2);
-	cout << size<int>(p2) << " ints: " << stack<int>(p2) << endl;
-	cout << "Popping string: " << pop<std::string>(p2) << endl;
-	cout << size<std::string>(p2) << " strings: " << stack<std::string>(p2) << endl;
-	
 	
 	return 0;
 }
