@@ -35,13 +35,14 @@ int main(int argc, char** argv) {
 	push<std::string>(p, "hello world");
 	
 	library::initialize();
-	for(unsigned int i=0; i < 25; ++i) {
+	for(unsigned int i=0; i < 10; ++i) {
 		Exec e = functions.get_random();
 		push<Exec>(p, e);
 	}
-	p.energy = 2;
-	push<int>(p, 2);
-	push<Exec>(p, functions.get_code("MAKELIST.EXEC"));
+	p.energy = 20;
+	push<int>(p, 4);
+	push<int>(p, 8);
+	push<Exec>(p, functions.get_code("DO_RANGE.EXEC"));
 
 	soup.push_back(p);
 	{

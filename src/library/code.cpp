@@ -76,6 +76,66 @@ double equals_code(Protein &p) {
 	}
 }
 
+template <typename T>
+double dup(Protein& p) {
+	T t1 = pop<T>(p);
+	if(t1.type == T::OPEN) {
+		std::vector<T> v1 = detail::get_list(stack<T>(p));
+		detail::put_list(v1, stack<T>(p));
+		detail::put_list(v1, stack<T>(p));
+	}
+	else if(t1.type == T::CLOSE)
+		throw detail::unmatched_brackets();
+	else {
+		push<T>(p, t1);
+		push<T>(p, t1);
+	}
+	return 1;
+}
+
+template <typename T>
+double do_range(Protein& p) {
+	int end_index = pop<int>(p);
+	int current_index = pop<int>(p);
+	T t1 = pop<T>(p);
+	
+	// handle list
+	if(t1.type == T::OPEN) {
+		std::vector<T> v1 = detail::get_list(stack<T>(p));
+		if(current_index==end_index) {
+			push<int>(p, current_index);
+			detail::put_list(v1, stack<T>(p));
+		}
+		else {
+			int increment = end_index < current_index ? -1 : 1;
+			push<int>(p, current_index + increment);
+			push<int>(p, end_index);
+			detail::put_list(v1, stack<T>(p));
+			push<T>(p, do_range<T>);
+			detail::put_list(v1, stack<T>(p));
+		}
+	}
+	else if (t1.type == T::CLOSE)
+		throw detail::unmatched_brackets();
+	
+	// handle single op-code
+	else {
+		if(current_index==end_index) {
+			push<int>(p, current_index);
+			push<T>(p, t1);
+		}
+		else {
+			int increment = end_index < current_index ? -1 : 1;
+			push<int>(p, current_index + increment);
+			push<int>(p, end_index);
+			push<T>(p, t1);
+			push<T>(p, do_range<T>);
+			push<T>(p, t1);
+		}
+	}
+	return 1;
+}
+
 void initialize() {
 	using vpush::functions;
 	using vpush::type;
@@ -88,6 +148,10 @@ void initialize() {
 	functions.add("EQUALS.CODE", equals_code<detail::Code>, type<detail::Code>() * 2);
 	functions.add("EQUALS.EXEC", equals_code<detail::Exec>, type<detail::Exec>() * 2);
 	
+	functions.add("DUP.CODE", dup<detail::Code>, type<detail::Code>());
+	functions.add("DUP.EXEC", dup<detail::Exec>, type<detail::Exec>());
+	functions.add("DO_RANGE.CODE", do_range<detail::Code>, type<detail::Code>() + type<int>() * 2);
+	functions.add("DO_RANGE.EXEC", do_range<detail::Exec>, type<detail::Exec>() + type<int>() * 2);
 }
 
 } // namespace code
