@@ -82,6 +82,10 @@ private:
 	friend class ::boost::serialization::access;
 	template <class A> void serialize(A& a, unsigned int) {
 		fus::for_each(stacks, serializer<A>(a));
+		a & x;
+		a & y;
+		a & z;
+		a & energy;
 	}
 
 }; // struct Protein
