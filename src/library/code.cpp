@@ -46,6 +46,35 @@ double make_list(Protein& p) {
 		return 0;
 }
 
+template <typename T>
+double equals_code(Protein &p) {
+	T t1 = pop<T>(p);
+	if(t1.type == T::OPEN) {
+		std::vector<T> v1 = detail::get_list(stack<T>(p));
+		try {
+			T t2 = pop<T>(p); // might stack_underflow
+			if(t2.type != T::OPEN) {
+				push<T>(p, t2);
+				double ret = detail::put_list(v1, stack<T>(p));
+				push<bool>(p, false);
+				return ret;
+			}
+			std::vector<T> v2 = detail::get_list(stack<T>(p));
+			push<bool>(p, v1 == v2);
+			return v1.size() + v2.size();
+		}
+		catch(detail::stack_underflow) {
+			double ret = detail::put_list(v1, stack<T>(p));
+			push<bool>(p, false);
+			return ret;
+		}
+	}
+	else {
+		push<bool>(p, t1 == pop<T>(p));
+		return 1;
+	}
+}
+
 void initialize() {
 	using vpush::functions;
 	using vpush::type;
@@ -53,6 +82,10 @@ void initialize() {
 	functions.add("RANDOM.CODE", random_code);
 	functions.add("MAKELIST.CODE", make_list<Code>, type<int>());
 	functions.add("MAKELIST.EXEC", make_list<Exec>, type<int>());
+
+	functions.add("EQUALS.CODE", equals_code<detail::Code>, type<detail::Code>() * 2);
+	functions.add("EQUALS.EXEC", equals_code<detail::Exec>, type<detail::Exec>() * 2);
+	
 }
 
 } // namespace code
