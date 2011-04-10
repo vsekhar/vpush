@@ -22,10 +22,12 @@ type_container& type_container::operator+=(const type_container& other) {
 	for(types_t::const_iterator i = other._types.begin();
 		i != other._types.end(); ++i) {
 
-		if(_types.find(i->first) != _types.end())
+		try {
 			_types.at(i->first).count += i->second->count;
-		else
+		}
+		catch(boost::bad_ptr_container_operation) {
 			_types.insert(i, ++types_t::const_iterator(i));
+		}
 	}
 
 	return *this;
