@@ -52,7 +52,7 @@ type_container operator+(const type_container& c1, const type_container& c2) {
 }
 
 type_container operator*(const type_container& c1, unsigned int count) {
-	type_container ret;
+	type_container ret(c1);
 	ret *= count;
 	return ret;
 }
