@@ -15,12 +15,13 @@ namespace code {
 using detail::Exec;
 using detail::Code;
 
-double quote_code(Protein &p) {
-	Exec e = pop<Exec>(p);
+template <typename SRC, typename DEST>
+double quote(Protein &p) {
+	SRC e = pop<SRC>(p);
 	switch(e.type) {
-		case Exec::OPEN:	return put_list(get_list(stack<Exec>(p)), stack<Code>(p));
-		case Exec::CLOSE:	throw detail::unmatched_brackets();
-		default:			push<Code>(p, e);
+		case SRC::OPEN:		return put_list(get_list(stack<SRC>(p)), stack<DEST>(p));
+		case SRC::CLOSE:	throw detail::unmatched_brackets();
+		default:			push<DEST>(p, e);
 							return 1;
 	}
 }
@@ -78,7 +79,8 @@ double equals_code(Protein &p) {
 void initialize() {
 	using vpush::functions;
 	using vpush::type;
-	functions.add("QUOTE.CODE", quote_code, type<Exec>());
+	functions.add("QUOTE.CODE", quote<Exec, Code>, type<Exec>());
+	functions.add("QUOTE.EXEC", quote<Code, Exec>, type<Code>());
 	functions.add("RANDOM.CODE", random_code);
 	functions.add("MAKELIST.CODE", make_list<Code>, type<int>());
 	functions.add("MAKELIST.EXEC", make_list<Exec>, type<int>());
