@@ -44,6 +44,7 @@ struct serializer {
 };
 
 struct Protein {
+	Protein() : x(0), y(0), z(0), energy(0) {}
 	void reset() {
 		fus::for_each(stacks, clearer());
 	}

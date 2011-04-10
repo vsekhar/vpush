@@ -16,6 +16,8 @@ namespace vpush {
 
 // 1. New Protein struct
 struct ExtendedProtein : Protein {
+	ExtendedProtein() : Protein() {}
+
 	typedef Protein base_type;
 
 	// 2. New stacks to contain the additional types
