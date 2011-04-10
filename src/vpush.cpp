@@ -63,6 +63,7 @@ int main(int argc, char** argv) {
 		ar & soup;
 	}
 	
+	vpush::run_protein(p2, true);
 	cout << endl << "New:" << endl;
 	cout << size<int>(p2) << " ints: " << stack<int>(p2) << endl;
 	cout << size<std::string>(p2) << " strings: " << stack<std::string>(p2) << endl;
@@ -75,13 +76,6 @@ int main(int argc, char** argv) {
 	cout << "Popping string: " << pop<std::string>(p2) << endl;
 	cout << size<std::string>(p2) << " strings: " << stack<std::string>(p2) << endl;
 	
-	cout << "Code: " << stack<Code>(p2) << endl;
-	cout << "Exec: " << stack<Exec>(p2) << endl;
-	cout << "Running..." << endl;
-	vpush::run_protein(p2);
-	cout << "Code: " << stack<Code>(p2) << endl;
-	cout << "Exec: " << stack<Exec>(p2) << endl;	
-	cout << size<int>(p2) << " ints: " << stack<int>(p2) << endl;
 	
 	return 0;
 }

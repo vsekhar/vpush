@@ -3,7 +3,7 @@
 
 namespace vpush {
 
-double run_protein(Protein&);
+double run_protein(Protein&, bool trace = false);
 
 } // namespace vpush
 
