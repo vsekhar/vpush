@@ -15,6 +15,7 @@ using detail::Code;
 double run_protein(Protein& p, bool trace) {
 	using detail::Exec;
 
+	Exec last = Exec(Exec::OPEN);
 	while(!empty<Exec>(p) && p.energy > 0) {
 		if(trace) 
 			print_trace(p);
@@ -26,18 +27,21 @@ double run_protein(Protein& p, bool trace) {
 								break;
 			case Exec::CLOSE:	throw detail::unmatched_brackets();
 								break;
-			default:			if(functions.get_types(e.fptr).check(p)) try {
+			case Exec::CODE:	if(functions.get_types(e.fptr).check(p))
+								try {
 									p.energy -= e.fptr(p);
 								}
-								catch(std::exception ex) {
+								catch(std::exception&) {
 									using std::cerr;
 									using std::endl;
 									cerr << "ERROR: Exception occured (running " << functions.get_name(e.fptr) << ")" << endl;
+									cerr << "(last op-code: " << functions.get_name(last.fptr) << ")" << endl;
 									print_trace(p, cerr);
 									throw;
 								}
 								break;
 		}
+		last = e;
 	}
 	
 	//fitness testing?

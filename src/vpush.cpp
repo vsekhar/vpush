@@ -25,24 +25,31 @@ using vpush::soup;
 
 namespace library = ::vpush::library;
 
+Protein random_protein(std::size_t s) {
+	Protein ret;
+	for(std::size_t i = 0; i < s; ++i)
+		push<Exec>(ret, functions.get_random());
+	return ret;
+}
+
 int main(int argc, char** argv) {
-	Protein p;
+	library::initialize();
+
+	Protein p = random_protein(1000);
+	p.energy = 2000;
 	push<int>(p, 7);
 	push<int>(p, 31);
-	push<int>(p, 0);
-	push<int>(p, 42);
-	push_second<int>(p, 77);
-	push<std::string>(p, "hello world");
-	
-	library::initialize();
-	for(unsigned int i=0; i < 1000; ++i) {
-		Exec e = functions.get_random();
-		push<Exec>(p, e);
-	}
-	p.energy = 500;
 	push<int>(p, 4);
 	push<int>(p, 8);
-	push<Exec>(p, functions.get_code("DO_RANGE.EXEC"));
+
+	push<Code>(p, Code(Code::CLOSE));
+	push<Code>(p, functions.get_code("RANDOM.CODE"));
+	push<Code>(p, Code(Code::CLOSE));
+	push<Code>(p, functions.get_code("MAKELIST.CODE"));
+	push<Code>(p, Code(Code::OPEN));
+	push<Code>(p, Code(Code::OPEN));
+	push<Exec>(p, functions.get_code("QUOTE.EXEC"));
+	push<Exec>(p, functions.get_code("DUP.CODE"));
 
 	soup.push_back(p);
 	{
@@ -62,7 +69,13 @@ int main(int argc, char** argv) {
 	
 	for(unsigned int i = 0; i < 100; ++i) {
 		Protein run(p2);
-		vpush::run_protein(run);
+		try {
+			vpush::run_protein(run);
+		}
+		catch(...) {
+			vpush::print_trace(p2, cout);
+			throw;
+		}
 	}
 	
 	return 0;
