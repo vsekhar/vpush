@@ -15,25 +15,23 @@ namespace detail {
 template <typename T>
 std::vector<T> get_list(stack<T>& s) {
 	std::vector<T> ret;
-	unsigned int bracket_level = 0;
+	unsigned int bracket_level = 1;
 	
 	typename std::vector<T>::iterator start = s.end() - 1;
 	while(start != s.begin()) {
-		if(start->type == T::OPEN)
-			++bracket_level;
-		else if(start->type == T::CLOSE) {
-			if(bracket_level)
-				--bracket_level;
-			else
-				break;
+		switch(start->type) {
+			case T::OPEN:	++bracket_level; break;
+			case T::CLOSE:	--bracket_level; break;
+			case T::CODE:	break; // eliminate warning
 		}
-		else
-			--start;
+		if(!bracket_level) break;
+		--start;
 	}
+
 	if(bracket_level)
 		throw detail::unmatched_brackets();
 
-	// start points to the close bracket
+	// start points to the closing bracket (which is not copied)
 	ret.reserve((s.end() - start) - 1);
 	std::copy(start+1, s.end(), std::back_inserter(ret));
 	s.erase(start, s.end());
