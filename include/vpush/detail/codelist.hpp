@@ -39,13 +39,9 @@ std::vector<T> get_list(stack<T>& s) {
 
 template <typename T, typename U = T>
 std::size_t put_list(std::vector<T> v, stack<U>& s, bool unwind = false) {
-	if(unwind)
-		s.reserve(s.size() + v.size());
-	else {
-		s.reserve(s.size() + v.size() + 2);
+	if(!unwind)
 		s.push_back(T(T::CLOSE));
-	}
-	std::copy(v.begin(), v.end(), std::back_inserter(s));
+	s.insert(s.end(), v.begin(), v.end());
 	if(!unwind)
 		s.push_back(T(T::OPEN));
 	return v.size() + (unwind ? 0 : 2);
