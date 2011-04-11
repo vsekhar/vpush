@@ -5,7 +5,6 @@
 #include <algorithm>
 
 #include <vpush/detail/stack_fwd.hpp>
-//#include <vpush/detail/code_fwd.hpp>
 #include <vpush/protein_fwd.hpp>
 #include <vpush/stackops.hpp>
 
@@ -17,24 +16,24 @@ std::vector<T> get_list(stack<T>& s) {
 	std::vector<T> ret;
 	unsigned int bracket_level = 1;
 	
-	typename std::vector<T>::iterator start = s.end() - 1;
-	while(start != s.begin()) {
+	typename std::vector<T>::reverse_iterator start = s.rbegin();
+	while(start != s.rend()) {
 		switch(start->type) {
 			case T::OPEN:	++bracket_level; break;
 			case T::CLOSE:	--bracket_level; break;
 			case T::CODE:	break; // eliminate warning
 		}
 		if(!bracket_level) break;
-		--start;
+		++start;
 	}
 
 	if(bracket_level)
 		throw detail::unmatched_brackets();
 
 	// start points to the closing bracket (which is not copied)
-	ret.reserve((s.end() - start) - 1);
-	std::copy(start+1, s.end(), std::back_inserter(ret));
-	s.erase(start, s.end());
+	typename std::vector<T>::iterator itr = start.base() - 1;
+	ret.insert(ret.end(), itr+1, s.end());
+	s.erase(itr, s.end());
 	return ret;	
 }
 

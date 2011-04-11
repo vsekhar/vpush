@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 #include <vpush/library.hpp>
 #include <vpush/detail/functions.hpp>
@@ -51,44 +52,64 @@ template <typename T>
 double equals_code(Protein &p) {
 	T t1 = pop<T>(p);
 	if(t1.type == T::OPEN) {
+		// first item is a list
 		std::vector<T> v1 = detail::get_list(stack<T>(p));
 		try {
 			T t2 = pop<T>(p); // might stack_underflow
+			
 			if(t2.type != T::OPEN) {
-				push<T>(p, t2);
-				double ret = detail::put_list(v1, stack<T>(p));
+				// second item is not a list
 				push<bool>(p, false);
-				return ret;
+				return v1.size() + 1;
 			}
+			
+			// compare lists
 			std::vector<T> v2 = detail::get_list(stack<T>(p));
 			push<bool>(p, v1 == v2);
 			return v1.size() + v2.size();
 		}
 		catch(detail::stack_underflow) {
-			double ret = detail::put_list(v1, stack<T>(p));
-			push<bool>(p, false);
-			return ret;
+			// no second item, so no-op
+			detail::put_list(v1, stack<T>(p)); // restores brackets
+			return 0;
 		}
 	}
 	else {
-		push<bool>(p, t1 == pop<T>(p));
-		return 1;
+		// first item is op-code
+		try {
+			T t2 = pop<T>(p); // might stack_underflow
+
+			if(t2.type == T::OPEN) {
+				// second item is not op-code
+				std::vector<T> v2 = detail::get_list(stack<T>(p)); // consume
+				push<bool>(p, false);
+				return v2.size() + 1;
+			}
+
+			// compare op-codes
+			push<bool>(p, t2 == t1);
+			return 2;
+		}
+		catch(detail::stack_underflow) {
+			// no second item, so no-op
+			push<T>(p, t1);
+			return 0;
+		}
 	}
 }
 
 template <typename T>
 double dup(Protein& p) {
 	T t1 = pop<T>(p);
-	if(t1.type == T::OPEN) {
-		std::vector<T> v1 = detail::get_list(stack<T>(p));
-		detail::put_list(v1, stack<T>(p));
-		detail::put_list(v1, stack<T>(p));
-	}
-	else if(t1.type == T::CLOSE)
-		throw detail::unmatched_brackets();
-	else {
-		push<T>(p, t1);
-		push<T>(p, t1);
+	switch(t1.type) {
+		case T::OPEN:	{
+							std::vector<T> v1 = detail::get_list(stack<T>(p));
+							detail::put_list(v1, stack<T>(p));
+							detail::put_list(v1, stack<T>(p));
+						}
+						break;
+		case T::CLOSE:	throw detail::unmatched_brackets();
+		case T::CODE:	push<T>(p, t1); push<T>(p, t1); break;
 	}
 	return 1;
 }
