@@ -12,24 +12,6 @@ namespace vpush {
 using detail::Exec;
 using detail::Code;
 
-inline void print_trace(Protein& p, std::ostream& o = std::cout) {
-	using std::endl;
-	o << "Exec: " << stack<Exec>(p) << endl;
-	o << "Code: " << stack<Code>(p) << endl;
-	o << size<bool>(p) << " bool: " << stack<bool>(p) << endl;
-	o << size<int>(p) << " ints: " << stack<int>(p) << endl;
-	o << size<double>(p) << " double: " << stack<double>(p) << endl;
-	o << "Next op-code: " << top<Exec>(p);
-	switch(top<Exec>(p).type) {
-		case Exec::OPEN:	o << "(OPEN)"; break;
-		case Exec::CLOSE:	o << "(CLOSE)"; break;
-		case Exec::CODE:	o << "(CODE)"; break;
-		default:			throw detail::no_such_function(functions.get_name(top<Exec>(p).fptr));
-	}
-	o << endl;
-	o << "----" << endl;
-}
-
 double run_protein(Protein& p, bool trace) {
 	using detail::Exec;
 
