@@ -53,7 +53,15 @@ double to_int(Protein& p) {
 						def_overflow_handler,
 						RoundEven<double> >
 		my_converter;
-	push<int>(p, my_converter::convert(pop<double>(p)));
+	double d = pop<double>(p);
+	try {
+		push<int>(p, my_converter::convert(d));
+	}
+	catch(boost::numeric::bad_numeric_cast) {
+		// no-op
+		push<double>(p, d);
+		return 0;
+	}
 	return 1;
 }
 
