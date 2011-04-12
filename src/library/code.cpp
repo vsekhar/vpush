@@ -30,11 +30,12 @@ template <typename T>
 double make_list(Protein& p) {
 	detail::stack<T>& s = stack<T>(p);
 	int count = top<int>(p);
-	if(count > 0 && has_n_items(s, count)) {
-		typename detail::stack<T>::iterator itr = detail::advance_n_items(s, count);
-		s.insert(itr, T::CLOSE);
+	typename detail::itr_count_pair<T>::type insertpoint
+		= detail::advance_n_items_impl(s, count);
+	if(count > 0 && insertpoint.second == (unsigned)count) {
+		s.insert(insertpoint.first, T::CLOSE);
 		s.push_back(T::OPEN);
-		return s.end() - itr;
+		return s.end() - insertpoint.first;
 	}
 	else
 		return 0;
