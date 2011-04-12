@@ -12,9 +12,6 @@
 namespace vpush {
 namespace detail {
 
-template <typename T> std::size_t unwind(stack<T>& s) { return unwind(s,s); }
-
-
 // an "item": a container of T's, with a bool for each container indicating
 // if the container genuinely contains a list (wrapping brackets are always omitted)
 template <typename T>
@@ -30,9 +27,16 @@ bool operator==(const item<T>& i1, const item<T>& i2) {
 	return i1.container == i2.container && i1.is_atom == i2.is_atom;
 }
 
-// checks if the CODE/EXEC stack has 'n' items (op-codes OR lists)
 template <typename T>
-bool has_n_items(stack<T> &s, std::size_t n) {
+struct itr_count_pair {
+	typedef std::pair<
+		typename stack<T>::iterator,
+		std::size_t
+	> type;
+};
+
+template <typename T>
+typename itr_count_pair<T>::type advance_n_items_impl(stack<T>& s, std::size_t n) {
 	std::size_t count = 0;
 	std::size_t bracket_level = 0;
 	typename std::vector<T>::reverse_iterator itr = s.rbegin();
@@ -49,12 +53,11 @@ bool has_n_items(stack<T> &s, std::size_t n) {
 		++itr;
 	}
 
-	if(bracket_level)
-		throw detail::unmatched_brackets();
-	if(count == n)
-		return true;
-	else
-		return false;
+#ifdef _DEBUG
+	BOOST_ASSERT(bracket_level == 0);
+#endif
+
+	return std::make_pair(itr.base(), count);
 }
 
 // returns a forward iterator pointing to the n'th item from the end
@@ -67,27 +70,20 @@ bool has_n_items(stack<T> &s, std::size_t n) {
 
 template <typename T>
 typename stack<T>::iterator advance_n_items(stack<T>& s, std::size_t n) {
-	std::size_t count = 0;
-	std::size_t bracket_level = 0;
-	typename std::vector<T>::reverse_iterator itr = s.rbegin();
-	while(itr != s.rend()) {
-		if(count >= n)
-			break;
-		switch(itr->type) {
-			case T::OPEN:	++bracket_level; break;
-			case T::CLOSE:	--bracket_level; break;
-			case T::CODE:	break; // eliminate warning
-		}
-		if(!bracket_level)
-			count++;
-		++itr;
-	}
-
-	if(bracket_level)
-		throw detail::unmatched_brackets();
-	if(count < n)
+	typename itr_count_pair<T>::type ret = advance_n_items_impl(s, n);
+	if((ret.second) < n) // brackets needed, otherwise g++ thinks i'm starting a template instantiation...
 		throw detail::stack_underflow(typeid(T));
-	return itr.base();
+	return ret.first;
+}
+
+// checks if the CODE/EXEC stack has 'n' items (op-codes OR lists)
+template <typename T>
+bool has_n_items(stack<T> &s, std::size_t n) {
+	typename itr_count_pair<T>::type ret = advance_n_items_impl(s, n);
+	if(ret.second == n)
+		return true;
+	else
+		return false;
 }
 
 // get an item
@@ -128,6 +124,7 @@ template <typename SRC, typename DEST>
 std::size_t unwind(stack<SRC>& src, stack<DEST>& dest) {
 	return put_item(get_item(src), dest, false);
 }
+template <typename T> std::size_t unwind(stack<T>& s) { return unwind(s,s); }
 
 } // namespace detail
 } // namespace vpush
