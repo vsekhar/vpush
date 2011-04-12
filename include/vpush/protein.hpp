@@ -9,7 +9,6 @@
 #include <boost/foreach.hpp>
 
 #include <boost/serialization/access.hpp>
-#include <boost/serialization/base_object.hpp>
 
 #include <boost/fusion/container/map.hpp>
 #include <boost/fusion/include/at_key.hpp>

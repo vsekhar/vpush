@@ -1,6 +1,9 @@
 #ifndef __VPUSH_LIBRARY_HPP__
 #define __VPUSH_LIBRARY_HPP__
 
+#include <vpush/stackops.hpp>
+#include <vpush/detail/typechecker.hpp>
+
 namespace vpush {
 namespace library {
 
@@ -20,6 +23,10 @@ void initialize();
 }
 
 namespace arithmetic {
+void initialize();
+}
+
+namespace combinators {
 void initialize();
 }
 

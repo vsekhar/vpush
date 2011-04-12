@@ -69,13 +69,7 @@ int main(int argc, char** argv) {
 	
 	for(unsigned int i = 0; i < 100; ++i) {
 		Protein run(p2);
-		try {
-			vpush::run_protein(run);
-		}
-		catch(...) {
-			vpush::print_trace(p2, cout);
-			throw;
-		}
+		vpush::run_protein(run);
 	}
 	
 	return 0;

@@ -11,7 +11,7 @@ namespace detail {
 template <typename T>
 struct stack;
 
-}
+} // namespace detail
 
 template <typename T> inline detail::stack<T>& stack(Protein&) {
 	throw detail::no_such_stack(typeid(T));
