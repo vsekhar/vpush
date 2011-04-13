@@ -25,6 +25,21 @@ double dup_code(Protein& p) {
 	return i.container.size() * 2;
 }
 
+template <typename T>
+double swap(Protein& p) {
+	std::iter_swap(stack<T>(p).rbegin(), ++stack<T>(p).rbegin());
+	return 2;
+}
+
+template <typename T>
+double swap_code(Protein &p) {
+	item<T> a = get_item(stack<T>(p));
+	item<T> b = get_item(stack<T>(p));
+	put_item(a, stack<T>(p));
+	put_item(b, stack<T>(p));
+	return a.container.size() + b.container.size();
+}
+
 template <typename T, bool erase = true>
 void do_yank(Protein &p, int index) {
 	push<T>(p, pop_i<T>(p, index, erase));
@@ -86,6 +101,13 @@ void initialize() {
 	functions.add("DUP.STRING", dup<std::string>, type<std::string>());
 	functions.add("DUP.CODE", dup_code<Code>, type<Code>());
 	functions.add("DUP.EXEC", dup_code<Exec>, type<Exec>());
+
+	functions.add("SWAP.INT", swap<int>, type<int>() * 2);
+	functions.add("SWAP.DBL", swap<double>, type<double>() * 2);
+	functions.add("SWAP.BOOL", swap<bool>, type<bool>() * 2);
+	functions.add("SWAP.STRING", swap<std::string>, type<std::string>() * 2);
+	functions.add("SWAP.CODE", swap_code<Code>, type<Code>() * 2);
+	functions.add("SWAP.EXEC", swap_code<Exec>, type<Exec>() * 2);
 
 	functions.add("YANK.INT", yank<int>, type<int>());
 	functions.add("YANK.DBL", yank<double>, type<int>());
