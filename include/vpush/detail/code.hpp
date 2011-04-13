@@ -27,6 +27,7 @@ struct Exec : public Code {
 };
 
 inline bool operator==(const Code& c1, const Code& c2) { return c1.fptr==c2.fptr && c1.type==c2.type; }
+inline bool operator!=(const Code& c1, const Code& c2) { return !(c1==c2); }
 
 std::ostream& operator<<(std::ostream&, const Code&);
 
