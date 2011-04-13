@@ -26,11 +26,16 @@ double dup_code(Protein& p) {
 }
 
 template <typename T, bool erase = true>
+void do_yank(Protein &p, int index) {
+	push<T>(p, pop_i<T>(p, index, erase));
+}
+
+template <typename T, bool erase = true>
 double yank(Protein &p) {
 	int index = pop<int>(p);
 	if(index < 0 || (unsigned)(index+1) > size<T>(p)) return 0;
-	push<T>(p, pop_i<T>(p, index, erase));
-	return 1;
+	do_yank<T>(p, index);
+	return index+1;
 }
 
 template <typename T, bool erase = true>
@@ -48,6 +53,23 @@ double yank_code(Protein &p) {
 		return 0;
 	}
 	return count;
+}
+
+template <typename T>
+double rotate(Protein &p) {
+	do_yank<T>(p, 2);
+	return 3;
+}
+
+template <typename T>
+double rotate_code(Protein &p) {
+	item<T> a = get_item(stack<T>(p));
+	item<T> b = get_item(stack<T>(p));
+	item<T> c = get_item(stack<T>(p));
+	put_item(b, stack<T>(p));
+	put_item(a, stack<T>(p));
+	put_item(c, stack<T>(p));
+	return a.container.size() + b.container.size() + c.container.size();
 }
 
 void initialize() {
@@ -78,6 +100,13 @@ void initialize() {
 	functions.add("YANKDUP.STRING", yank<std::string, false>, type<int>());
 	functions.add("YANKDUP.CODE", yank_code<Code, false>, type<int>());
 	functions.add("YANKDUP.EXEC", yank_code<Exec, false>, type<int>());
+
+	functions.add("ROTATE.INT", rotate<int>, type<int>() * 3);
+	functions.add("ROTATE.DBL", rotate<double>, type<double>() * 3);
+	functions.add("ROTATE.BOOL", rotate<bool>, type<bool>() * 3);
+	functions.add("ROTATE.STRING", rotate<std::string>, type<std::string>() * 3);
+	functions.add("ROTATE.CODE", rotate_code<Code>, type<Code>() * 3);
+	functions.add("ROTATE.EXEC", rotate_code<Exec>, type<Exec>() * 3);
 }
 
 }
