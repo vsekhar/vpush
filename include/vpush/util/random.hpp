@@ -26,7 +26,7 @@ typedef TimeSeededGenerator<boost::mt19937> time_seeded_mersenne_t;
 typedef time_seeded_mersenne_t default_generator_t;
 extern default_generator_t default_generator;
 
-typedef boost::uniform_01<time_seeded_mersenne_t> RandomBool_base;
+typedef boost::uniform_01<time_seeded_mersenne_t&> RandomBool_base;
 struct RandomBool : RandomBool_base {
 	RandomBool() : RandomBool_base(default_generator) {}
 	bool operator()() {
