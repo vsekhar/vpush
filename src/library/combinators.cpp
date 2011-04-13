@@ -38,11 +38,6 @@ double s(Protein& p) {
 }
 
 void initialize() {
-	using vpush::functions;
-	using vpush::type;
-	using vpush::detail::Code;
-	using vpush::detail::Exec;
-
 	functions.add("S.CODE", s<Code>, type<Code>() * 3);
 	functions.add("S.EXEC", s<Exec>, type<Exec>() * 3);
 	functions.add("K.CODE", k<Code>, type<Code>() * 2);

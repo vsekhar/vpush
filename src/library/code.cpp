@@ -13,8 +13,6 @@ namespace vpush {
 namespace library {
 namespace code {
 
-using detail::Exec;
-using detail::Code;
 
 template <typename SRC, typename DEST>
 double quote(Protein &p) {
@@ -69,11 +67,6 @@ double do_range(Protein& p) {
 }
 
 void initialize() {
-	using vpush::functions;
-	using vpush::type;
-	using vpush::detail::Code;
-	using vpush::detail::Exec;
-
 	functions.add("QUOTE.CODE", quote<Exec, Code>, type<Exec>());
 	functions.add("QUOTE.EXEC", quote<Code, Exec>, type<Code>());
 	functions.add("RANDOM.CODE", random_code);

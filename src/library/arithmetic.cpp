@@ -68,9 +68,6 @@ double to_int(Protein& p) {
 double to_double(Protein &p) { push<double>(p, pop<int>(p)); return 1; }
 
 void initialize() {
-	using vpush::functions;
-	using vpush::type;
-
 	functions.add("ZERO.INT", zero<int>);
 	functions.add("ZERO.DBL", zero<double>);
 	functions.add("ONE.INT", one<int>);
