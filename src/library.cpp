@@ -9,6 +9,7 @@ void initialize() {
 	arithmetic::initialize();
 	combinators::initialize();
 	boolean::initialize();
+	stackops::initialize();
 }
 
 } // namespace library
