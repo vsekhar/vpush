@@ -88,7 +88,7 @@ bool has_n_items(stack<T> &s, std::size_t n) {
 
 // get an item
 template <typename T>
-item<T> get_item(stack<T>& s) {
+item<T> get_item(stack<T>& s, bool erase = true) {
 	item<T> ret;
 	typename std::vector<T>::iterator itr = advance_n_items(s, 1);
 	if(itr->type == T::CLOSE) {
@@ -104,8 +104,24 @@ item<T> get_item(stack<T>& s) {
 		BOOST_ASSERT(ret.container.size() == 1);
 #endif
 	}
-	s.erase(itr, s.end());
+	if(erase)
+		s.erase(itr, s.end());
 	return ret;	
+}
+
+// get n'th item (top item is at n==0)
+template <typename T>
+item<T> get_nth_item(stack<T>& s, std::size_t n, bool erase = true) {
+	if(n==0)
+		return get_item(s, erase);
+	typename std::vector<T>::iterator start = advance_n_items(s, n);
+	typename std::vector<T>::iterator end = advance_n_items(s, n-1);
+	item<T> ret;
+	ret.container.insert(ret.container.end(), start, end);
+	if(erase)
+		s.erase(start, end);
+	ret.is_atom = (end - start == 1);
+	return ret;
 }
 
 template <typename T, typename U = T>
