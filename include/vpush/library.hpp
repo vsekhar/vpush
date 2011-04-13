@@ -5,6 +5,8 @@
 #include <vpush/detail/typechecker.hpp>
 #include <vpush/detail/functions.hpp>
 
+#define VPUSH_DECL_LIBRARY(name) namespace name {void initialize();}
+
 namespace vpush {
 namespace library {
 
@@ -24,21 +26,10 @@ void initialize();
 // sub-library initializations
 ///////////////////////////////
 
-namespace basic {
-void initialize();
-}
-
-namespace code {
-void initialize();
-}
-
-namespace arithmetic {
-void initialize();
-}
-
-namespace combinators {
-void initialize();
-}
+VPUSH_DECL_LIBRARY(basic)
+VPUSH_DECL_LIBRARY(code)
+VPUSH_DECL_LIBRARY(arithmetic)
+VPUSH_DECL_LIBRARY(combinators)
 
 } // namespace library
 } // namespace vpush
