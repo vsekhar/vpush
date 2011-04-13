@@ -46,7 +46,7 @@ double mod(Protein& p) {
 	return 1;
 }
 
-double to_int(Protein& p) {
+double from_double(Protein& p) {
 	using namespace ::boost::numeric;
 	typedef converter<int, double,
 						conversion_traits<int, double>,
@@ -65,7 +65,7 @@ double to_int(Protein& p) {
 	return 1;
 }
 
-double to_double(Protein &p) { push<double>(p, pop<int>(p)); return 1; }
+double from_int(Protein &p) { push<double>(p, pop<int>(p)); return 1; }
 
 void initialize() {
 	functions.add("ZERO.INT", zero<int>);
@@ -86,8 +86,8 @@ void initialize() {
 	functions.add("POW.DBL", pow, type<double>() * 2);
 	functions.add("MOD.INT", mod, type<int>() * 2);
 
-	functions.add("TO_INT.DBL", to_int, type<double>());
-	functions.add("TO_DBL.INT", to_double, type<int>());
+	functions.add("FROM_DBL.INT", from_double, type<double>());
+	functions.add("FROM_INT.DBL", from_int, type<int>());
 }
 
 } // namespace arithmetic
