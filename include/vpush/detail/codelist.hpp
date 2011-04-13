@@ -23,7 +23,7 @@ struct item {
 };
 
 template <typename T>
-bool operator==(const item<T>& i1, const item<T>& i2) {
+inline bool operator==(const item<T>& i1, const item<T>& i2) {
 	return i1.container == i2.container && i1.is_atom == i2.is_atom;
 }
 
