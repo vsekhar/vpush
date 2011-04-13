@@ -8,6 +8,7 @@ void initialize() {
 	code::initialize();
 	arithmetic::initialize();
 	combinators::initialize();
+	boolean::initialize();
 }
 
 } // namespace library

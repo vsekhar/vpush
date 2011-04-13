@@ -30,6 +30,7 @@ VPUSH_DECL_LIBRARY(basic)
 VPUSH_DECL_LIBRARY(code)
 VPUSH_DECL_LIBRARY(arithmetic)
 VPUSH_DECL_LIBRARY(combinators)
+VPUSH_DECL_LIBRARY(boolean)
 
 } // namespace library
 } // namespace vpush
