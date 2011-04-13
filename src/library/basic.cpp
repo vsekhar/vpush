@@ -26,7 +26,7 @@ void initialize() {
 	functions.add("EQUALS.INT", equals<int>, type<int>() * 2);
 	functions.add("EQUALS.DBL", equals<double>, type<double>() * 2);
 	functions.add("EQUALS.BOOL", equals<bool>, type<bool>() * 2);
-	functions.add("EQUALS.STRING", equals<bool>, type<bool>() * 2);
+	functions.add("EQUALS.STRING", equals<std::string>, type<std::string>() * 2);
 
 }
 
