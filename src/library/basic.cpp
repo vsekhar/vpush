@@ -17,6 +17,11 @@ double equals(Protein& p) {
 	return 1;
 }
 
+template <typename T>
+double equals_code(Protein &p) {
+	return get_item(stack<T>(p)) == get_item(stack<T>(p));
+}
+
 void initialize() {
 	functions.add("EAT.INT", eat<int>, type<int>());
 	functions.add("EAT.DBL", eat<double>, type<double>());
@@ -27,7 +32,8 @@ void initialize() {
 	functions.add("EQUALS.DBL", equals<double>, type<double>() * 2);
 	functions.add("EQUALS.BOOL", equals<bool>, type<bool>() * 2);
 	functions.add("EQUALS.STRING", equals<std::string>, type<std::string>() * 2);
-
+	functions.add("EQUALS.CODE", equals_code<Code>, type<Code>() * 2);
+	functions.add("EQUALS.EXEC", equals_code<Exec>, type<Exec>() * 2);
 }
 
 } // namespace basic
