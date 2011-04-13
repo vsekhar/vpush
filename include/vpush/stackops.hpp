@@ -52,17 +52,16 @@ void inline push_i(Protein& p, const T& t, int i) {
 }
 
 template <typename T>
-inline T pop_i(Protein& p, int i) {
+inline T pop_i(Protein& p, int i, bool erase = true) {
 	detail::stack<T>& s = stack<T>(p);
 	if(i < 0 || s.size() < ((unsigned)i)+1)
 		throw detail::stack_underflow(typeid(T));
 
-	// some funny iterator arithmetic for converting between
-	// reverse and forward iterators
 	typename detail::stack<T>::reverse_iterator itr
 		= s.rbegin() + i;
 	T ret = *itr;
-	s.erase(--itr.base());
+	if(erase)
+		s.erase(--itr.base()); // convert between reverse & forward iterator
 	return ret;
 }
 
