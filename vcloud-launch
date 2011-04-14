@@ -14,7 +14,7 @@ boost_filename=boost_$boost_version_uscr
 suppressed_boost_libraries=date_time,regex,filesystem,graph,graph_parallel,iostreams,math,mpi,program_options,signals,system,test,thread,wave
 
 set -e	# exit immediately on error
-# set -x	# echo commands before they expanded and executed
+set -x	# echo commands before they expanded and executed
 exec > >(tee vcloud-log) 2>&1 # enable logging
 
 echo
