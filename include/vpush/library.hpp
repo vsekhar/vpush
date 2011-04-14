@@ -29,6 +29,7 @@ void initialize();
 VPUSH_DECL_LIBRARY(basic)
 VPUSH_DECL_LIBRARY(code)
 VPUSH_DECL_LIBRARY(arithmetic)
+VPUSH_DECL_LIBRARY(math)
 VPUSH_DECL_LIBRARY(combinators)
 VPUSH_DECL_LIBRARY(boolean)
 VPUSH_DECL_LIBRARY(stackops)

@@ -1,9 +1,6 @@
-#include <cmath>
-
 #include <boost/numeric/conversion/converter.hpp>
 
 #include <vpush/library.hpp>
-#include <vpush/detail/functions.hpp>
 
 namespace vpush {
 namespace library {
@@ -30,11 +27,6 @@ double divide(Protein& p) {
 		return 0;
 	T divisor = pop<T>(p);
 	push<T>(p, pop<T>(p) / divisor);
-	return 1;
-}
-
-double pow(Protein& p) {
-	push<double>(p, std::pow(pop<double>(p), pop<double>(p)));
 	return 1;
 }
 
@@ -83,7 +75,6 @@ void initialize() {
 	functions.add("MULTIPLY.DBL", multiply<double>, type<double>() * 2);
 	functions.add("DIVIDE.DBL", divide<double>, type<double>() * 2);
 	
-	functions.add("POW.DBL", pow, type<double>() * 2);
 	functions.add("MOD.INT", mod, type<int>() * 2);
 
 	functions.add("FROM_DBL.INT", from_double, type<double>());
