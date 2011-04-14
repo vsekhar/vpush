@@ -30,7 +30,7 @@ private:
 			else if(code.type == T::CLOSE)
 				name = ")";
 			else
-				name = functions.get_name(code.fptr);
+				name = functions.get_name(code);
 
 			a << name;
 		}

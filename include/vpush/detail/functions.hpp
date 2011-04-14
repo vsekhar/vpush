@@ -54,7 +54,7 @@ public:
 	void add(const std::string&, op_func_t, const type_container&);
 	op_func_t get_fptr(const std::string&) const;
 	type_container get_types(const op_func_t&) const;
-	std::string get_name(const op_func_t&) const;
+	std::string get_name(const Code& c) const;
 	Exec get_code(const std::string&) const;
 	Exec get_random() const;
 	bool contains(const std::string&) const;

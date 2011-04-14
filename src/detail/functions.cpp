@@ -40,9 +40,9 @@ type_container functions_t::get_types(const op_func_t& fptr) const {
 	return i->func_types;
 }
 
-std::string functions_t::get_name(const op_func_t& fptr) const {
+std::string functions_t::get_name(const Code& c) const {
 	functions_by_fptr& funcs = _container.get<byFptr>();
-	functions_by_fptr::const_iterator i = funcs.find(fptr);
+	functions_by_fptr::const_iterator i = funcs.find(c.fptr);
 	if(i == funcs.end())
 		throw no_such_function("(binary fptr)");
 	return i->name;
