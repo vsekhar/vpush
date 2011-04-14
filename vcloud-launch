@@ -11,7 +11,7 @@ python_version=3.1
 boost_version=1.46.0
 boost_version_uscr=`echo $boost_version | sed 's/\./_/g'`
 boost_filename=boost_$boost_version_uscr
-suppressed_boost_libraries=date_time,regex,filesystem,graph,graph_parallel,iostreams,math,mpi,program_options,signals,system,test,wave
+suppressed_boost_libraries=date_time,regex,filesystem,graph,graph_parallel,iostreams,math,mpi,program_options,signals,system,test,thread,wave
 
 set -e	# exit immediately on error
 # set -x	# echo commands before they expanded and executed
