@@ -7,12 +7,6 @@ namespace library {
 namespace arithmetic {
 
 template <typename T>
-double zero(Protein& p) { push<T>(p, 0); return 1; }
-
-template <typename T>
-double one(Protein& p) { push<T>(p, 1); return 1; }
-
-template <typename T>
 double add(Protein& p) { push<T>(p, pop<T>(p) + pop<T>(p)); return 1; }
 
 template <typename T>
@@ -59,12 +53,10 @@ double from_double(Protein& p) {
 
 double from_int(Protein &p) { push<double>(p, pop<int>(p)); return 1; }
 
-void initialize() {
-	functions.add("ZERO.INT", zero<int>);
-	functions.add("ZERO.DBL", zero<double>);
-	functions.add("ONE.INT", one<int>);
-	functions.add("ONE.DBL", one<double>);
+template <typename T>
+double from_bool(Protein &p) { push<T>(p, pop<bool>(p)?1:0); return 1; }
 
+void initialize() {
 	functions.add("ADD.INT", add<int>, type<int>() * 2);
 	functions.add("SUBTRACT.INT", subtract<int>, type<int>() * 2);
 	functions.add("MULTIPLY.INT", multiply<int>, type<int>() * 2);
@@ -79,6 +71,8 @@ void initialize() {
 
 	functions.add("FROM_DBL.INT", from_double, type<double>());
 	functions.add("FROM_INT.DBL", from_int, type<int>());
+	functions.add("FROM_BOOL.INT", from_bool<int>, type<bool>());
+	functions.add("FROM_BOOL.DBL", from_bool<double>, type<bool>());
 }
 
 } // namespace arithmetic
