@@ -21,6 +21,8 @@ using namespace ::boost::python;
 using namespace ::vpush;
 using namespace ::vpush::detail;
 
+namespace py = ::boost::python;
+
 Protein random_protein(std::size_t s) {
 	Protein ret;
 	for(std::size_t i = 0; i < s; ++i)
@@ -29,19 +31,13 @@ Protein random_protein(std::size_t s) {
 }
 
 template <typename T>
-void do_push_code(Protein &p, string name) {
-	push<T>(p, functions.get_code(name));
-}
+void do_push_code(Protein &p, string name) { push<T>(p, functions.get_code(name)); }
 
 template <typename T>
-void do_push_code_close(Protein &p) {
-	push<T>(p, T::CLOSE);
-}
+void do_push_code_close(Protein &p) { push<T>(p, T::CLOSE); }
 
 template <typename T>
-void do_push_code_open(Protein &p) {
-	push<T>(p, T::OPEN);
-}
+void do_push_code_open(Protein &p) { push<T>(p, T::OPEN); }
 
 Exec byName(string n) { return functions.get_code(n); }
 Exec random() { return functions.get_random(); }
@@ -95,13 +91,13 @@ BOOST_PYTHON_MODULE(vpush) {
 		.staticmethod("random")
 		;
 
-	def("random_protein", random_protein);
 	def("push_code", do_push_code<Code>);
 	def("push_code_open", do_push_code_open<Code>);
 	def("push_code_close", do_push_code_close<Code>);
 	def("push_exec", do_push_code<Exec>);
 	def("push_exec_open", do_push_code_open<Exec>);
 	def("push_exec_close", do_push_code_close<Exec>);
+	// engine.cpp functions to run a protein
 
 	class_<soup_t>("Soup")
 		.def("__len__", &soup_t::size)
