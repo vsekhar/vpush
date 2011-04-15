@@ -61,6 +61,8 @@ struct soup_t {
 		return container.modify(itr, func);
 	}
 	
+	void swap(soup_t& s) {container.swap(s.container);}
+	
 private:
 	friend class ::boost::serialization::access;
 	template <typename A> void serialize(A& a, unsigned int) { a & container; }

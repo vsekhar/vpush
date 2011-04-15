@@ -1,8 +1,11 @@
 #include <string>
+#include <fstream>
 
 #include <boost/python.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 #include <vpush/protein.hpp>
 #include <vpush/soup.hpp>
@@ -42,6 +45,20 @@ void do_push_code_open(Protein &p) {
 
 Exec byName(string n) { return functions.get_code(n); }
 Exec random() { return functions.get_random(); }
+
+void load_soup(string filename) {
+	std::ifstream i(filename);
+	boost::archive::text_iarchive ar(i);
+	soup_t new_soup;
+	ar >> new_soup;
+	soup.swap(new_soup);
+}
+
+void save_soup(string filename) {
+	std::ofstream o(filename);
+	boost::archive::text_oarchive ar(o);
+	ar << soup;
+}
 
 BOOST_PYTHON_MODULE(vpush) {
 	// on import
@@ -92,6 +109,8 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def("push_back", &soup_t::push_back)
 		;
 	scope().attr("soup") = soup;
+	def("load_soup", load_soup);
+	def("save_soup", save_soup);
 }
 
 } // namespace python
