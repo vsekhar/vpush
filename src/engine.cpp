@@ -5,6 +5,7 @@
 #include <vpush/engine.hpp>
 #include <vpush/stackops.hpp>
 #include <vpush/protein_fwd.hpp>
+#include <vpush/gestation.hpp>
 #include <vpush/exception.hpp>
 #include <vpush/detail/functions.hpp>
 #include <vpush/detail/codelist.hpp>
@@ -29,6 +30,8 @@ double run_protein(Protein& p, bool trace) {
 				p.energy -= e.fptr(p);
 		}
 	}
+	
+	detach_gestator();
 	
 	//fitness testing?
 

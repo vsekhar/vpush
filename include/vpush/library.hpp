@@ -1,6 +1,7 @@
 #ifndef __VPUSH_LIBRARY_HPP__
 #define __VPUSH_LIBRARY_HPP__
 
+#include <string>
 #include <vpush/stackops.hpp>
 #include <vpush/detail/typechecker.hpp>
 #include <vpush/detail/functions.hpp>
