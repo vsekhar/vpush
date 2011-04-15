@@ -7,11 +7,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
-#include <vpush/protein.hpp>
-#include <vpush/soup.hpp>
-#include <vpush/library.hpp>
-#include <vpush/detail/code.hpp>
-#include <vpush/detail/functions.hpp>
+#include <vpush/vpush.hpp>
 
 namespace vpush {
 namespace python {
@@ -58,7 +54,7 @@ void save_soup(string filename) {
 
 BOOST_PYTHON_MODULE(vpush) {
 	// on import
-	library::initialize();
+	vpush::initialize();
 	
 	// Code, Exec, and functions
 	enum_<Code::codetype>("CodeType")

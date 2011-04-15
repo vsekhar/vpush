@@ -7,5 +7,11 @@
 #include <vpush/library.hpp>
 #include <vpush/engine.hpp>
 
+namespace vpush {
+
+void initialize();
+
+} // namespace vpush
+
 #endif
 

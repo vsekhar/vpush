@@ -32,6 +32,14 @@ Protein random_protein(std::size_t s) {
 	return ret;
 }
 
+namespace vpush {
+
+void initialize() {
+	library::initialize();
+}
+
+} // namespace vpush
+
 int main(int argc, char** argv) {
 	library::initialize();
 

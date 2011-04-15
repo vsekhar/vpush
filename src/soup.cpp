@@ -25,7 +25,6 @@ const Protein& soup_t::operator[](std::size_t n) const {
 	return *itr;
 }
 
-
 soup_t soup;
 
 } // namespace vpush
