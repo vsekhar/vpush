@@ -45,6 +45,12 @@ struct RandomInt {
 	boost::variate_generator<time_seeded_mersenne_t&, boost::uniform_int<> > die;
 };
 
+struct Random_01 {
+	Random_01() : dist() {}
+	int operator()() { return dist(default_generator); }
+	boost::uniform_01<> dist;
+};
+
 } // namespace util
 } // namespace vpush
 
