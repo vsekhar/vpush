@@ -1,15 +1,13 @@
 #!/usr/bin/python3
 
-import os
-import sys
-
-sys.path.append(os.path.join(os.path.dirname(__file__), 'Release'))
-
-import vpush
+import tests
 
 def main():
-	c = vpush.functions.get_code("ADD.INT")
-	print(c)
+	tests.codetests()
+	tests.proteintests()
+	tests.souptests()
+	tests.runtests()
+	tests.fitnesstests()
 	print("Done")
 
 if __name__ == '__main__':
