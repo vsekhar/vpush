@@ -12,57 +12,28 @@ double modf(double v) {
 	return v;
 }
 
-toroidal_dimension& toroidal_dimension::operator+=(const toroidal_dimension& rhs) {
-	value += rhs.value;
-	value = modf(value);
-	return *this;
-}
+#define TD_OP(op) toroidal_dimension& toroidal_dimension::operator##op \
+	(const toroidal_dimension& rhs) {value=modf(value op rhs.value); return *this;}
 
-toroidal_dimension& toroidal_dimension::operator-=(const toroidal_dimension& rhs) {
-	value -= rhs.value;
-	value = modf(value);
-	return *this;
-}
+TD_OP(+=)
+TD_OP(-=)
+TD_OP(*=)
+TD_OP(/=)
 
-toroidal_dimension& toroidal_dimension::operator*=(const toroidal_dimension& rhs) {
-	value *= rhs.value;
-	value = modf(value);
-	return *this;
-}
+#define TD_OP_DBL(op) toroidal_dimension& toroidal_dimension::operator##op \
+	(double d) {value=modf(value op d); return *this;}
 
-toroidal_dimension& toroidal_dimension::operator/=(const toroidal_dimension& rhs) {
-	value /= rhs.value;
-	value = modf(value);
-	return *this;
-}
+TD_OP_DBL(*=)
+TD_OP_DBL(/=)
 
-toroidal_dimension& toroidal_dimension::operator*=(double d) {
-	value *= d;
-	value = modf(value);
-	return *this;
-}
+#define TD_OP_BINARY(op) toroidal_dimension operator##op \
+	(const toroidal_dimension& lhs, const toroidal_dimension& rhs) \
+	{ return toroidal_dimension(lhs) op##= rhs; }
 
-toroidal_dimension& toroidal_dimension::operator/=(double d) {
-	value /= d;
-	value = modf(value);
-	return *this;
-}
-
-toroidal_dimension operator+(const toroidal_dimension& lhs, const toroidal_dimension& rhs) {
-	return toroidal_dimension(lhs) += rhs;
-}
-
-toroidal_dimension operator-(const toroidal_dimension& lhs, const toroidal_dimension& rhs) {
-	return toroidal_dimension(lhs) -= rhs;
-}
-
-toroidal_dimension operator*(const toroidal_dimension& lhs, const toroidal_dimension& rhs) {
-	return toroidal_dimension(lhs) *= rhs;
-}
-
-toroidal_dimension operator/(const toroidal_dimension& lhs, const toroidal_dimension& rhs) {
-	return toroidal_dimension(lhs) /= rhs;
-}
+TD_OP_BINARY(+)
+TD_OP_BINARY(-)
+TD_OP_BINARY(*)
+TD_OP_BINARY(/)
 
 toroidal_dimension operator*(double d, const toroidal_dimension& rhs) {
 	return toroidal_dimension(rhs) *= d;

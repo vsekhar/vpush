@@ -5,12 +5,11 @@ namespace vpush {
 namespace detail {
 
 std::ostream& operator<<(std::ostream& o, const Code& c) {
-	if(c.type == Code::OPEN)
-		o << "(";
-	else if(c.type == Code::CLOSE)
-		o << ")";
-	else
-		o << vpush::functions.get_name(c.fptr);
+	select(c.type) {
+		case Code::OPEN:	o << "("; break;
+		case Code::CLOSE:	o << ")"; break;
+		default:			o << vpush::functions.get_name(c.fptr); break;
+	}
 	return o;
 }
 
