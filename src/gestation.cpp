@@ -4,9 +4,14 @@ namespace vpush {
 
 Protein* gestator;
 
-void ensure_gestator() {
-	if(!gestator)
+void ensure_gestator(const Protein& p) {
+	if(!gestator) {
 		gestator = new Protein();
+		gestator->x = p.x;
+		gestator->y = p.y;
+		gestator->z = p.z;
+		gestator->facing = p.facing;
+	}
 }
 
 bool detach_gestator() {

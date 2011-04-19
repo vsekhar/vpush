@@ -17,7 +17,7 @@ double transfer_energy(Protein &p) {
 	if(top<double>(p) < 0 || p.energy < top<double>(p))
 		return 0;
 
-	ensure_gestator();
+	ensure_gestator(p);
 	double amount = pop<double>(p);
 	gestator->energy += amount;
 	p.energy -= amount;
@@ -29,7 +29,7 @@ double move_data(Protein &p) {
 	if(top<int>(p) < 0)
 		return 0;
 	
-	ensure_gestator();
+	ensure_gestator(p);
 	std::list<T> buffer;
 	unsigned count = (unsigned)pop<int>(p);
 	for(unsigned i = 0; i < count; ++i)
@@ -44,7 +44,7 @@ double move_code(Protein &p) {
 	if(top<int>(p) < 0)
 		return 0;
 
-	ensure_gestator();
+	ensure_gestator(p);
 	std::list<item<T> > items;
 	unsigned count = (unsigned) pop<int>(p);
 	for(unsigned i = 0; i < count; ++i)
