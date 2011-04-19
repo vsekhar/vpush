@@ -19,7 +19,7 @@
 #include <vpush/detail/stack.hpp>
 #include <vpush/detail/codestack.hpp>
 #include <vpush/util/toroidal.hpp>
-#include <vpush/util/random.hpp>
+#include <vpush/util/vector.hpp>
 #include <vpush/exception.hpp>
 
 namespace vpush {
@@ -46,17 +46,8 @@ struct serializer {
 
 struct Protein {
 	Protein()
-		: x(0), y(0), z(0),	facing_x(0), facing_y(0), facing_z(0), energy(0) {
-		using std::pow, std::sqrt;
-		util::Random_01 rand();
-		facing_x = rand();
-		facing_y = rand();
-		facing_z = rand();
-		double mag = sqrt(pow(facing_x, 2), pow(facing_y, 2), pow(facing_z, 2));
-		facing_x /= mag;
-		facing_y /= mag;
-		facing_z /= mag;
-	}
+		: x(0), y(0), z(0),	facing(util::normalized(util::random_vector())) {}
+
 	void reset() {
 		fus::for_each(stacks, clearer());
 	}
@@ -89,9 +80,7 @@ struct Protein {
 	detail::toroidal_dimension z;
 
 	// facing
-	detail::toroidal_dimension facing_x;
-	detail::toroidal_dimension facing_y;
-	detail::toroidal_dimension facing_z;
+	util::vector facing;
 	
 	// energy
 	double energy;
