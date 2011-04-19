@@ -35,6 +35,7 @@ VPUSH_DECL_LIBRARY(combinators)
 VPUSH_DECL_LIBRARY(boolean)
 VPUSH_DECL_LIBRARY(stackops)
 VPUSH_DECL_LIBRARY(movement)
+VPUSH_DECL_LIBRARY(soup)
 
 } // namespace library
 } // namespace vpush
