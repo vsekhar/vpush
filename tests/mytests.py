@@ -25,6 +25,20 @@ def souptests():
 	p = vpush.Protein.random(500)
 	vpush.soup.push_back(p)
 	assert(len(vpush.soup) == size + 1)
+
+	vpush.soup.set_size(1000)
+	assert(len(vpush.soup) == 1000)
+	
+	vpush.soup.clear()
+	assert(len(vpush.soup) == 0)
+
+	protein_count = 100
+	for i in range(protein_count):
+		p = vpush.Protein.random(1000)
+		p.energy = 1000
+		vpush.soup.push_back(p)
+	assert(len(vpush.soup) == protein_count)
+
 	return True
 
 def runtests():

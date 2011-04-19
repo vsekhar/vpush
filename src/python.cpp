@@ -107,6 +107,7 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def("__len__", &soup_t::size)
 		.def("set_size", &soup_t::set_size)
 		.def("push_back", &soup_t::push_back)
+		.def("clear", &soup_t::clear)
 		;
 	scope().attr("soup") = soup;
 	def("load_soup", load_soup, arg("filename"));

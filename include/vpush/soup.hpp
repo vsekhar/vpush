@@ -51,6 +51,7 @@ struct soup_t {
 
 	inline void push_back(const Protein& e) { container.push_back(e); }
 	inline std::size_t size() const { return container.size(); }
+	void clear() { container.clear(); }
 	
 	typedef void (*modifier)(Protein&);
 	
