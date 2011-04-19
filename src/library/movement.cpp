@@ -17,7 +17,7 @@ typedef std::vector<double> direction;
 
 double move(Protein& p) {
 	double density = vpush::soup.size();
-	double magnitude;
+	double magnitude
 		= std::max(pop<double>(p), p.energy / density);
 
 	util::vector v = p.facing * magnitude;
