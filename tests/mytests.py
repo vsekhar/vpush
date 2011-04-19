@@ -3,13 +3,21 @@
 from . import vpush
 
 def codetests():
-	c = vpush.functions.get_code("ADD.INT")
-	print(c)
+	name = "ADD.INT"
+	c = vpush.functions.get_code(name)
+	assert(vpush.functions.get_name(c) == name)
+	
+	open_code = vpush.Functions.open()
+	close_code = vpush.Functions.close()
+	assert(open_code.type == vpush.OPEN)
+	assert(close_code.type == vpush.CLOSE)
 	return True
 
 def proteintests():
-	p = vpush.Protein.random(500)
-	assert(vpush.run_protein(p) == 0)
+	p = vpush.Protein()
+	p.push_int(47)
+	assert(p.pop_int() == 47)
+
 	return True
 
 def souptests():
@@ -20,6 +28,13 @@ def souptests():
 	return True
 
 def runtests():
+	p = vpush.Protein.random(500)
+	initial_energy = 100
+	p.energy = initial_energy
+	assert(vpush.run_protein(p) == 0)
+	assert(p.energy < initial_energy)
+	
+	# populate and run a soup
 	return True
 
 def fitnesstests():

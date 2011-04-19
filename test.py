@@ -17,7 +17,7 @@ def main():
 		if not test():
 			print("Test failed: %s" % test)
 			exit(1)
-	print("Done")
+	print("All passed")
 
 if __name__ == '__main__':
 	main()
