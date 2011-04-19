@@ -39,7 +39,7 @@ double turn(Protein &p) {
 }
 
 void initialize() {
-	functions.add("MOVE", move, type<double>() * 3);
+	functions.add("MOVE", move, type<double>());
 	functions.add("TURN", turn, type<double>() * 3);
 }
 
