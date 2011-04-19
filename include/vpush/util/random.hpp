@@ -47,7 +47,7 @@ struct RandomInt {
 
 struct Random_01 {
 	Random_01() : dist() {}
-	int operator()() { return dist(default_generator); }
+	double operator()() { return dist(default_generator); }
 	boost::uniform_01<> dist;
 };
 
