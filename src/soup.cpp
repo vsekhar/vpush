@@ -1,3 +1,5 @@
+#include <boost/foreach.hpp>
+
 #include <vpush/soup.hpp>
 
 namespace vpush {
@@ -17,6 +19,14 @@ void soup_t::set_size(std::size_t n) {
 		for(int j=0; j < -delta; ++j) --i;
 		container.get<bySeq>().erase(i, seq.end());
 	}
+}
+
+std::size_t soup_t::deep_size() const {
+	const soup_container::index<bySeq>::type& c = container.get<bySeq>();
+	std::size_t accum = 0;
+	BOOST_FOREACH(const Protein& p, c)
+		accum += p.size();
+	return accum;
 }
 
 const Protein& soup_t::operator[](std::size_t n) const {

@@ -33,11 +33,13 @@ def souptests():
 	assert(len(vpush.soup) == 0)
 
 	protein_count = 100
+	protein_size = 1000
 	for i in range(protein_count):
-		p = vpush.Protein.random(1000)
+		p = vpush.Protein.random(protein_size)
 		p.energy = 1000
 		vpush.soup.push_back(p)
 	assert(len(vpush.soup) == protein_count)
+	assert(vpush.soup.deep_size() == protein_count * protein_size)
 
 	return True
 

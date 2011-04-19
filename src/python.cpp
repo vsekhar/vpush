@@ -106,6 +106,7 @@ BOOST_PYTHON_MODULE(vpush) {
 	class_<soup_t>("Soup")
 		.def("__len__", &soup_t::size)
 		.def("set_size", &soup_t::set_size)
+		.def("deep_size", &soup_t::deep_size)
 		.def("push_back", &soup_t::push_back)
 		.def("clear", &soup_t::clear)
 		;
