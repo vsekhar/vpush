@@ -6,7 +6,7 @@ namespace library {
 namespace soup {
 
 double proteincount(Protein &p) {
-	push<double>(p, vpush::soup.size());
+	push<int>(p, vpush::soup.size());
 	return 1;
 }
 
