@@ -80,7 +80,7 @@ BOOST_PYTHON_MODULE(vpush) {
 		;
 	scope().attr("functions") = functions;
 	
-	// Protein and Soup
+	// Protein
 	class_<Protein>("Protein")
 		.def_readwrite("energy", &Protein::energy)
 		.def("random", random_protein)
@@ -93,8 +93,11 @@ BOOST_PYTHON_MODULE(vpush) {
 	def("push_exec", do_push_code<Exec>);
 	def("push_exec_open", do_push_code_open<Exec>);
 	def("push_exec_close", do_push_code_close<Exec>);
-	// engine.cpp functions to run a protein
 
+	// Engine (for running proteins)
+	def("run_protein", run_protein);
+
+	// Soup
 	class_<soup_t>("Soup")
 		.def("__len__", &soup_t::size)
 		.def("set_size", &soup_t::set_size)
