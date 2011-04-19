@@ -11,6 +11,7 @@ void initialize() {
 	combinators::initialize();
 	boolean::initialize();
 	stackops::initialize();
+	movement::initialize();
 }
 
 } // namespace library

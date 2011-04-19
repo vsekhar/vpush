@@ -34,6 +34,7 @@ VPUSH_DECL_LIBRARY(math)
 VPUSH_DECL_LIBRARY(combinators)
 VPUSH_DECL_LIBRARY(boolean)
 VPUSH_DECL_LIBRARY(stackops)
+VPUSH_DECL_LIBRARY(movement)
 
 } // namespace library
 } // namespace vpush
