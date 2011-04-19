@@ -107,8 +107,8 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def("push_back", &soup_t::push_back)
 		;
 	scope().attr("soup") = soup;
-	def("load_soup", load_soup);
-	def("save_soup", save_soup);
+	def("load_soup", load_soup, arg("filename"));
+	def("save_soup", save_soup, arg("filename"));
 }
 
 } // namespace python
