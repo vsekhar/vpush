@@ -9,7 +9,7 @@ def codetests():
 
 def proteintests():
 	p = vpush.Protein.random(500)
-	assert(vpush.run_protein(p, False) == 0)
+	assert(vpush.run_protein(p) == 0)
 	return True
 
 def souptests():

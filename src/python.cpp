@@ -97,7 +97,8 @@ BOOST_PYTHON_MODULE(vpush) {
 	def("push_exec_close", do_push_code_close<Exec>);
 
 	// Engine (for running proteins)
-	def("run_protein", run_protein);
+	def("run_protein", run_protein,
+		(arg("protein"), arg("trace") = false));
 
 	// Soup
 	class_<soup_t>("Soup")
