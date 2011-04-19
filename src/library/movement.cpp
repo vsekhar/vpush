@@ -19,7 +19,7 @@ double move(Protein& p) {
 	double desired_magnitude = pop<double>(p);
 	double density = vpush::soup.size();
 	double actual_magnitude
-		= std::max(desired_magnitude*density, p.energy) / density;
+		= std::max(desired_magnitude, p.energy / density);
 
 	util::vector v = p.facing * actual_magnitude;
 	p.x += v[0];
