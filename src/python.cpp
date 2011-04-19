@@ -26,14 +26,8 @@ Protein random_protein(std::size_t s) {
 	return ret;
 }
 
-template <typename T>
-void do_push_code(Protein &p, string name) { push<T>(p, functions.get_code(name)); }
-
-template <typename T>
-void do_push_code_close(Protein &p) { push<T>(p, T::CLOSE); }
-
-template <typename T>
-void do_push_code_open(Protein &p) { push<T>(p, T::OPEN); }
+Exec code_close() { return Exec::CLOSE; }
+Exec code_open() { return Exec::OPEN; }
 
 Exec byName(string n) { return functions.get_code(n); }
 Exec random() { return functions.get_random(); }
@@ -51,6 +45,12 @@ void save_soup(string filename) {
 	boost::archive::text_oarchive ar(o);
 	ar << soup;
 }
+
+template <typename T>
+void push_wrap(Protein *p, T t) { push<T>(*p, t); }
+
+template <typename T>
+T pop_wrap(Protein *p) { return pop<T>(*p); }
 
 BOOST_PYTHON_MODULE(vpush) {
 	// on import
@@ -78,6 +78,10 @@ BOOST_PYTHON_MODULE(vpush) {
 	class_<functions_t>("Functions", no_init)
 		.def("get_code", &functions_t::get_code)
 		.def("get_name", &functions_t::get_name)
+		.def("close", code_close)
+		.staticmethod("close")
+		.def("open", code_open)
+		.staticmethod("open")
 		;
 	scope().attr("functions") = functions;
 	
@@ -86,15 +90,13 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def_readwrite("energy", &Protein::energy)
 		.def("random", random_protein)
 		.staticmethod("random")
+		.def("push_int", push_wrap<int>)
+		.def("pop_int", pop_wrap<int>)
+		.def("push_exec", push_wrap<Exec>)
+		.def("pop_exec", pop_wrap<Exec>)
+		.def("push_code", push_wrap<Code>)
+		.def("pop_code", pop_wrap<Code>)
 		;
-
-	// Protein code/exec manipulation
-	def("push_code", do_push_code<Code>);
-	def("push_code_open", do_push_code_open<Code>);
-	def("push_code_close", do_push_code_close<Code>);
-	def("push_exec", do_push_code<Exec>);
-	def("push_exec_open", do_push_code_open<Exec>);
-	def("push_exec_close", do_push_code_close<Exec>);
 
 	// Engine (for running proteins)
 	def("run_protein", run_protein,
