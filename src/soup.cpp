@@ -1,6 +1,7 @@
 #include <boost/foreach.hpp>
 
 #include <vpush/soup.hpp>
+#include <vpush/engine.hpp>
 
 namespace vpush {
 
@@ -33,6 +34,13 @@ const Protein& soup_t::operator[](std::size_t n) const {
 	soup_container::const_iterator itr = container.get<bySeq>().begin();
 	for(std::size_t i=0; i < n; ++i) ++itr;
 	return *itr;
+}
+
+void soup_t::run() {
+	ProteinRunner runner;
+	soup_container::index<byEnergy>::type& c = container.get<byEnergy>();
+	BOOST_FOREACH(soup_container::iterator i, c)
+		c.modify(i, runner);
 }
 
 soup_t soup;

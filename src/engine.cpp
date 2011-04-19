@@ -1,21 +1,12 @@
-#include <iostream>
-
-#include <boost/foreach.hpp>
-
 #include <vpush/engine.hpp>
 #include <vpush/stackops.hpp>
-#include <vpush/protein_fwd.hpp>
 #include <vpush/gestation.hpp>
-#include <vpush/exception.hpp>
 #include <vpush/detail/functions.hpp>
 #include <vpush/detail/codelist.hpp>
 
 namespace vpush {
 
-using detail::Exec;
-using detail::Code;
-
-double run_protein(Protein& p, bool trace) {
+static void ProteinRunner::operator()(Protein& p) const {
 	using detail::Exec;
 
 	while(!empty<Exec>(p) && p.energy > 0) {
@@ -33,9 +24,12 @@ double run_protein(Protein& p, bool trace) {
 	
 	detach_gestator();
 	
-	//fitness testing?
+	//fitness testing and energy rewards??
+}
 
-	return 0; // fitness
+// for python testing
+void run_protein(Protein &p, bool trace) {
+	ProteinRunner()(p);
 }
 
 } // namespace vpush

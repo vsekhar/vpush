@@ -56,13 +56,7 @@ struct soup_t {
 	
 	typedef void (*modifier)(Protein&);
 	
-	template <typename T>
-	inline bool modify(std::size_t n, T func) {
-		soup_container::const_iterator itr = container.get<bySeq>().begin();
-		for(std::size_t i=0; i < n; ++i) ++itr;
-		return container.modify(itr, func);
-	}
-	
+	void run();
 	void swap(soup_t& s) {container.swap(s.container);}
 	
 private:
