@@ -56,7 +56,7 @@ BOOST_PYTHON_MODULE(vpush) {
 	// on import
 	vpush::initialize();
 	
-	// Code, Exec, and functions
+	// Code and Exec types
 	enum_<Code::codetype>("CodeType")
 		.value("OPEN", Code::OPEN)
 		.value("CLOSE", Code::CLOSE)
@@ -74,6 +74,7 @@ BOOST_PYTHON_MODULE(vpush) {
 
 	class_<Exec, bases<Code> >("Exec", no_init);
 	
+	// Functions
 	class_<functions_t>("Functions", no_init)
 		.def("get_code", &functions_t::get_code)
 		.def("get_name", &functions_t::get_name)
@@ -87,6 +88,7 @@ BOOST_PYTHON_MODULE(vpush) {
 		.staticmethod("random")
 		;
 
+	// Protein code/exec manipulation
 	def("push_code", do_push_code<Code>);
 	def("push_code_open", do_push_code_open<Code>);
 	def("push_code_close", do_push_code_close<Code>);
