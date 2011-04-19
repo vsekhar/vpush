@@ -16,16 +16,15 @@ typedef std::vector<double> direction;
 // occupied by 'n' proteins
 
 double move(Protein& p) {
-	double desired_magnitude = pop<double>(p);
 	double density = vpush::soup.size();
-	double actual_magnitude
-		= std::max(desired_magnitude, p.energy / density);
+	double magnitude;
+		= std::max(pop<double>(p), p.energy / density);
 
-	util::vector v = p.facing * actual_magnitude;
+	util::vector v = p.facing * magnitude;
 	p.x += v[0];
 	p.y += v[1];
 	p.z += v[2];
-	return actual_magnitude * density;
+	return magnitude * density;
 }
 
 double turn(Protein &p) {
