@@ -2,7 +2,7 @@
 
 #include <boost/preprocessor/cat.hpp>
 
-#include <vpush/detail/toroidal.hpp>
+#include <vpush/util/toroidal.hpp>
 
 namespace vpush {
 namespace detail {
@@ -14,7 +14,12 @@ double modf(double v) {
 	return v;
 }
 
-#define TD_OP(op) toroidal_dimension& BOOST_PP_CAT(toroidal_dimension::operator, op) \
+toroidal_dimension& toroidal_dimension::operator=(double d) {
+	value = modf(d);
+	return *this;
+}
+
+#define TD_OP(op) toroidal_dimension& toroidal_dimension::operator op \
 	(const toroidal_dimension& rhs) {value=modf(value op rhs.value); return *this;}
 
 TD_OP(+=)
@@ -22,13 +27,13 @@ TD_OP(-=)
 TD_OP(*=)
 TD_OP(/=)
 
-#define TD_OP_DBL(op) toroidal_dimension& BOOST_PP_CAT(toroidal_dimension::operator, op) \
+#define TD_OP_DBL(op) toroidal_dimension& toroidal_dimension::operator op \
 	(double d) {value=modf(value op d); return *this;}
 
 TD_OP_DBL(*=)
 TD_OP_DBL(/=)
 
-#define TD_OP_BINARY(op) BOOST_PP_CAT(toroidal_dimension operator, op) \
+#define TD_OP_BINARY(op) toroidal_dimension operator op \
 	(const toroidal_dimension& lhs, const toroidal_dimension& rhs) \
 	{ return toroidal_dimension(lhs) BOOST_PP_CAT(op, =) rhs; }
 

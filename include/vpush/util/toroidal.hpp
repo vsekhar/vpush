@@ -22,6 +22,7 @@ struct toroidal_dimension {
 	bool operator==(const toroidal_dimension& rhs) const { return value == rhs.value; }
 	bool operator<(const toroidal_dimension& rhs) const { return value < rhs.value; }
 
+	toroidal_dimension& operator=(double);
 	toroidal_dimension& operator+=(const toroidal_dimension&);
 	toroidal_dimension& operator-=(const toroidal_dimension&);
 	toroidal_dimension& operator*=(const toroidal_dimension&);

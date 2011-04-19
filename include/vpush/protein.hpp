@@ -18,7 +18,7 @@
 #include <vpush/detail/code.hpp>
 #include <vpush/detail/stack.hpp>
 #include <vpush/detail/codestack.hpp>
-#include <vpush/detail/toroidal.hpp>
+#include <vpush/util/toroidal.hpp>
 #include <vpush/util/random.hpp>
 #include <vpush/exception.hpp>
 
