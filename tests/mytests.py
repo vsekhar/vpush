@@ -45,10 +45,10 @@ def souptests():
 
 def runtests():
 	p = vpush.Protein.random(500)
-	initial_energy = 100
+	initial_energy = 100.0
 	p.energy = initial_energy
-	assert(vpush.run_protein(p) == 0)
-	assert(p.energy < initial_energy)
+	consumed_energy = vpush.run_protein(p)
+	assert(consumed_energy == initial_energy - p.energy)
 	
 	# populate and run a soup
 	return True
