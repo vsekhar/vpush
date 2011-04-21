@@ -32,6 +32,8 @@ double move_data(Protein &p) {
 	ensure_gestator(p);
 	std::list<T> buffer;
 	unsigned count = (unsigned)pop<int>(p);
+	count = std::min(count, size<T>(p));
+	count = std::min(count, (unsigned)p.energy);
 	for(unsigned i = 0; i < count; ++i)
 		buffer.push_front(pop<T>(p));
 	BOOST_FOREACH(const T& t, buffer)
@@ -47,22 +49,29 @@ double move_code(Protein &p) {
 	ensure_gestator(p);
 	std::list<item<T> > items;
 	unsigned count = (unsigned) pop<int>(p);
-	for(unsigned i = 0; i < count; ++i)
-		items.push_front(get_item<T>(stack<T>(p)));
+	count = std::min(count, (unsigned)p.energy);
+	unsigned actual_count = 0;
+	try {
+		for(unsigned i = 0; i < count; ++i) {
+			items.push_front(get_item<T>(stack<T>(p)));
+			++actual_count;
+		}
+	}
+	catch(const detail::stack_underflow&) {}
 	BOOST_FOREACH(const item<T>& i, items)
 		put_item(i, stack<T>(*gestator));
-	return 1;
+	return actual_count;
 }
 
 void initialize() {
 	functions.add("DETACH_PROTEIN", detach_protein);
-	functions.add("TRANSFER_ENERGY", transfer_energy);
+	functions.add("TRANSFER_ENERGY", transfer_energy, type<double>());
 	functions.add("MOVE.BOOL", move_data<bool>, type<int>());
 	functions.add("MOVE.INT", move_data<int>, type<int>());
 	functions.add("MOVE.DBL", move_data<double>, type<int>());
 	functions.add("MOVE.STRING", move_data<string>, type<int>());
-	functions.add("MOVE.CODE", move_code<Code>);
-	functions.add("MOVE.EXEC", move_code<Exec>);
+	functions.add("MOVE.CODE", move_code<Code>, type<int>());
+	functions.add("MOVE.EXEC", move_code<Exec>, type<int>());
 }
 
 } // namespace gestation

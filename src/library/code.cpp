@@ -48,11 +48,17 @@ double make_list(Protein& p) {
 	detail::stack<T>& s = stack<T>(p);
 	if(top<int>(p) < 0) return 0;
 	int count = pop<int>(p);
-	typename itr_count_pair<T>::type insertpoint
-		= advance_n_items_impl(s, count);
+	count = std::min(count, (int)p.energy);
+	typename itr_count_pair<T>::type insertpoint;
+	try {
+		insertpoint	= advance_n_items_impl(s, count);
+	}
+	catch(const detail::stack_underflow&) {
+		insertpoint = std::make_pair(s.begin(), s.size());
+	}
 	s.insert(insertpoint.first, T::CLOSE);
 	s.push_back(T::OPEN);
-	return count;
+	return insertpoint.second;
 }
 
 template <typename T>
