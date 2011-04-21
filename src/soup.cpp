@@ -30,10 +30,11 @@ std::size_t soup_t::deep_size() const {
 	return accum;
 }
 
-const Protein& soup_t::operator[](std::size_t n) const {
-	soup_container::const_iterator itr = container.get<bySeq>().begin();
-	for(std::size_t i=0; i < n; ++i) ++itr;
-	return *itr;
+double soup_t::energy() const {
+	double ret = 0;
+	BOOST_FOREACH(const Protein& p, container)
+		ret += p.energy;
+	return ret;
 }
 
 void soup_t::run() {

@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
 	{
 		std::ofstream out("tmp");
 		boost::archive::text_oarchive ar(out);
-		ar & soup[0];
+		ar & p;
 		ar & soup;
 	}
 
