@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include <vpush/engine.hpp>
 #include <vpush/stackops.hpp>
 #include <vpush/gestation.hpp>
@@ -29,8 +27,8 @@ void ProteinRunner::operator()(Protein& p) {
 	
 	//fitness testing and energy rewards??
 	
-	// Output energy consumed (for now)
-	result = init_energy - p.energy;
+	// Energy consumed
+	result += init_energy - p.energy;
 }
 
 // for python testing
