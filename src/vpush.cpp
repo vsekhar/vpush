@@ -10,7 +10,7 @@ using std::cout;
 using std::endl;
 
 using vpush::Protein;
-using vpush::Protein;
+using vpush::random_protein;
 using vpush::stack;
 using vpush::size;
 using vpush::clear;
@@ -24,13 +24,6 @@ using vpush::functions;
 using vpush::soup;
 
 namespace library = ::vpush::library;
-
-Protein random_protein(std::size_t s) {
-	Protein ret;
-	for(std::size_t i = 0; i < s; ++i)
-		push<Exec>(ret, functions.get_random());
-	return ret;
-}
 
 namespace vpush {
 

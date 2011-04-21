@@ -19,13 +19,6 @@ using namespace ::vpush::detail;
 
 namespace py = ::boost::python;
 
-Protein random_protein(std::size_t s) {
-	Protein ret;
-	for(std::size_t i = 0; i < s; ++i)
-		push<Exec>(ret, functions.get_random());
-	return ret;
-}
-
 Exec code_close() { return Exec::CLOSE; }
 Exec code_open() { return Exec::OPEN; }
 

@@ -1,9 +1,17 @@
 #include <vpush/protein.hpp>
+#include <vpush/detail/functions.hpp>
 #include <vpush/stackops.hpp>
 
 namespace vpush {
 
- void print_trace(Protein& p, std::ostream& o) {
+Protein random_protein(std::size_t s) {
+	Protein ret;
+	for(std::size_t i = 0; i < s; ++i)
+		push<detail::Exec>(ret, functions.get_random());
+	return ret;
+}
+
+void print_trace(Protein& p, std::ostream& o) {
 	using std::endl;
 	using vpush::detail::Exec;
 	using vpush::detail::Code;
