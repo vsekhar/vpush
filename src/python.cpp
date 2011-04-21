@@ -45,6 +45,9 @@ void push_wrap(Protein *p, T t) { push<T>(*p, t); }
 template <typename T>
 T pop_wrap(Protein *p) { return pop<T>(*p); }
 
+vpush::soup_t& get_soup() { return vpush::soup; }
+const vpush::detail::functions_t& get_functions() { return vpush::functions; }
+
 BOOST_PYTHON_MODULE(vpush) {
 	// on import
 	vpush::initialize();
@@ -76,7 +79,7 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def("open", code_open)
 		.staticmethod("open")
 		;
-	scope().attr("functions") = functions;
+	def("functions", get_functions, return_value_policy<copy_const_reference>());
 	
 	// Protein
 	class_<Protein>("Protein")
@@ -103,7 +106,7 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def("push_back", &soup_t::push_back)
 		.def("clear", &soup_t::clear)
 		;
-	scope().attr("soup") = soup;
+	def("get_soup", get_soup, return_value_policy<reference_existing_object>());
 	def("load_soup", load_soup, arg("filename"));
 	def("save_soup", save_soup, arg("filename"));
 	
