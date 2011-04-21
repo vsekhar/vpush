@@ -5,6 +5,7 @@ namespace vpush {
 struct ProteinRunner {
 	ProteinRunner() : trace(false), result(0) {}
 	ProteinRunner(bool t) : trace(t), result(0) {}
+	ProteinRunner(double r, bool t=false) : trace(t), result(r) {}
 	void operator()(Protein&);
 	bool trace;
 	double result;
