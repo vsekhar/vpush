@@ -1,6 +1,8 @@
+#include <iostream>
 #include <cmath>
 
 #include <boost/foreach.hpp>
+#include <boost/assert.hpp>
 
 #include <vpush/library.hpp>
 #include <vpush/soup.hpp>
@@ -16,15 +18,28 @@ typedef std::vector<double> direction;
 // occupied by 'n' proteins
 
 double move(Protein& p) {
+	// This is a very costly operation since the doubles are often
+	// ones or twos (which imply a movement clear across the toroidal space).
+	// This high cost increases with larger populations...
+	// TODO: Need a way to moderate this cost
+
 	double density = vpush::soup.size();
-	double magnitude
-		= std::min(pop<double>(p), p.energy / density);
+	if(density == 0)
+		return 0;
+
+	double magnitude = pop<double>(p);
+	if(std::abs(magnitude) > p.energy / density) {
+		if(magnitude < 0)
+			magnitude = -(p.energy / density);
+		else
+			magnitude = p.energy / density;
+	}
 
 	util::vector v = p.facing * magnitude;
 	p.x += v[0];
 	p.y += v[1];
 	p.z += v[2];
-	return magnitude * density;
+	return std::abs(magnitude * density);
 }
 
 double turn(Protein &p) {
