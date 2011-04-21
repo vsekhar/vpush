@@ -49,8 +49,8 @@ double soup_t::energy() const {
 	return ret;
 }
 
-double soup_t::run() {
-	ProteinRunner runner = ProteinRunner();
+double soup_t::run(bool trace) {
+	ProteinRunner runner = ProteinRunner(trace);
 	double energy_used = 0;
 	typedef soup_container::index<bySeq>::type index;
 	index& c = container.get<bySeq>();

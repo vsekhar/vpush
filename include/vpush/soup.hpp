@@ -58,7 +58,7 @@ struct soup_t {
 	
 	typedef void (*modifier)(Protein&);
 	
-	double run();
+	double run(bool trace=false);
 	void swap(soup_t& s) { container.swap(s.container); }
 	
 private:
