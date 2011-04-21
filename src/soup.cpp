@@ -38,8 +38,10 @@ const Protein& soup_t::operator[](std::size_t n) const {
 
 void soup_t::run() {
 	ProteinRunner runner;
-	soup_container::index<byEnergy>::type& c = container.get<byEnergy>();
-	BOOST_FOREACH(soup_container::iterator i, c)
+	typedef soup_container::index<byEnergy>::type index;
+	index& c = container.get<byEnergy>();
+	index::iterator i = c.begin();
+	for(; i != c.end(); ++i)
 		c.modify(i, runner);
 }
 
