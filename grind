@@ -1,12 +1,12 @@
 #!/bin/bash
 
-while true;
-do
-	result=`./test.py > out`
-	if `./test.py > out` ; then
-		continue
-	else
-		break
-	fi
+if [ -n $1 ] ; then
+	cmd='./test.py'
+else
+	cmd='./test.py > $1'
+fi
+
+while $cmd; do
+	true
 done
 
