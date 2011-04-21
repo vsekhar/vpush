@@ -125,6 +125,14 @@ BOOST_PYTHON_MODULE(vpush) {
 	// Gestation and incubation
 	def("release_incubator", release_incubator);
 	// TODO: incubator access for testing?
+	
+	// Parameters
+	// TODO: Parameter setters/getters (they have to be globals)
+	// TODO: add run parameters like:
+	// carrying_cost (p.energy -= p.size() * COST;)
+	// movement_cost (factor to adjust movement cost)
+	// decay_rate (0.5 * carrying_cost?)
+	// decay_threshold (-30?)
 }
 
 } // namespace python
