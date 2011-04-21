@@ -1,3 +1,4 @@
+#include <iostream>
 #include <boost/foreach.hpp>
 
 #include <vpush/soup.hpp>
@@ -5,15 +6,18 @@
 
 namespace vpush {
 
-void soup_t::add(std::size_t n) {
-	for(std::size_t i = 0; i < n; ++i)
-		container.push_back(Protein());
+void soup_t::add(std::size_t n, std::size_t protein_size, double starting_energy) {
+	for(std::size_t i = 0; i < n; ++i) {
+		Protein p = random_protein(protein_size);
+		p.energy = starting_energy;
+		container.push_back(p);
+	}
 }
 
-void soup_t::set_size(std::size_t n) {
-	int delta = n - container.size();
+void soup_t::set_size(std::size_t soup_size, std::size_t protein_size, double starting_energy) {
+	int delta = soup_size - container.size();
 	if(delta > 0)
-		add(delta);
+		add(delta, protein_size, starting_energy);
 	else {
 		soup_container::index<bySeq>::type& seq = container.get<bySeq>();
 		soup_container::iterator i = seq.end();
@@ -37,13 +41,19 @@ double soup_t::energy() const {
 	return ret;
 }
 
-void soup_t::run() {
-	ProteinRunner runner;
-	typedef soup_container::index<byEnergy>::type index;
-	index& c = container.get<byEnergy>();
+double soup_t::run() {
+	ProteinRunner runner = ProteinRunner();
+	double energy_used = 0;
+	typedef soup_container::index<bySeq>::type index;
+	index& c = container.get<bySeq>();
 	index::iterator i = c.begin();
-	for(; i != c.end(); ++i)
+	for(; i != c.end(); ++i) {
+		double initial_energy = i->energy;
 		c.modify(i, runner);
+		energy_used += initial_energy - i->energy;
+		std::cout << "Energy used: " << energy_used << std::endl;
+	}
+	return energy_used;
 }
 
 soup_t soup;

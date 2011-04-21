@@ -83,6 +83,7 @@ BOOST_PYTHON_MODULE(vpush) {
 	
 	// Protein
 	class_<Protein>("Protein")
+		.def("__len__", &Protein::size)
 		.def_readwrite("energy", &Protein::energy)
 		.def("random", random_protein)
 		.staticmethod("random")
@@ -95,23 +96,33 @@ BOOST_PYTHON_MODULE(vpush) {
 		;
 
 	// Engine (for running proteins)
+	class_<ProteinRunner>("ProteinRunner")
+		.def("__call__", &ProteinRunner::operator())
+		.def_readwrite("trace", &ProteinRunner::trace)
+		.def_readonly("result", &ProteinRunner::result)
+		;
 	def("run_protein", run_protein,
 		(arg("protein"), arg("trace") = false));
 
 	// Soup
 	class_<soup_t>("Soup")
 		.def("__len__", &soup_t::size)
-		.def("set_size", &soup_t::set_size)
+		.def("set_size", &soup_t::set_size,
+			(arg("soup_size"), "protein_size", "initial_energy"))
 		.def("deep_size", &soup_t::deep_size)
+		.def("energy", &soup_t::energy)
 		.def("push_back", &soup_t::push_back)
 		.def("clear", &soup_t::clear)
+		.def("run", &soup_t::run)
 		;
 	def("get_soup", get_soup, return_value_policy<reference_existing_object>());
+	
 	def("load_soup", load_soup, arg("filename"));
 	def("save_soup", save_soup, arg("filename"));
 	
 	// Gestation and incubation
 	def("release_incubator", release_incubator);
+	// TODO: incubator access for testing?
 }
 
 } // namespace python

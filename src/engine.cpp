@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <vpush/engine.hpp>
 #include <vpush/stackops.hpp>
 #include <vpush/gestation.hpp>
@@ -18,8 +20,12 @@ void ProteinRunner::operator()(Protein& p) {
 			detail::unwind(stack<Exec>(p));
 		else {
 			Exec e = pop<Exec>(p);
-			if(functions.get_types(e.fptr).check(p))
-				p.energy -= e.fptr(p);
+			if(functions.get_types(e.fptr).check(p)) {
+				double cost = e.fptr(p);
+				p.energy -= cost;
+				if(cost != 0)
+					std::cout << "Energy: " << p.energy << " after running " << e << std::endl;
+			}
 		}
 	}
 	
