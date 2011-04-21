@@ -84,6 +84,7 @@ BOOST_PYTHON_MODULE(vpush) {
 	// Protein
 	class_<Protein>("Protein")
 		.def("__len__", &Protein::size)
+		.def("count", &Protein::count)
 		.def_readwrite("energy", &Protein::energy)
 		.def("random", random_protein)
 		.staticmethod("random")
@@ -110,6 +111,7 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def("set_size", &soup_t::set_size,
 			(arg("soup_size"), "protein_size", "initial_energy"))
 		.def("deep_size", &soup_t::deep_size)
+		.def("deep_count", &soup_t::deep_count)
 		.def("energy", &soup_t::energy)
 		.def("push_back", &soup_t::push_back)
 		.def("clear", &soup_t::clear)

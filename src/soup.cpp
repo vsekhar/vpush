@@ -34,6 +34,14 @@ std::size_t soup_t::deep_size() const {
 	return accum;
 }
 
+std::size_t soup_t::deep_count() const {
+	const soup_container::index<bySeq>::type& c = container.get<bySeq>();
+	std::size_t accum = 0;
+	BOOST_FOREACH(const Protein& p, c)
+		accum += p.count();
+	return accum;
+}
+
 double soup_t::energy() const {
 	double ret = 0;
 	BOOST_FOREACH(const Protein& p, container)

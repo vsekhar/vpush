@@ -4,6 +4,34 @@
 
 namespace vpush {
 
+struct clearer {
+	template <typename T> void operator()(T& t) const { t.second.clear(); }
+};
+
+void Protein::reset() {
+	fus::for_each(stacks, clearer());
+}
+
+struct size_accumulator {
+	size_accumulator(const std::size_t& start, bool b) : value(start), byte_count(b) {}
+	template <typename T>
+	void operator()(const T& t) const { value+=t.second.size() * (byte_count ? sizeof(T) : 1); }
+	mutable std::size_t value;
+	const bool byte_count;
+};
+
+std::size_t Protein::size() const {
+	size_accumulator s(0, true);
+	fus::for_each(stacks, s);
+	return s.value;
+}
+
+std::size_t Protein::count() const {
+	size_accumulator s(0, false);
+	fus::for_each(stacks, s);
+	return s.value;
+}
+
 Protein random_protein(std::size_t s) {
 	Protein ret;
 	for(std::size_t i = 0; i < s; ++i)

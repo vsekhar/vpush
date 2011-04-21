@@ -26,37 +26,13 @@ namespace vpush {
 
 namespace fus = ::boost::fusion;
 
-struct size_accumulator {
-	size_accumulator(const std::size_t& start) : value(start) {}
-	template <typename T>
-	void operator()(const T& t) const { value+=t.second.size(); }
-	mutable std::size_t value;
-};
-
-struct clearer {
-	template <typename T> void operator()(T& t) const { t.second.clear(); }
-};
-
-template <typename A>
-struct serializer {
-	serializer(A& ar) : archive(ar) {}
-	template <typename T> void operator()(T& c) const { archive & c.second; }
-	A& archive;
-};
-
 struct Protein {
 	Protein()
 		: x(0), y(0), z(0),	facing(util::normalized(util::random_vector())), energy(0) {}
 
-	void reset() {
-		fus::for_each(stacks, clearer());
-	}
-	
-	std::size_t size() const {
-		size_accumulator s(0);
-		fus::for_each(stacks, s);
-		return s.value;
-	}
+	void reset();
+	std::size_t size() const;
+	std::size_t count() const;
 
 	// code and data stacks
 	typedef fus::map<
@@ -87,6 +63,14 @@ struct Protein {
 	
 private:
 	friend class ::boost::serialization::access;
+
+	template <typename A>
+	struct serializer {
+		serializer(A& ar) : archive(ar) {}
+		template <typename T> void operator()(T& c) const { archive & c.second; }
+		A& archive;
+	};
+
 	template <class A> void serialize(A& a, unsigned int) {
 		fus::for_each(stacks, serializer<A>(a));
 		a & x;

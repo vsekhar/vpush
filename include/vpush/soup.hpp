@@ -51,6 +51,7 @@ struct soup_t {
 	inline void push_back(const Protein& e) { container.push_back(e); }
 	inline std::size_t size() const { return container.size(); }
 	std::size_t deep_size() const;
+	std::size_t deep_count() const;
 	void clear() { container.clear(); }
 	
 	double energy() const;

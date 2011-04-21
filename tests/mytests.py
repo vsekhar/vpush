@@ -40,14 +40,14 @@ def souptests():
 		p.energy = initial_energy
 		vpush.get_soup().push_back(p)
 	assert(len(vpush.get_soup()) == protein_count)
-	assert(vpush.get_soup().deep_size() == protein_count * protein_size)
+	assert(vpush.get_soup().deep_count() == protein_count * protein_size)
 	assert(vpush.get_soup().energy() == protein_count * initial_energy)
 	
 	# bulk insertion
 	vpush.get_soup().clear()
 	vpush.get_soup().set_size(protein_count, protein_size, initial_energy)
 	assert(len(vpush.get_soup()) == protein_count)
-	assert(vpush.get_soup().deep_size() == protein_count * protein_size)
+	assert(vpush.get_soup().deep_count() == protein_count * protein_size)
 	assert(vpush.get_soup().energy() == protein_count * initial_energy)
 
 	return True
