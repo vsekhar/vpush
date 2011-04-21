@@ -90,7 +90,7 @@ template <> inline detail::stack<double>& stack(Protein& p) { return p.get<doubl
 template <> inline detail::stack<std::string>& stack(Protein& p) { return p.get<std::string>(); }
 // template <> inline detail::stack<Name>& stack(Protein& p) { return p.name_stack; }
 
-void print_trace(Protein&, std::ostream& o = std::cout);
+void print_protein(Protein&, std::ostream& o = std::cout);
 Protein random_protein(std::size_t);
 
 } // namespace vpush

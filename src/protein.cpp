@@ -39,7 +39,7 @@ Protein random_protein(std::size_t s) {
 	return ret;
 }
 
-void print_trace(Protein& p, std::ostream& o) {
+void print_protein(Protein& p, std::ostream& o) {
 	using std::endl;
 	using vpush::detail::Exec;
 	using vpush::detail::Code;
