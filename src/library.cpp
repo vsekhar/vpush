@@ -4,14 +4,17 @@ namespace vpush {
 namespace library {
 
 void initialize() {
-	basic::initialize();
-	code::initialize();
 	arithmetic::initialize();
-	math::initialize();
-	combinators::initialize();
+	basic::initialize();
 	boolean::initialize();
-	stackops::initialize();
+	code::initialize();
+	combinators::initialize();
+	comparison::initialize();
+	gestation::initialize();
+	math::initialize();
 	movement::initialize();
+	soup::initialize();
+	stackops::initialize();
 }
 
 } // namespace library

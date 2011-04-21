@@ -27,15 +27,17 @@ void initialize();
 // sub-library initializations
 ///////////////////////////////
 
-VPUSH_DECL_LIBRARY(basic)
-VPUSH_DECL_LIBRARY(code)
 VPUSH_DECL_LIBRARY(arithmetic)
-VPUSH_DECL_LIBRARY(math)
-VPUSH_DECL_LIBRARY(combinators)
+VPUSH_DECL_LIBRARY(basic)
 VPUSH_DECL_LIBRARY(boolean)
-VPUSH_DECL_LIBRARY(stackops)
+VPUSH_DECL_LIBRARY(code)
+VPUSH_DECL_LIBRARY(combinators)
+VPUSH_DECL_LIBRARY(comparison)
+VPUSH_DECL_LIBRARY(gestation)
+VPUSH_DECL_LIBRARY(math)
 VPUSH_DECL_LIBRARY(movement)
 VPUSH_DECL_LIBRARY(soup)
+VPUSH_DECL_LIBRARY(stackops)
 
 } // namespace library
 } // namespace vpush
