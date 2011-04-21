@@ -46,7 +46,7 @@ struct serializer {
 
 struct Protein {
 	Protein()
-		: x(0), y(0), z(0),	facing(util::normalized(util::random_vector())) {}
+		: x(0), y(0), z(0),	facing(util::normalized(util::random_vector())), energy(0) {}
 
 	void reset() {
 		fus::for_each(stacks, clearer());
