@@ -7,7 +7,12 @@ namespace library {
 namespace math {
 
 double pow(Protein& p) {
-	push<double>(p, std::pow(pop<double>(p), pop<double>(p)));
+	double result = std::pow(second<double>(p), top<double>(p));
+	if(std::isnan(result) || std::isinf(result))
+		return 0;
+	pop<double>(p);
+	pop<double>(p);
+	push<double>(p, result);
 	return 1;
 }
 
@@ -22,7 +27,11 @@ double cos(Protein &p) {
 }
 
 double tan(Protein &p) {
-	push<double>(p, std::tan(pop<double>(p)));
+	double result = std::tan(top<double>(p));
+	if(std::isnan(result) || std::isinf(result))
+		return 0;
+	pop<double>(p);
+	push<double>(p, result);
 	return 1;
 }
 
