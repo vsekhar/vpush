@@ -1,4 +1,3 @@
-#include <iostream>
 #include <boost/foreach.hpp>
 
 #include <vpush/soup.hpp>
@@ -59,7 +58,6 @@ double soup_t::run() {
 		double initial_energy = i->energy;
 		c.modify(i, runner);
 		energy_used += initial_energy - i->energy;
-		std::cout << "Energy used: " << energy_used << std::endl;
 	}
 	return energy_used;
 }

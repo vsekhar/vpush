@@ -68,10 +68,7 @@ def runtests():
 	vpush.get_soup().set_size(proteins, protein_size, initial_energy)
 	consumed_energy = vpush.get_soup().run()
 	remaining_energy = vpush.get_soup().energy()
-	print("Initial energy: %f" % (initial_energy * proteins))
-	print("Consumed: %f" % consumed_energy)
-	print("Remaining: %f" % remaining_energy)
-	assert(abs((initial_energy*proteins) - consumed_energy - remaining_energy) <= float_info.epsilon)
+	assert(abs(remaining_energy + consumed_energy - (initial_energy*proteins)) <= 1e-10)
 
 	return True
 

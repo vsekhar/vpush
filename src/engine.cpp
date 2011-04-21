@@ -1,4 +1,6 @@
-#include <iostream>
+#ifdef _DEBUG
+#include <boost/assert.hpp>
+#endif
 
 #include <vpush/engine.hpp>
 #include <vpush/stackops.hpp>
@@ -23,8 +25,9 @@ void ProteinRunner::operator()(Protein& p) {
 			if(functions.get_types(e.fptr).check(p)) {
 				double cost = e.fptr(p);
 				p.energy -= cost;
-				if(cost != 0)
-					std::cout << "Energy: " << p.energy << " after running " << e << std::endl;
+#ifdef _DEBUG
+				BOOST_ASSERT(cost >= 0);
+#endif
 			}
 		}
 	}
