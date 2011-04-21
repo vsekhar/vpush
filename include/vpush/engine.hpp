@@ -5,8 +5,9 @@ namespace vpush {
 struct ProteinRunner {
 	ProteinRunner() : trace(false), result(0) {}
 	ProteinRunner(bool t) : trace(t), result(0) {}
-	static void operator()(Protein&) const;
+	void operator()(Protein&);
 	bool trace;
+	double result;
 };
 
 // for python testing

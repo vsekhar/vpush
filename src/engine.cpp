@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <vpush/engine.hpp>
 #include <vpush/stackops.hpp>
 #include <vpush/gestation.hpp>
@@ -6,8 +8,9 @@
 
 namespace vpush {
 
-static void ProteinRunner::operator()(Protein& p) const {
+void ProteinRunner::operator()(Protein& p) {
 	using detail::Exec;
+	double init_energy = p.energy;
 
 	while(!empty<Exec>(p) && p.energy > 0) {
 		if(trace) 
@@ -25,11 +28,16 @@ static void ProteinRunner::operator()(Protein& p) const {
 	detach_gestator();
 	
 	//fitness testing and energy rewards??
+	
+	// Output energy consumed (for now)
+	result = init_energy - p.energy;
 }
 
 // for python testing
-void run_protein(Protein &p, bool trace) {
-	ProteinRunner()(p);
+double run_protein(Protein &p, bool trace) {
+	ProteinRunner runner = ProteinRunner();
+	runner(p);
+	return runner.result;
 }
 
 } // namespace vpush
