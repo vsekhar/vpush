@@ -115,7 +115,8 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def("energy", &soup_t::energy)
 		.def("push_back", &soup_t::push_back)
 		.def("clear", &soup_t::clear)
-		.def("run", &soup_t::run)
+		.def("run", &soup_t::run,
+			(arg("trace")=false))
 		;
 	def("get_soup", get_soup, return_value_policy<reference_existing_object>());
 	

@@ -1,3 +1,4 @@
+#include <iostream>
 #ifdef _DEBUG
 #include <boost/assert.hpp>
 #endif
@@ -16,8 +17,6 @@ void ProteinRunner::operator()(Protein& p) {
 	double init_energy = p.energy;
 
 	while(!empty<Exec>(p) && p.energy > 0) {
-		if(trace) 
-			print_trace(p);
 
 		if(top<Exec>(p).type == Exec::OPEN)
 			detail::unwind(stack<Exec>(p));
@@ -30,6 +29,8 @@ void ProteinRunner::operator()(Protein& p) {
 #ifdef _DEBUG
 					BOOST_ASSERT(cost >= 0);
 #endif
+					if(cost > 0 && trace)
+						std::cout << "Energy after " << e << ": " << p.energy << std::endl;
 				}
 				catch(const detail::stack_underflow &exc) {
 					// Append op-code
