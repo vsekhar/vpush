@@ -113,6 +113,9 @@ BOOST_PYTHON_MODULE(vpush) {
 	scope().attr("soup") = soup;
 	def("load_soup", load_soup, arg("filename"));
 	def("save_soup", save_soup, arg("filename"));
+	
+	// Gestation and incubation
+	def("release_incubator", release_incubator);
 }
 
 } // namespace python
