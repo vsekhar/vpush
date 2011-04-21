@@ -3,7 +3,8 @@
 namespace vpush {
 
 struct ProteinRunner {
-	ProteinRunner(bool t = false) : trace(t) {}
+	ProteinRunner() : trace(false), result(0) {}
+	ProteinRunner(bool t) : trace(t), result(0) {}
 	static void operator()(Protein&) const;
 	bool trace;
 };
