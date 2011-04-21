@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <iostream>
+#include <iterator>
 
 #include <vpush/library.hpp>
 #include <vpush/detail/functions.hpp>
@@ -46,16 +46,13 @@ double make_list(Protein& p) {
 	using detail::advance_n_items_impl;
 
 	detail::stack<T>& s = stack<T>(p);
-	int count = top<int>(p);
+	if(top<int>(p) < 0) return 0;
+	int count = pop<int>(p);
 	typename itr_count_pair<T>::type insertpoint
 		= advance_n_items_impl(s, count);
-	if(count > 0 && insertpoint.second == (unsigned)count) {
-		s.insert(insertpoint.first, T::CLOSE);
-		s.push_back(T::OPEN);
-		return s.end() - insertpoint.first;
-	}
-	else
-		return 0;
+	s.insert(insertpoint.first, T::CLOSE);
+	s.push_back(T::OPEN);
+	return count;
 }
 
 template <typename T>
