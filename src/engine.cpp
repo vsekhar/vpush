@@ -5,6 +5,7 @@
 #include <vpush/engine.hpp>
 #include <vpush/stackops.hpp>
 #include <vpush/gestation.hpp>
+#include <vpush/exception.hpp>
 #include <vpush/detail/functions.hpp>
 #include <vpush/detail/codelist.hpp>
 
@@ -23,11 +24,17 @@ void ProteinRunner::operator()(Protein& p) {
 		else {
 			Exec e = pop<Exec>(p);
 			if(functions.get_types(e.fptr).check(p)) {
-				double cost = e.fptr(p);
-				p.energy -= cost;
+				try {
+					double cost = e.fptr(p);
+					p.energy -= cost;
 #ifdef _DEBUG
-				BOOST_ASSERT(cost >= 0);
+					BOOST_ASSERT(cost >= 0);
 #endif
+				}
+				catch(const detail::stack_underflow &exc) {
+					// Append op-code
+					throw detail::stack_underflow(exc, std::string(" ")+functions.get_name(e));
+				}
 			}
 		}
 	}
