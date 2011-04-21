@@ -1,3 +1,5 @@
+#include <iterator>
+
 #include <boost/foreach.hpp>
 
 #include <vpush/soup.hpp>
@@ -18,25 +20,24 @@ void soup_t::set_size(std::size_t soup_size, std::size_t protein_size, double st
 	if(delta > 0)
 		add(delta, protein_size, starting_energy);
 	else {
-		soup_container::index<bySeq>::type& seq = container.get<bySeq>();
-		soup_container::iterator i = seq.end();
-		for(int j=0; j < -delta; ++j) --i;
-		container.get<bySeq>().erase(i, seq.end());
+		typedef soup_container::index<byEnergy>::type index_t;
+		index_t& c = container.get<byEnergy>();
+		index_t::iterator i = c.end();
+		std::advance(i, -delta);
+		c.erase(i, c.end());
 	}
 }
 
 std::size_t soup_t::deep_size() const {
-	const soup_container::index<bySeq>::type& c = container.get<bySeq>();
 	std::size_t accum = 0;
-	BOOST_FOREACH(const Protein& p, c)
+	BOOST_FOREACH(const Protein& p, container)
 		accum += p.size();
 	return accum;
 }
 
 std::size_t soup_t::deep_count() const {
-	const soup_container::index<bySeq>::type& c = container.get<bySeq>();
 	std::size_t accum = 0;
-	BOOST_FOREACH(const Protein& p, c)
+	BOOST_FOREACH(const Protein& p, container)
 		accum += p.count();
 	return accum;
 }
