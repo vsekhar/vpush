@@ -12,31 +12,31 @@ def run_loop(tasks=None, results=None):
 	if tasks is None:
 		return
 	while(True):
-		func, args, kwargs = tasks.get()
-		if func is None: # stop sentinel
+		func_name, args, kwargs = tasks.get()
+		if func_name is None: # stop sentinel
 			break
 		if args is None:
 			args = []
 		if kwargs is None:
 			kwargs = dict()
-		result = func(*args, **kwargs)
-		if results is not None:
+		result = functions[func_name](*args, **kwargs)
+		if result is not None:
 			results.put(result)
 
 class SymmetricPool:
 	def __init__(self, count=1):
 		self._processes = []
 		self._results = multiprocessing.Queue()
+		self._functions = dict()
 		for _ in range(count):
 			q = multiprocessing.Queue()
 			p = multiprocessing.Process(target=run_loop, kwargs={'tasks':q, 'results':self._results})
 			p.start()
 			self._processes.append((p, q))
 
-
-	def do_all(self, func, args=None, kwargs=None):
+	def do_all(self, func_name, args=None, kwargs=None):
 		for process, queue in self._processes:
-			queue.put((func, args, kwargs))
+			queue.put((func_name, args, kwargs))
 	
 	def end(self):
 		self.do_all(None) # stop sentinel
@@ -61,13 +61,15 @@ def task():
 	ret['final_size'] = len(vpush.get_soup())
 	return ret
 
+functions = {'task':task}
+
 class TestMultiprocessing(unittest.TestCase):
 	def setUp(self):
 		vpush.get_soup().clear()
 		self._processes = SymmetricPool(4)
 	
 	def test_multiprocessing(self):
-		self._processes.do_all(task)
+		self._processes.do_all('task')
 
 	def tearDown(self):
 		self._processes.end()
