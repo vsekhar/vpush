@@ -7,14 +7,13 @@ import unittest
 
 from . import vpush
 
-def end():
-	sys.exit(0)
-
 def run_loop(queue=None):
 	if queue is None:
 		return
 	while(True):
 		func, args, kwargs = queue.get()
+		if func is None: # stop sentinel
+			break
 		if args is None:
 			args = []
 		if kwargs is None:
@@ -36,7 +35,7 @@ class SymmetricPool:
 			queue.put((func, args, kwargs))
 	
 	def end(self):
-		self.do_all(end)
+		self.do_all(None) # stop sentinel
 		for _, queue in self._processes:
 			queue.close()
 		for process, _ in self._processes:
