@@ -7,14 +7,6 @@ import unittest
 
 from . import vpush
 
-def task():
-	ret = dict()
-	ret['init_size'] = len(vpush.get_soup())
-	soup_size = random.randint(0,1000)
-	vpush.get_soup().set_size(soup_size, 100, 100)
-	ret['final_size'] = len(vpush.get_soup())
-	print(ret)
-
 def end():
 	sys.exit(0)
 
@@ -45,9 +37,18 @@ class SymmetricPool:
 	
 	def end(self):
 		self.do_all(end)
-		for process, queue in self._processes:
+		for _, queue in self._processes:
 			queue.close()
+		for process, _ in self._processes:
 			process.join()
+
+def task():
+	ret = dict()
+	ret['init_size'] = len(vpush.get_soup())
+	soup_size = random.randint(0,1000)
+	vpush.get_soup().set_size(soup_size, 100, 100)
+	ret['final_size'] = len(vpush.get_soup())
+	print(ret)
 
 class TestMultiprocessing(unittest.TestCase):
 	def setUp(self):
