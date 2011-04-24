@@ -82,3 +82,4 @@ def runtests():
 def fitnesstests():
 	# TODO: add reward mechanism (during soup.run() or after?)
 	return True
+

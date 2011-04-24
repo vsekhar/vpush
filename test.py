@@ -10,7 +10,8 @@ def test_list():
 		proteintests,
 		souptests,
 		runtests,
-		fitnesstests
+		fitnesstests,
+		multiprocessingtests
 	]
 
 def main():
