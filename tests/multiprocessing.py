@@ -61,7 +61,11 @@ def task():
 	ret['final_size'] = len(vpush.get_soup())
 	return ret
 
-functions = {'task':task}
+def soup_size():
+	return {'soup_size': len(vpush.get_soup())}
+
+functions = {'task':task,
+			 'soup_size': soup_size}
 
 class TestMultiprocessing(unittest.TestCase):
 	def setUp(self):
@@ -70,6 +74,7 @@ class TestMultiprocessing(unittest.TestCase):
 	
 	def test_multiprocessing(self):
 		self._processes.do_all('task')
+		self._processes.do_all('soup_size')
 
 	def tearDown(self):
 		self._processes.end()
