@@ -1,85 +1,82 @@
 #!/usr/bin/python3
 
+import unittest
 from sys import float_info
 
 from . import vpush
 
-def codetests():
-	name = "ADD.INT"
-	c = vpush.functions().get_code(name)
-	assert(vpush.functions().get_name(c) == name)
+class TestCode(unittest.TestCase):
+	def test_name_lookup(self):
+		name = "ADD.INT"
+		c = vpush.functions().get_code(name)
+		self.assertEqual(vpush.functions().get_name(c), name)
 	
-	open_code = vpush.Functions.open()
-	close_code = vpush.Functions.close()
-	assert(open_code.type == vpush.OPEN)
-	assert(close_code.type == vpush.CLOSE)
-	return True
+	def test_open_close_codes(self):
+		open_code = vpush.Functions.open()
+		close_code = vpush.Functions.close()
+		self.assertEqual(open_code.type, vpush.OPEN)
+		self.assertEqual(close_code.type, vpush.CLOSE)
+		
+class TestProteins(unittest.TestCase):
+	def test_proteins(self):
+		p = vpush.Protein()
+		p.push_int(47)
+		self.assertEqual(p.pop_int(), 47)
 
-def proteintests():
-	p = vpush.Protein()
-	p.push_int(47)
-	assert(p.pop_int() == 47)
+class TestSoup(unittest.TestCase):
+	def setUp(self):
+		self.protein_count = 100
+		self.protein_size = 1000
+		self.initial_energy = 12
+		vpush.get_soup().clear()
 
-	return True
-
-def souptests():
-	# incremental soup size
-	size = len(vpush.get_soup())
-	p = vpush.Protein.random(500)
-	vpush.get_soup().push_back(p)
-	assert(len(vpush.get_soup()) == size + 1)
-	vpush.get_soup().clear()
-	assert(len(vpush.get_soup()) == 0)
-
-	# manual insertion
-	protein_count = 100
-	protein_size = 1000
-	initial_energy = 12
-	for i in range(protein_count):
-		p = vpush.Protein.random(protein_size)
-		p.energy = initial_energy
+	def test_incremental(self):
+		size = len(vpush.get_soup())
+		p = vpush.Protein.random(500)
 		vpush.get_soup().push_back(p)
-	assert(len(vpush.get_soup()) == protein_count)
-	assert(vpush.get_soup().deep_count() == protein_count * protein_size)
-	assert(vpush.get_soup().energy() == protein_count * initial_energy)
+		self.assertEqual(len(vpush.get_soup()), size + 1)
+		vpush.get_soup().clear()
+		self.assertEqual(len(vpush.get_soup()), 0)
+
+	def test_manual_insertion(self):
+		for i in range(self.protein_count):
+			p = vpush.Protein.random(self.protein_size)
+			p.energy = self.initial_energy
+			vpush.get_soup().push_back(p)
+		self.assertEqual(len(vpush.get_soup()), self.protein_count)
+		self.assertEqual(vpush.get_soup().deep_count(), self.protein_count * self.protein_size)
+		self.assertEqual(vpush.get_soup().energy(), self.protein_count * self.initial_energy)
+
+	def test_bulk_insertion(self):	
+		vpush.get_soup().set_size(self.protein_count, self.protein_size, self.initial_energy)
+		self.assertEqual(len(vpush.get_soup()), self.protein_count)
+		self.assertEqual(vpush.get_soup().deep_count(), self.protein_count * self.protein_size)
+		self.assertEqual(vpush.get_soup().energy(), self.protein_count * self.initial_energy)
+
+class RunTests(unittest.TestCase):
+	def setUp(self):
+		vpush.get_soup().clear()
 	
-	# bulk insertion
-	vpush.get_soup().clear()
-	vpush.get_soup().set_size(protein_count, protein_size, initial_energy)
-	assert(len(vpush.get_soup()) == protein_count)
-	assert(vpush.get_soup().deep_count() == protein_count * protein_size)
-	assert(vpush.get_soup().energy() == protein_count * initial_energy)
-
-	return True
-
-def runtests():
-	# protein runs
-	p = vpush.Protein.random(500)
-	initial_energy = 100.0
-	p.energy = initial_energy
-	consumed_energy = vpush.run_protein(p)
-	assert(consumed_energy == initial_energy - p.energy)
+	def test_protein_run(self):
+		p = vpush.Protein.random(500)
+		initial_energy = 100.0
+		p.energy = initial_energy
+		consumed_energy = vpush.run_protein(p)
+		self.assertEqual(consumed_energy, initial_energy - p.energy)
 	
-	# soup runs
-	proteins = 1000
-	protein_size = 500
-	initial_energy = 100
-	vpush.get_soup().clear()
-	vpush.get_soup().set_size(proteins, protein_size, initial_energy)
-	consumed_energy = vpush.get_soup().run(trace=False)
-	remaining_energy = vpush.get_soup().energy()
-	if False:
-		print("Initial energy: ", initial_energy*proteins)
-		print("Consumed: ", consumed_energy)
-		print("Remaining: ", remaining_energy)
-		print("Residue: ", abs(remaining_energy + consumed_energy - (initial_energy*proteins)))
-	assert(abs(remaining_energy + consumed_energy - (initial_energy*proteins)) <= 1e-9)
-	if remaining_energy < 0:
-		assert(abs(remaining_energy / proteins) < 0.01 * initial_energy)
-
-	return True
-
-def fitnesstests():
-	# TODO: add reward mechanism (during soup.run() or after?)
-	return True
+	def test_soup_run(self):
+		proteins = 1000
+		protein_size = 500
+		initial_energy = 100
+		vpush.get_soup().set_size(proteins, protein_size, initial_energy)
+		consumed_energy = vpush.get_soup().run(trace=False)
+		remaining_energy = vpush.get_soup().energy()
+		if False:
+			print("Initial energy: ", initial_energy*proteins)
+			print("Consumed: ", consumed_energy)
+			print("Remaining: ", remaining_energy)
+			print("Residue: ", abs(remaining_energy + consumed_energy - (initial_energy*proteins)))
+		self.assertTrue(abs(remaining_energy + consumed_energy - (initial_energy*proteins)) <= 1e-9)
+		if remaining_energy < 0:
+			self.assertTrue(abs(remaining_energy / proteins) < 0.01 * initial_energy)
 
