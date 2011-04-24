@@ -8,8 +8,10 @@ from . import vpush
 class TestCode(unittest.TestCase):
 	def test_name_lookup(self):
 		name = "ADD.INT"
-		c = vpush.functions().get_code(name)
-		self.assertEqual(vpush.functions().get_name(c), name)
+		c1 = vpush.functions().get_code(name)
+		c2 = vpush.Code.byName(name)
+		self.assertEqual(vpush.functions().get_name(c1), name)
+		self.assertEqual(vpush.functions().get_name(c2), name)
 	
 	def test_open_close_codes(self):
 		open_code = vpush.Functions.open()

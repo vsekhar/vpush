@@ -2,30 +2,34 @@
 
 import sys
 import multiprocessing
+import queue
 import random
 import unittest
 
 from . import vpush
 
-def run_loop(queue=None):
-	if queue is None:
+def run_loop(tasks=None, results=None):
+	if tasks is None:
 		return
 	while(True):
-		func, args, kwargs = queue.get()
+		func, args, kwargs = tasks.get()
 		if func is None: # stop sentinel
 			break
 		if args is None:
 			args = []
 		if kwargs is None:
 			kwargs = dict()
-		func(*args, **kwargs)
+		result = func(*args, **kwargs)
+		if results is not None:
+			results.put(result)
 
 class SymmetricPool:
 	def __init__(self, count=1):
 		self._processes = []
+		self._results = multiprocessing.Queue()
 		for _ in range(count):
 			q = multiprocessing.Queue()
-			p = multiprocessing.Process(target=run_loop, kwargs={'queue':q})
+			p = multiprocessing.Process(target=run_loop, kwargs={'tasks':q, 'results':self._results})
 			p.start()
 			self._processes.append((p, q))
 
@@ -40,6 +44,14 @@ class SymmetricPool:
 			queue.close()
 		for process, _ in self._processes:
 			process.join()
+	
+	def dump_results(self):
+		while(True):
+			try:
+				r = self._results.get_nowait()
+				print(r)
+			except queue.Empty:
+				break
 
 def task():
 	ret = dict()
@@ -47,17 +59,17 @@ def task():
 	soup_size = random.randint(0,1000)
 	vpush.get_soup().set_size(soup_size, 100, 100)
 	ret['final_size'] = len(vpush.get_soup())
-	print(ret)
+	return ret
 
 class TestMultiprocessing(unittest.TestCase):
 	def setUp(self):
 		vpush.get_soup().clear()
+		self._processes = SymmetricPool(4)
 	
 	def test_multiprocessing(self):
-		processes = SymmetricPool(4)
-		processes.do_all(task)
-		processes.end()
-		
-		# see if we successfully join
-		self.assertTrue(True)
+		self._processes.do_all(task)
+
+	def tearDown(self):
+		self._processes.end()
+		self._processes.dump_results()
 
