@@ -43,7 +43,8 @@ class SymmetricPool:
 		for process, queue in self._processes:
 			queue.put((func, args, kwargs))
 	
-	def join(self):
+	def end(self):
+		self.do_all(end)
 		for process, queue in self._processes:
 			queue.close()
 			process.join()
@@ -55,8 +56,7 @@ class TestMultiprocessing(unittest.TestCase):
 	def test_multiprocessing(self):
 		processes = SymmetricPool(4)
 		processes.do_all(task)
-		processes.do_all(end)
-		processes.join()
+		processes.end()
 		
 		# see if we successfully join
 		self.assertTrue(True)
