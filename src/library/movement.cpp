@@ -8,6 +8,8 @@
 #include <vpush/soup.hpp>
 #include <vpush/util/vector.hpp>
 
+#define MAX_MOVEMENT_CONSUMPTION (0.1)
+
 namespace vpush {
 namespace library {
 namespace movement {
@@ -28,11 +30,15 @@ double move(Protein& p) {
 		return 0;
 
 	double magnitude = pop<double>(p);
-	if(std::abs(magnitude) > p.energy / density) {
+	const double max_energy = MAX_MOVEMENT_CONSUMPTION * p.energy / density;
+#ifdef _DEBUG
+	BOOST_ASSERT(max_energy > 0);
+#endif
+	if(std::abs(magnitude) > max_energy) {
 		if(magnitude < 0)
-			magnitude = -(p.energy / density);
+			magnitude = -max_energy;
 		else
-			magnitude = p.energy / density;
+			magnitude = max_energy;
 	}
 
 	util::vector v = p.facing * magnitude;
