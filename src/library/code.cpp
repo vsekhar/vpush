@@ -39,7 +39,7 @@ double to_string(Protein &p) {
 		ss << t;
 	}
 	push<string>(p, ss.str());
-	return 0;
+	return i.size();
 }
 
 template <typename T>
@@ -47,9 +47,15 @@ double from_string(Protein &p) {
 	string str = pop<string>(p);
 	boost::char_separator<char> sep(" ");
 	boost::tokenizer tok(str, sep);
-	BOOST_FOREACH(const string& s, tok)
-		push<T>(p, functions.get_code(s));
-	return 0;
+	std::size_t count = 0;
+	BOOST_FOREACH(const string& s, tok) {
+		try {
+			push<T>(p, functions.get_code(s));
+			++count;
+		}
+		catch(detail::no_such_function) {}
+	}
+	return count;
 }
 
 double random_code(Protein &p) {
