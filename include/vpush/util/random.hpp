@@ -2,6 +2,7 @@
 #define __VPUSH_RANDOM_HPP__
 
 #include <ctime>	// for std::time
+#include <string>
 
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int.hpp>
@@ -49,6 +50,17 @@ struct Random_01 {
 	Random_01() : dist() {}
 	double operator()() { return dist(default_generator); }
 	boost::uniform_01<> dist;
+};
+
+struct RandomString {
+	using ::std::string;
+	static const string letters = "abcdefghijklmnopqrstuvwxyz";
+	static const string digits = "0123456789";
+	RandomString() : choices(letters + digits), rint(0, choices.size()-1) {}
+	RandomString(const string& s) : choices(s), rint(0, choices.size()-1) {}
+	string operator()(std::size_t);
+	string choices;
+	RandomInt rint;
 };
 
 } // namespace util
