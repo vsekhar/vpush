@@ -1,7 +1,10 @@
 #include <string>
+#include <sstream>
 #include <vector>
 #include <algorithm>
 #include <iterator>
+
+#include <boost/tokenizer.hpp>
 
 #include <vpush/library.hpp>
 #include <vpush/detail/functions.hpp>
@@ -23,6 +26,30 @@ double is_atom(Protein &p) {
 template <typename SRC, typename DEST>
 double quote(Protein &p) {
 	return put_item(get_item(stack<SRC>(p)), stack<DEST>(p));
+}
+
+template <typename T>
+double to_string(Protein &p) {
+	item<T> i = get_item(stack<T>(p));
+	std::stringstream ss;
+	bool first = true;
+	BOOST_FOREACH(const T& t, i) {
+		if(first) first = false;
+		else ss << " ";
+		ss << t;
+	}
+	push<string>(p, ss.str());
+	return 0;
+}
+
+template <typename T>
+double from_string(Protein &p) {
+	string str = pop<string>(p);
+	boost::char_separator<char> sep(" ");
+	boost::tokenizer tok(str, sep);
+	BOOST_FOREACH(const string& s, tok)
+		push<T>(p, functions.get_code(s));
+	return 0;
 }
 
 double random_code(Protein &p) {
@@ -101,9 +128,16 @@ double do_range(Protein& p) {
 void initialize() {
 	functions.add("ISATOM.CODE", is_atom<Code>, type<Code>());
 	functions.add("ISATOM.EXEC", is_atom<Exec>, type<Exec>());
+
 	functions.add("QUOTE.CODE", quote<Exec, Code>, type<Exec>());
 	functions.add("QUOTE.EXEC", quote<Code, Exec>, type<Code>());
+	functions.add("TO_STRING.CODE", to_string<Code>, type<Code>());
+	functions.add("TO_STRING.EXEC", to_string<Exec>, type<Exec>());
+	functions.add("FROM_STRING.CODE", from_string<Code>, type<string>());
+	functions.add("FROM_STRING.EXEC", from_string<Exec>, type<string>());
+
 	functions.add("RANDOM.CODE", random_code);
+
 	functions.add("CONS.CODE", cons<Code>, type<Code>() * 2);
 	functions.add("CONS.EXEC", cons<Exec>, type<Exec>() * 2);
 	functions.add("MAKELIST.CODE", make_list<Code>, type<int>());
