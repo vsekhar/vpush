@@ -2,6 +2,7 @@
 #define __VPUSH_DETAIL_CODE_HPP__
 
 #include <ostream>
+#include <stdexcept>
 
 #include <vpush/detail/code_fwd.hpp>
 
@@ -11,7 +12,12 @@ namespace detail {
 struct Code {
 	enum codetype {CODE, OPEN, CLOSE};
 
-	Code(codetype t) : fptr(0), type(t) {}
+	Code(codetype t) : fptr(0), type(t) {
+#ifdef _DEBUG
+		if(t == CODE)
+			throw std::invalid_argument("Code(codetype) constructor can only be used for brackets");
+#endif
+	}
 	Code(op_func_t f) : fptr(f), type(CODE) {}
 	Code(const Code& c) : fptr(c.fptr), type(c.type) {}
 
