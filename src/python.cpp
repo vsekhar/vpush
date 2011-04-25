@@ -25,6 +25,90 @@ Exec code_open() { return Exec::OPEN; }
 Exec byName(string n) { return functions.get_code(n); }
 Exec random() { return functions.get_random(); }
 
+struct CodePickleSuite : ::boost::python::pickle_suite {
+	using ::boost::python::tuple;
+	using ::boost::python::make_tuple;
+	
+	static tuple getinitargs(const Code& c) {
+		std::string name;
+		if(c.type == Code::CODE)
+			name = vpush::detail::functions.get_name(c);
+		return make_tuple(c.type, name);
+	}
+};
+
+struct ProteinPickleSuite : ::boost::python::pickle_suite {
+	using ::boost::python::list;
+	using ::boost::python::extract;
+	
+	struct StackExtractor {
+		StackExtractor(list& l) : _list(l) {}
+		template <typename S>
+		void operator()(const S& s) const {
+			list converted_stack;
+			_list.append(std::copy(s.begin(), s.end(), std::begin(converted_stack)));
+		}	
+		list& _list;
+	};
+
+	struct StackInserter {
+		StackInserter(const list& l) : _list(l) {}
+		template <typename S>
+		void operator()(S& s) const {
+			const list& converted_stack = extract<list>(*std::begin(_list));
+			std::copy(converted_stack.begin(), converted_stack.end(), std::back_inserter(s));
+		}
+		const list& _list;
+	};
+
+	static list getstate(const Protein& p) {
+		list ret;
+		ret.append(p.energy);
+		ret.append(p.x);
+		ret.append(p.y);
+		ret.append(p.z);
+		ret.append(p.facing);
+		p.for_each(StackExtractor(ret));
+		return ret;
+	}
+	
+	static void setstate(Protein& p, list l) {
+		p.energy = extract<double>(list.pop(0));
+		p.x = extract<vpush::detail::toroidal_dimension>(list.pop(0));
+		p.y = extract<vpush::detail::toroidal_dimension>(list.pop(0));
+		p.z = extract<vpush::detail::toroidal_dimension>(list.pop(0));
+		p.facing = extract<vpush::util::vector>(list.pop(0));
+		p.for_each(StackInserter(list));
+	}
+};
+
+struct SoupPickleSuite : ::boost::python::pickle_suite {
+	static list getstate(const Soup_t& s) {
+		list ret;
+		BOOST_FOREACH(const Protein& p, s)
+			ret.append(p);
+		return ret;
+	}
+	
+	struct SoupInserter {
+		SoupInserter(Soup_t& s) : _soup(s) {}
+		static void operator()(const Protein &p) const {
+			_soup.insert(p);
+		}
+		Soup_t _soup;
+	}
+	
+	static void setstate(Soup_t& s, list l) {
+		using ::boost::python::object;
+		Soup_t new_soup;
+		BOOST_FOREACH(const object& o, l) {
+			const Protein &p = extract<const Protein&>(o);
+			new_soup.push_back(p);
+		}
+		s.swap(new_soup);
+	}
+};
+
 void load_soup(string filename) {
 	std::ifstream i(filename);
 	boost::archive::text_iarchive ar(i);
@@ -60,12 +144,13 @@ BOOST_PYTHON_MODULE(vpush) {
 		;
 
 	class_<Code>("Code", no_init)
-		.def(init<Code::codetype>(args("type")))
+		.def(init<Code::codetype, std::string>((arg("type"), "name")))
 		.def_readonly("type", &Code::type)
 		.def("byName", byName)
 		.staticmethod("byName")
 		.def("random", random)
 		.staticmethod("random")
+		.def_pickle(CodePickleSuite())
 		;
 
 	class_<Exec, bases<Code> >("Exec", no_init);
@@ -94,6 +179,7 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def("pop_exec", pop_wrap<Exec>)
 		.def("push_code", push_wrap<Code>)
 		.def("pop_code", pop_wrap<Code>)
+		.def_pickle(ProteinPickleSuite())
 		;
 
 	// Engine (for running proteins)
@@ -117,6 +203,7 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def("clear", &soup_t::clear)
 		.def("run", &soup_t::run,
 			(arg("trace")=false))
+		.def_pickle(SoupPickleSuite())
 		;
 	def("get_soup", get_soup, return_value_policy<reference_existing_object>());
 	
