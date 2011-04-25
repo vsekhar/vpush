@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import unittest
-from sys import float_info
+from sys import float_info, getsizeof
 
 from . import vpush
 
@@ -22,8 +22,39 @@ class TestCode(unittest.TestCase):
 class TestProteins(unittest.TestCase):
 	def test_proteins(self):
 		p = vpush.Protein()
+		self.assertEqual(len(p), 0)
+		self.assertEqual(p.count(), 0)
+
 		p.push_int(47)
+		self.assertEqual(len(p), getsizeof(int))
+		self.assertEqual(p.count(), 1)
+
 		self.assertEqual(p.pop_int(), 47)
+		self.assertEqual(len(p), 0)
+		self.assertEqual(p.count(), 0)
+		
+		codecount = 500
+		p = vpush.Protein.random_protein(codecount)
+		self.assertEqual(len(p), codecount * getsizeof(vpush.Code))
+		self.assertEqual(p.count(), codecount)
+		
+	def test_protein_pickling(self):
+		import tempfile
+		import pickle
+		src = vpush.Protein.random(100)
+		with tempfile.SpooledTemporaryFile(max_size=1024*1024) as file:
+			pickle.dump(src, file)
+			dst = pickle.load(file)
+		self.assertEqual(src.energy, dst.energy)
+		self.assertEqual(vpush.run_protein(src), vpush.run_protein(dst))
+		self.assertEqual(src.energy, dst.energy)
+
+def test_triangle(initial, consumed, final):
+	if abs(final + consumed - initial) > 1e-9:
+		return False
+	if final < 0 and abs(final) > (0.01 * initial):
+		return False
+	return True
 
 class TestSoup(unittest.TestCase):
 	def setUp(self):
@@ -54,12 +85,58 @@ class TestSoup(unittest.TestCase):
 		self.assertEqual(len(vpush.get_soup()), self.protein_count)
 		self.assertEqual(vpush.get_soup().deep_count(), self.protein_count * self.protein_size)
 		self.assertEqual(vpush.get_soup().energy(), self.protein_count * self.initial_energy)
+	
+	def test_soup_pickling(self):
+		import tempfile
+		import pickle
+		vpush.get_soup().set_size(100, 100, 100)
+		src = vpush.Soup(vpush.get_soup())
+		with tempfile.SpooledTemporaryFile(max_size=1024*1024) as file:
+			pickle.dump(src, file)
+			dst = pickle.load(file)
+		vpush.get_soup().clear()
+		vpush.get_soup() = src
+		src_initial_energy = vpush.get_soup().energy()
+		src_consumed_energy = vpush.get_soup().run(trace=False)
+		src_final_energy = vpush.get_soup().energy()
+		self.assertTrue(test_triangle(self, src_initial_energy, src_consumed_energy, src_final_energy))
+		
+		vpush.get_soup().clear()
+		vpush.get_soup() = dst		
+		dst_initial_energy = vpush.get_soup().energy()
+		dst_consumed_energy = vpush.get_soup().run(trace=False)
+		dst_final_energy = vpush.get_soup().energy()
+		self.assertTrue(test_triangle(dst_initial_energy, dst_consumed_energy, dst_final_energy))
+		
+		self.assertEqual(src_initial_energy, dst_initial_energy)
+		self.assertEqual(src_consumed_energy, dst_consumed_energy)
+		self.assertEqual(src_final_energy, dst_final_energy)
 
 class RunTests(unittest.TestCase):
 	def setUp(self):
 		vpush.get_soup().clear()
 	
 	def test_protein_run(self):
+		p = vpush.Protein.random(1000)
+		p.energy = 2000
+		p.push_int(7)
+		p.push_int(31)
+		p.push_int(4)
+		p.push_int(8)
+		p.push_code(vpush.Code.CLOSE)
+		p.push_code(vpush.functions().get_code("RANDOM.CODE"))
+		p.push_code(vpush.Code.CLOSE)
+		p.push_code(vpush.functions().get_code("MAKELIST.CODE"))
+		p.push_code(vpush.Code.OPEN)
+		p.push_code(vpush.Code.OPEN)
+		p.push_exec(vpush.functions().get_code("QUOTE.EXEC"))
+		p.push_exec(vpush.functions().get_code("DUP.CODE"))
+
+		initial_energy = p.energy
+		consumed_energy = vpush.run_protein(p)
+		self.assertEqual(consumed_energy, initial_energy - p.energy)
+	
+	def test_protein_random_run(self):
 		p = vpush.Protein.random(500)
 		initial_energy = 100.0
 		p.energy = initial_energy
@@ -78,7 +155,4 @@ class RunTests(unittest.TestCase):
 			print("Consumed: ", consumed_energy)
 			print("Remaining: ", remaining_energy)
 			print("Residue: ", abs(remaining_energy + consumed_energy - (initial_energy*proteins)))
-		self.assertTrue(abs(remaining_energy + consumed_energy - (initial_energy*proteins)) <= 1e-9)
-		if remaining_energy < 0:
-			self.assertTrue(abs(remaining_energy / proteins) < 0.01 * initial_energy)
-
+		self.assertTrue(test_triangle(initial_energy*proteins, consumed_energy, remaining_energy))
