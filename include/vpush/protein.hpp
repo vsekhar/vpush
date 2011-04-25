@@ -30,10 +30,6 @@ struct Protein {
 	Protein()
 		: x(0), y(0), z(0),	facing(util::normalized(util::random_vector())), energy(0) {}
 
-	void reset();
-	std::size_t size() const;
-	std::size_t count() const;
-
 	// code and data stacks
 	typedef fus::map<
 		fus::pair<detail::Code, detail::codestack<detail::Code> >,
@@ -49,6 +45,15 @@ struct Protein {
 	inline detail::stack<STACK_T>& get() {
 		return fus::at_key<STACK_T>(this->stacks);
 	}
+	
+	template <typename FUNCTOR>
+	inline void for_each(FUNCTOR &f) {
+		::boost::fusion::for_each(stacks, f);
+	}
+
+	void reset();
+	std::size_t size() const;
+	std::size_t count() const;
 
 	// position
 	detail::toroidal_dimension x;

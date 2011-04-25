@@ -9,7 +9,7 @@ struct clearer {
 };
 
 void Protein::reset() {
-	fus::for_each(stacks, clearer());
+	this->for_each(clearer());
 }
 
 struct size_accumulator {
@@ -22,13 +22,13 @@ struct size_accumulator {
 
 std::size_t Protein::size() const {
 	size_accumulator s(0, true);
-	fus::for_each(stacks, s);
+	this->for_each(s);
 	return s.value;
 }
 
 std::size_t Protein::count() const {
 	size_accumulator s(0, false);
-	fus::for_each(stacks, s);
+	this->for_each(s);
 	return s.value;
 }
 
