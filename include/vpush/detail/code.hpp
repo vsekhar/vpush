@@ -13,7 +13,6 @@ struct Code {
 
 	Code(codetype t) : fptr(0), type(t) {}
 	Code(op_func_t f) : fptr(f), type(CODE) {}
-	Code(codetype, const std::string&);	// for python pickling
 	Code(const Code& c) : fptr(c.fptr), type(c.type) {}
 
 	op_func_t fptr;

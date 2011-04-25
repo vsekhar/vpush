@@ -41,15 +41,26 @@ type_container functions_t::get_types(const op_func_t& fptr) const {
 }
 
 std::string functions_t::get_name(const Code& c) const {
-	functions_by_fptr& funcs = _container.get<byFptr>();
-	functions_by_fptr::const_iterator i = funcs.find(c.fptr);
-	if(i == funcs.end())
-		throw no_such_function("(binary fptr)");
-	return i->name;
+	if(c.type == Code::OPEN)
+		return "(";
+	else if (c.type == CODE::CLOSE)
+		return ")";
+	else {
+		functions_by_fptr& funcs = _container.get<byFptr>();
+		functions_by_fptr::const_iterator i = funcs.find(c.fptr);
+		if(i == funcs.end())
+			throw no_such_function("(binary fptr)");
+		return i->name;
+	}
 }
 
 Exec functions_t::get_code(const std::string& name) const {
-	return Exec(get_fptr(name));
+	if(name == "(")
+		return Exec(Exec::OPEN);
+	else if(name == ")")
+		return Exec(Exec::CLOSE);
+	else
+		return Exec(get_fptr(name));
 }
 
 Exec functions_t::get_random() const {
