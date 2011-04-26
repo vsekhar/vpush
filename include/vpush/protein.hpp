@@ -56,9 +56,9 @@ struct Protein {
 	std::size_t count() const;
 
 	// position
-	detail::toroidal_dimension x;
-	detail::toroidal_dimension y;
-	detail::toroidal_dimension z;
+	util::toroidal_dimension x;
+	util::toroidal_dimension y;
+	util::toroidal_dimension z;
 
 	// facing
 	util::vector facing;

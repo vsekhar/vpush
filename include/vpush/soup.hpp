@@ -27,15 +27,15 @@ typedef multi_index_container <
 		sequenced<tag<bySeq> >,
 		ordered_non_unique<
 			tag<byX>, 
-			member<Protein, detail::toroidal_dimension, &Protein::x>
+			member<Protein, util::toroidal_dimension, &Protein::x>
 		>,
 		ordered_non_unique<
 			tag<byY>, 
-			member<Protein, detail::toroidal_dimension, &Protein::y>
+			member<Protein, util::toroidal_dimension, &Protein::y>
 		>,
 		ordered_non_unique<
 			tag<byZ>, 
-			member<Protein, detail::toroidal_dimension, &Protein::z>
+			member<Protein, util::toroidal_dimension, &Protein::z>
 		>,
 		ordered_non_unique<
 			tag<byEnergy>,

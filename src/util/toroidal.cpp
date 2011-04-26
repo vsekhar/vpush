@@ -5,7 +5,7 @@
 #include <vpush/util/toroidal.hpp>
 
 namespace vpush {
-namespace detail {
+namespace util {
 
 double modf(double v) {
 	double dummy;
@@ -58,6 +58,6 @@ std::ostream& operator<<(std::ostream& o, const toroidal_dimension& t) {
 	return o << t.value;
 }
 
-} // namespace detail
+} // namespace util
 } // namespace vpush
 

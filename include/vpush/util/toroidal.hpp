@@ -7,7 +7,7 @@
 #include <boost/serialization/access.hpp>
 
 namespace vpush {
-namespace detail {
+namespace util {
 
 double modf(double);
 
@@ -49,7 +49,7 @@ toroidal_dimension operator/(const toroidal_dimension&, double);
 
 toroidal_dimension operator*(double, const toroidal_dimension&);
 
-} // namespace detail
+} // namespace util
 } // namespace vpush
 
 #endif // __VPUSH_DETAIL_TOROIDAL_HPP__
