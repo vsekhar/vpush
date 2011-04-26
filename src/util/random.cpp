@@ -3,7 +3,12 @@
 namespace vpush {
 namespace util {
 
+using std::string;
+
 default_generator_t default_generator;
+
+const std::string RandomString::letters = "abcdefghijklmnopqrstuvwxyz";
+const std::string RandomString::digits = "0123456789";
 
 string RandomString::operator()(std::size_t len) {
 	string ret;

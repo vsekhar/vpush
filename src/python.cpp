@@ -1,13 +1,14 @@
 #include <string>
 #include <fstream>
+#include <iterator>
 
 #include <boost/python.hpp>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+#include <boost/python/stl_iterator.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
 #include <vpush/vpush.hpp>
+#include <vpush/util/toroidal.hpp>
 
 namespace vpush {
 namespace python {
@@ -25,84 +26,108 @@ Exec code_open() { return Exec::OPEN; }
 Exec byName(string n) { return functions.get_code(n); }
 Exec random() { return functions.get_random(); }
 
-struct CodePickleSuite : ::boost::python::pickle_suite {
-	using ::boost::python::tuple;
-	using ::boost::python::make_tuple;
-	
-	static tuple getinitargs(const Code& c) {
-		std::string name;
-		if(c.type == Code::CODE)
-			name = vpush::detail::functions.get_name(c);
-		return make_tuple(c.type, name);
+struct VectorPickleSuite : py::pickle_suite {
+	static py::tuple getinitargs(const util::vector& v) {
+		return py::make_tuple(v[0], v[1], v[2]);
 	}
 };
 
-struct ProteinPickleSuite : ::boost::python::pickle_suite {
-	using ::boost::python::list;
-	using ::boost::python::extract;
-	
+struct ToroidalPickleSuite : py::pickle_suite {
+	static py::tuple getinitargs(const util::toroidal_dimension& td) {
+		return py::make_tuple(td.get());
+	}
+};
+
+struct CodePickleSuite : py::pickle_suite {
+	static py::tuple getinitargs(const Code& c) {
+		std::string name;
+		if(c.type == Code::CODE)
+			name = vpush::functions.get_name(c);
+		return py::make_tuple(c.type, name);
+	}
+};
+
+struct ProteinPickleSuite : py::pickle_suite {
 	struct StackExtractor {
-		StackExtractor(list& l) : _list(l) {}
+		StackExtractor(py::list& l) : _list(l) {}
 		template <typename S>
 		void operator()(const S& s) const {
-			list converted_stack;
-			_list.append(std::copy(s.begin(), s.end(), std::begin(converted_stack)));
-		}	
-		list& _list;
+			py::list converted_stack;
+			py::stl_input_iterator<typename S::second_type::value_type> begin(converted_stack);
+			std::copy(s.second.begin(), s.second.end(), begin);
+			_list.append(converted_stack);
+		}
+		py::list& _list;
 	};
 
 	struct StackInserter {
-		StackInserter(const list& l) : _list(l) {}
+		StackInserter(py::list& l) : _list(l) {}
 		template <typename S>
 		void operator()(S& s) const {
-			const list& converted_stack = extract<list>(*std::begin(_list));
-			std::copy(converted_stack.begin(), converted_stack.end(), std::back_inserter(s));
+			typename S::second_type new_stack;
+			new_stack.reserve(py::len(_list));
+			py::stl_input_iterator<typename S::second_type::value_type> begin(_list.pop(0)), end;
+			for( ; begin != end; ++begin)
+				new_stack.push_back(*begin);
+			// doesn't work for some reason:
+			// std::copy(begin, end, std::back_inserter(new_stack));
+			s.second.swap(new_stack);
 		}
-		const list& _list;
+		mutable py::list& _list;
 	};
 
-	static list getstate(const Protein& p) {
-		list ret;
+	static py::list getstate(const Protein& p) {
+		py::list ret;
 		ret.append(p.energy);
 		ret.append(p.x);
 		ret.append(p.y);
 		ret.append(p.z);
 		ret.append(p.facing);
-		p.for_each(StackExtractor(ret));
+		StackExtractor se(ret);
+		p.for_each(ret);
 		return ret;
 	}
 	
-	static void setstate(Protein& p, list l) {
-		p.energy = extract<double>(list.pop(0));
-		p.x = extract<vpush::detail::toroidal_dimension>(list.pop(0));
-		p.y = extract<vpush::detail::toroidal_dimension>(list.pop(0));
-		p.z = extract<vpush::detail::toroidal_dimension>(list.pop(0));
-		p.facing = extract<vpush::util::vector>(list.pop(0));
-		p.for_each(StackInserter(list));
+	static void setstate(Protein& p, py::list l) {
+		p.energy = py::extract<double>(l.pop(0));
+		p.x = py::extract<vpush::util::toroidal_dimension>(l.pop(0));
+		p.y = py::extract<vpush::util::toroidal_dimension>(l.pop(0));
+		p.z = py::extract<vpush::util::toroidal_dimension>(l.pop(0));
+		p.facing = py::extract<vpush::util::vector>(l.pop(0));
+		StackInserter si(l);
+		p.for_each(si);
 	}
 };
 
-struct SoupPickleSuite : ::boost::python::pickle_suite {
-	static list getstate(const Soup_t& s) {
-		list ret;
-		BOOST_FOREACH(const Protein& p, s)
-			ret.append(p);
+struct SoupPickleSuite : py::pickle_suite {
+	struct SoupExtractor {
+		SoupExtractor(py::list& l) : _list(l) {}
+		void operator()(const Protein& p) {
+			_list.append(p);
+		}
+		py::list& _list;
+	};
+	
+	static py::list getstate(const soup_t& s) {
+		py::list ret;
+		SoupExtractor se(ret);
+		s.for_each(se);
 		return ret;
 	}
 	
 	struct SoupInserter {
-		SoupInserter(Soup_t& s) : _soup(s) {}
-		static void operator()(const Protein &p) const {
-			_soup.insert(p);
+		SoupInserter(soup_t& s) : _soup(s) {}
+		void operator()(const Protein &p) {
+			_soup.push_back(p);
 		}
-		Soup_t _soup;
-	}
+		soup_t _soup;
+	};
 	
-	static void setstate(Soup_t& s, list l) {
-		using ::boost::python::object;
-		Soup_t new_soup;
-		BOOST_FOREACH(const object& o, l) {
-			const Protein &p = extract<const Protein&>(o);
+	static void setstate(soup_t& s, py::list l) {
+		soup_t new_soup;
+		py::stl_input_iterator<py::list> begin(l), end;
+		for( ; begin != end; ++begin) {
+			const Protein& p = extract<const Protein&>(*begin);
 			new_soup.push_back(p);
 		}
 		s.swap(new_soup);
@@ -130,11 +155,20 @@ template <typename T>
 T pop_wrap(Protein *p) { return pop<T>(*p); }
 
 vpush::soup_t& get_soup() { return vpush::soup; }
+void set_soup(const vpush::soup_t& s) { vpush::soup = s; }
 const vpush::detail::functions_t& get_functions() { return vpush::functions; }
 
 BOOST_PYTHON_MODULE(vpush) {
 	// on import
 	vpush::initialize();
+	
+	// utils
+	class_<util::vector>("Vector")
+		.def_pickle(VectorPickleSuite())
+		;
+	class_<util::toroidal_dimension>("ToroidalDimension")
+		.def_pickle(ToroidalPickleSuite())
+		;
 	
 	// Code and Exec types
 	enum_<Code::codetype>("CodeType")
@@ -144,7 +178,6 @@ BOOST_PYTHON_MODULE(vpush) {
 		;
 
 	class_<Code>("Code", no_init)
-		.def(init<Code::codetype, std::string>((arg("type"), "name")))
 		.def_readonly("type", &Code::type)
 		.def("byName", byName)
 		.staticmethod("byName")
@@ -206,6 +239,7 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def_pickle(SoupPickleSuite())
 		;
 	def("get_soup", get_soup, return_value_policy<reference_existing_object>());
+	def("set_soup", set_soup);
 	
 	def("load_soup", load_soup, arg("filename"));
 	def("save_soup", save_soup, arg("filename"));

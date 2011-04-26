@@ -20,7 +20,7 @@ struct SeededGenerator : GENERATOR {
 
 template <class GENERATOR>
 struct TimeSeededGenerator : GENERATOR {
-	TimeSeededGenerator() : GENERATOR(static_cast<unsigned int>(std::time(0))) {};
+	TimeSeededGenerator() : GENERATOR(static_cast<unsigned int>(std::time(0))) {}
 };
 
 typedef TimeSeededGenerator<boost::mt19937> time_seeded_mersenne_t;
@@ -53,13 +53,12 @@ struct Random_01 {
 };
 
 struct RandomString {
-	using ::std::string;
-	static const string letters = "abcdefghijklmnopqrstuvwxyz";
-	static const string digits = "0123456789";
+	static const std::string letters;
+	static const std::string digits;
 	RandomString() : choices(letters + digits), rint(0, choices.size()-1) {}
-	RandomString(const string& s) : choices(s), rint(0, choices.size()-1) {}
-	string operator()(std::size_t);
-	string choices;
+	RandomString(const std::string& s) : choices(s), rint(0, choices.size()-1) {}
+	std::string operator()(std::size_t);
+	std::string choices;
 	RandomInt rint;
 };
 

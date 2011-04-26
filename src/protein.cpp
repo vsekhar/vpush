@@ -9,7 +9,8 @@ struct clearer {
 };
 
 void Protein::reset() {
-	this->for_each(clearer());
+	clearer c;
+	this->for_each(c);
 }
 
 struct size_accumulator {

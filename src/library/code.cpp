@@ -16,6 +16,7 @@ namespace vpush {
 namespace library {
 namespace code {
 
+using ::std::string;
 
 template <typename T>
 double is_atom(Protein &p) {
@@ -33,7 +34,7 @@ double to_string(Protein &p) {
 	item<T> i = get_item(stack<T>(p));
 	std::stringstream ss;
 	bool first = true;
-	BOOST_FOREACH(const T& t, i) {
+	BOOST_FOREACH(const T& t, i.container) {
 		if(first) first = false;
 		else ss << " ";
 		ss << t;
@@ -45,10 +46,10 @@ double to_string(Protein &p) {
 template <typename T>
 double from_string(Protein &p) {
 	string str = pop<string>(p);
-	boost::char_separator<char> sep(" ");
-	boost::tokenizer tok(str, sep);
 	std::size_t count = 0;
-	BOOST_FOREACH(const string& s, tok) {
+	boost::char_separator<char> sep(" ");
+	boost::tokenizer<boost::char_separator<char> > tokens(str, sep);
+	BOOST_FOREACH(const string& s, tokens) {
 		try {
 			push<T>(p, functions.get_code(s));
 			++count;

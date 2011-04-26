@@ -28,39 +28,46 @@ void soup_t::set_size(std::size_t soup_size, std::size_t protein_size, double st
 	}
 }
 
+struct sizer {
+	sizer() : result(0) {}
+	void operator()(const Protein& p) {result+=p.size();}
+	std::size_t result;
+};
+
 std::size_t soup_t::deep_size() const {
-	std::size_t accum = 0;
-	BOOST_FOREACH(const Protein& p, container)
-		accum += p.size();
-	return accum;
+	sizer s;
+	this->for_each(s);
+	return s.result;
 }
+
+struct counter {
+	counter() : result(0) {}
+	void operator()(const Protein& p) {result+=p.count();}
+	std::size_t result;
+};
 
 std::size_t soup_t::deep_count() const {
-	std::size_t accum = 0;
-	BOOST_FOREACH(const Protein& p, container)
-		accum += p.count();
-	return accum;
+	counter c;
+	this->for_each(c);
+	return c.result;
 }
 
+struct energy_summer {
+	energy_summer() : result(0) {}
+	void operator()(const Protein& p) {result+=p.energy;}
+	double result;
+};
+
 double soup_t::energy() const {
-	double ret = 0;
-	BOOST_FOREACH(const Protein& p, container)
-		ret += p.energy;
-	return ret;
+	energy_summer es;
+	this->for_each(es);
+	return es.result;
 }
 
 double soup_t::run(bool trace) {
 	ProteinRunner runner = ProteinRunner(trace);
-	double energy_used = 0;
-	typedef soup_container::index<bySeq>::type index;
-	index& c = container.get<bySeq>();
-	index::iterator i = c.begin();
-	for(; i != c.end(); ++i) {
-		double initial_energy = i->energy;
-		c.modify(i, runner);
-		energy_used += initial_energy - i->energy;
-	}
-	return energy_used;
+	this->for_each(runner);
+	return runner.result;
 }
 
 soup_t soup;

@@ -25,18 +25,22 @@ class TestProteins(unittest.TestCase):
 		self.assertEqual(len(p), 0)
 		self.assertEqual(p.count(), 0)
 
+		overhead = getsizeof(p)
 		p.push_int(47)
-		self.assertEqual(len(p), getsizeof(int))
+		self.assertEqual(len(p), getsizeof(int(0)))
 		self.assertEqual(p.count(), 1)
 
 		self.assertEqual(p.pop_int(), 47)
 		self.assertEqual(len(p), 0)
 		self.assertEqual(p.count(), 0)
 		
+		p = vpush.Protein()
+		p.push_code(vpush.functions().open())
+		code_csize = len(p)
 		codecount = 500
-		p = vpush.Protein.random_protein(codecount)
-		self.assertEqual(len(p), codecount * getsizeof(vpush.Code))
+		p = vpush.Protein.random(codecount)
 		self.assertEqual(p.count(), codecount)
+		self.assertEqual(len(p), codecount * code_csize)
 		
 	def test_protein_pickling(self):
 		import tempfile
@@ -89,20 +93,21 @@ class TestSoup(unittest.TestCase):
 	def test_soup_pickling(self):
 		import tempfile
 		import pickle
+		import copy
 		vpush.get_soup().set_size(100, 100, 100)
-		src = vpush.Soup(vpush.get_soup())
+		src = copy.deepcopy(vpush.get_soup())
 		with tempfile.SpooledTemporaryFile(max_size=1024*1024) as file:
 			pickle.dump(src, file)
 			dst = pickle.load(file)
 		vpush.get_soup().clear()
-		vpush.get_soup() = src
+		vpush.set_soup(src)
 		src_initial_energy = vpush.get_soup().energy()
 		src_consumed_energy = vpush.get_soup().run(trace=False)
 		src_final_energy = vpush.get_soup().energy()
 		self.assertTrue(test_triangle(self, src_initial_energy, src_consumed_energy, src_final_energy))
 		
 		vpush.get_soup().clear()
-		vpush.get_soup() = dst		
+		vpush.set_soup(dst)
 		dst_initial_energy = vpush.get_soup().energy()
 		dst_consumed_energy = vpush.get_soup().run(trace=False)
 		dst_final_energy = vpush.get_soup().energy()
@@ -123,12 +128,12 @@ class RunTests(unittest.TestCase):
 		p.push_int(31)
 		p.push_int(4)
 		p.push_int(8)
-		p.push_code(vpush.Code.CLOSE)
+		p.push_code(vpush.functions().close())
 		p.push_code(vpush.functions().get_code("RANDOM.CODE"))
-		p.push_code(vpush.Code.CLOSE)
+		p.push_code(vpush.functions().close())
 		p.push_code(vpush.functions().get_code("MAKELIST.CODE"))
-		p.push_code(vpush.Code.OPEN)
-		p.push_code(vpush.Code.OPEN)
+		p.push_code(vpush.functions().open())
+		p.push_code(vpush.functions().open())
 		p.push_exec(vpush.functions().get_code("QUOTE.EXEC"))
 		p.push_exec(vpush.functions().get_code("DUP.CODE"))
 

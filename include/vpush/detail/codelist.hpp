@@ -18,6 +18,7 @@ template <typename T>
 struct item {
 	item() : container(), is_atom(false) {}
 	item(const std::vector<T>& c, bool b) : container(c), is_atom(b) {}
+	inline std::size_t size() const { return container.size(); }
 	std::vector<T> container;
 	bool is_atom;
 };

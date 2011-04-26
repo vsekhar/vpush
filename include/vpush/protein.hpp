@@ -51,6 +51,11 @@ struct Protein {
 		::boost::fusion::for_each(stacks, f);
 	}
 
+	template <typename FUNCTOR>
+	inline void for_each(FUNCTOR &f) const {
+		::boost::fusion::for_each(stacks, f);
+	}
+
 	void reset();
 	std::size_t size() const;
 	std::size_t count() const;

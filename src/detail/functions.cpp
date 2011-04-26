@@ -1,4 +1,7 @@
+#include <sstream>
+
 #include <boost/foreach.hpp>
+#include <boost/assert.hpp>
 
 #include <vpush/detail/functions.hpp>
 #include <vpush/detail/code.hpp>
@@ -35,21 +38,27 @@ op_func_t functions_t::get_fptr(const std::string& name) const {
 type_container functions_t::get_types(const op_func_t& fptr) const {
 	functions_by_fptr& funcs = _container.get<byFptr>();
 	functions_by_fptr::const_iterator i = funcs.find(fptr);
-	if(i == funcs.end())
-		throw no_such_function("(binary fptr)");
+	if(i == funcs.end()) {
+		std::stringstream ss;
+		ss << fptr;
+		throw no_such_function(ss.str());
+	}
 	return i->func_types;
 }
 
 std::string functions_t::get_name(const Code& c) const {
 	if(c.type == Code::OPEN)
 		return "(";
-	else if (c.type == CODE::CLOSE)
+	else if (c.type == Code::CLOSE)
 		return ")";
 	else {
 		functions_by_fptr& funcs = _container.get<byFptr>();
 		functions_by_fptr::const_iterator i = funcs.find(c.fptr);
-		if(i == funcs.end())
-			throw no_such_function("(binary fptr)");
+		if(i == funcs.end()) {
+			std::stringstream ss;
+			ss << c.fptr;
+			throw no_such_function(ss.str());
+		}
 		return i->name;
 	}
 }
@@ -65,8 +74,7 @@ Exec functions_t::get_code(const std::string& name) const {
 
 Exec functions_t::get_random() const {
 #ifdef _DEBUG
-	if(!_container.size())
-		throw no_functions();
+	BOOST_ASSERT(_container.size());
 #endif
 	util::RandomInt ri(0, _container.size()-1);
 	return _container.get<byRAC>()[ri()].func;

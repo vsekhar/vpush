@@ -20,8 +20,12 @@ void ProteinRunner::operator()(Protein& p) {
 
 		if(top<Exec>(p).type == Exec::OPEN)
 			detail::unwind(stack<Exec>(p));
+		else if(top<Exec>(p).type == Exec::CLOSE)
+			throw detail::unmatched_brackets();
 		else {
 			Exec e = pop<Exec>(p);
+			if(!e.fptr)
+				throw std::runtime_error("Null fptr");
 			if(functions.get_types(e.fptr).check(p)) {
 				try {
 					double cost = e.fptr(p);
@@ -50,7 +54,7 @@ void ProteinRunner::operator()(Protein& p) {
 
 // for python testing
 double run_protein(Protein &p, bool trace) {
-	ProteinRunner runner = ProteinRunner();
+	ProteinRunner runner = ProteinRunner(trace);
 	runner(p);
 	return runner.result;
 }

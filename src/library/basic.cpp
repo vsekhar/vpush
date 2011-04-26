@@ -18,16 +18,13 @@ double zero(Protein& p) { push<T>(p, 0); return 1; }
 template <typename T>
 double one(Protein& p) { push<T>(p, 1); return 1; }
 
-template <typename T>
 double random_string(Protein &p) {
 	util::RandomString rstr;
-	push<string>(p, rstr(VPUSH_RANDOM_STRING_LEN));
+	push<std::string>(p, rstr(VPUSH_RANDOM_STRING_LEN));
 	return 1;
 }
 
 void initialize() {
-	using std::string;
-
 	functions.add("ZERO.INT", zero<int>);
 	functions.add("ZERO.DBL", zero<double>);
 	functions.add("ONE.INT", one<int>);
