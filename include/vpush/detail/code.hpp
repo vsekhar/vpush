@@ -18,7 +18,7 @@ struct Code {
 			throw std::invalid_argument("Code(codetype) constructor can only be used for brackets");
 #endif
 	}
-	Code(op_func_t f) : fptr(f), type(CODE) {}
+	explicit Code(op_func_t f) : fptr(f), type(CODE) {}
 	Code(const Code& c) : fptr(c.fptr), type(c.type) {}
 
 	op_func_t fptr;

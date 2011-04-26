@@ -126,7 +126,7 @@ double do_range(Protein& p) {
 	push<int>(p, current_index + increment);
 	push<int>(p, end_index);
 	put_item(i, stack<T>(p));
-	push<T>(p, do_range<T>);
+	push<T>(p, T(do_range<T>));
 	put_item(i, stack<T>(p));
 	return 1;
 }

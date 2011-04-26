@@ -5,7 +5,7 @@ namespace vpush {
 namespace detail {
 
 std::ostream& operator<<(std::ostream& o, const Code& c) {
-	o << vpush::functions.get_name(c.fptr);
+	o << vpush::functions.get_name(c);
 	return o;
 }
 
