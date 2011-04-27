@@ -66,8 +66,18 @@ double soup_t::energy() const {
 
 double soup_t::run(bool trace) {
 	ProteinRunner runner = ProteinRunner(trace);
-	this->for_each(runner);
-	return runner.result;
+	// can't use this->for_each(runner); because modify() takes functor
+	// by value
+	double energy_used = 0;
+	typedef soup_container::index<bySeq>::type index;
+	index& c = container.get<bySeq>();
+	index::iterator i = c.begin();
+	for(; i != c.end(); ++i) {
+		double initial_energy = i->energy;
+		c.modify(i, runner);
+		energy_used += initial_energy - i->energy;
+	}
+	return energy_used;
 }
 
 soup_t soup;

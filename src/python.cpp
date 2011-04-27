@@ -25,19 +25,30 @@ Exec code_open() { return Exec::OPEN; }
 Exec byName(string n) { return functions.get_code(n); }
 Exec random() { return functions.get_random(); }
 
+void load_protein(Protein* p, string filename) {
+	std::ifstream i(filename);
+	boost::archive::text_iarchive ar(i);
+	ar >> *p;
+}
 
-void load_soup(string filename) {
+void save_protein(const Protein* p, string filename) {
+	std::ofstream o(filename);
+	boost::archive::text_oarchive ar(o);
+	ar << *p;
+}
+
+void load_soup(soup_t* s, string filename) {
 	std::ifstream i(filename);
 	boost::archive::text_iarchive ar(i);
 	soup_t new_soup;
 	ar >> new_soup;
-	soup.swap(new_soup);
+	s->swap(new_soup);
 }
 
-void save_soup(string filename) {
+void save_soup(const soup_t* s, string filename) {
 	std::ofstream o(filename);
 	boost::archive::text_oarchive ar(o);
-	ar << soup;
+	ar << *s;
 }
 
 template <typename T>
@@ -95,6 +106,8 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def_readwrite("energy", &Protein::energy)
 		.def("random", random_protein)
 		.staticmethod("random")
+		.def("load", load_protein)
+		.def("save", save_protein)
 		.def("push_int", push_wrap<int>)
 		.def("pop_int", pop_wrap<int>)
 		.def("push_exec", push_wrap<Exec>)
@@ -114,12 +127,15 @@ BOOST_PYTHON_MODULE(vpush) {
 
 	// Soup
 	class_<soup_t>("Soup")
+		.def(init<const soup_t&>())
 		.def("__len__", &soup_t::size)
 		.def("set_size", &soup_t::set_size,
 			(arg("soup_size"), "protein_size", "initial_energy"))
 		.def("deep_size", &soup_t::deep_size)
 		.def("deep_count", &soup_t::deep_count)
 		.def("energy", &soup_t::energy)
+		.def("load", load_soup)
+		.def("save", save_soup)
 		.def("push_back", &soup_t::push_back)
 		.def("clear", &soup_t::clear)
 		.def("run", &soup_t::run,
@@ -127,9 +143,6 @@ BOOST_PYTHON_MODULE(vpush) {
 		;
 	def("get_soup", get_soup, return_value_policy<reference_existing_object>());
 	def("set_soup", set_soup);
-	
-	def("load_soup", load_soup, arg("filename"));
-	def("save_soup", save_soup, arg("filename"));
 	
 	// Gestation and incubation
 	def("release_incubator", release_incubator);

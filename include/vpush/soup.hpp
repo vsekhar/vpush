@@ -45,6 +45,8 @@ typedef multi_index_container <
 > soup_container;
 
 struct soup_t {
+	soup_t() {}
+	soup_t(const soup_t& s) : container(s.container) {}
 	void add(std::size_t, std::size_t protein_size = 0, double starting_energy = 0);
 	void set_size(std::size_t soup_size, std::size_t protein_size = 0, double starting_energy = 0);
 	inline void push_back(const Protein& e) { container.push_back(e); }

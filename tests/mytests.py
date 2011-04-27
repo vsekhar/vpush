@@ -42,15 +42,14 @@ class TestProteins(unittest.TestCase):
 		self.assertEqual(p.count(), codecount)
 		self.assertEqual(len(p), codecount * code_csize)
 		
-	def test_protein_pickling(self):
+	def test_protein_serialization(self):
 		import tempfile
 		import pickle
 		src = vpush.Protein.random(100)
 		name = 'tmp'
-		with open(name, 'w+b') as file:
-			pickle.dump(src, file)
-		with open(name, 'r+b') as file:
-			dst = pickle.load(file)
+		src.save(name)
+		dst = vpush.Protein()
+		dst.load(name)
 		self.assertEqual(src.energy, dst.energy)
 		self.assertEqual(vpush.run_protein(src), vpush.run_protein(dst))
 		self.assertEqual(src.energy, dst.energy)
@@ -92,34 +91,40 @@ class TestSoup(unittest.TestCase):
 		self.assertEqual(vpush.get_soup().deep_count(), self.protein_count * self.protein_size)
 		self.assertEqual(vpush.get_soup().energy(), self.protein_count * self.initial_energy)
 	
-	def test_soup_pickling(self):
+	def test_soup_serialization(self):
 		import tempfile
 		import pickle
-		import copy
 		vpush.get_soup().set_size(100, 100, 100)
-		src = copy.deepcopy(vpush.get_soup())
+		src = vpush.Soup(vpush.get_soup())
 		name = 'tmp'
-		with open(name, 'w+b') as file:
-			pickle.dump(src, file)
-		with open(name, 'r+b') as file:
-			dst = pickle.load(file)
+		src.save(name)
+		dst = vpush.Soup()
+		dst.load(name)
 		vpush.get_soup().clear()
 		vpush.set_soup(src)
 		src_initial_energy = vpush.get_soup().energy()
+		src_initial_count = len(vpush.get_soup())
+		src_initial_deepcount = vpush.get_soup().deep_count()
 		src_consumed_energy = vpush.get_soup().run(trace=False)
 		src_final_energy = vpush.get_soup().energy()
-		self.assertTrue(test_triangle(self, src_initial_energy, src_consumed_energy, src_final_energy))
+		self.assertTrue(test_triangle(src_initial_energy, src_consumed_energy, src_final_energy))
 		
 		vpush.get_soup().clear()
 		vpush.set_soup(dst)
 		dst_initial_energy = vpush.get_soup().energy()
+		dst_initial_count = len(vpush.get_soup())
+		dst_initial_deepcount = vpush.get_soup().deep_count()
 		dst_consumed_energy = vpush.get_soup().run(trace=False)
 		dst_final_energy = vpush.get_soup().energy()
 		self.assertTrue(test_triangle(dst_initial_energy, dst_consumed_energy, dst_final_energy))
 		
 		self.assertEqual(src_initial_energy, dst_initial_energy)
-		self.assertEqual(src_consumed_energy, dst_consumed_energy)
-		self.assertEqual(src_final_energy, dst_final_energy)
+		self.assertEqual(src_initial_count, dst_initial_count)
+		self.assertEqual(src_initial_deepcount, dst_initial_deepcount)
+
+		# Can't do these as there are non-deterministic op-codes
+		# self.assertEqual(src_consumed_energy, dst_consumed_energy)
+		# self.assertEqual(src_final_energy, dst_final_energy)
 
 class RunTests(unittest.TestCase):
 	def setUp(self):
