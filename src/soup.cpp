@@ -4,6 +4,7 @@
 
 #include <vpush/soup.hpp>
 #include <vpush/engine.hpp>
+#include <vpush/gestation.hpp>
 
 namespace vpush {
 
@@ -65,19 +66,17 @@ double soup_t::energy() const {
 }
 
 double soup_t::run(bool trace) {
-	ProteinRunner runner = ProteinRunner(trace);
 	// can't use this->for_each(runner); because modify() takes functor
 	// by value
-	double energy_used = 0;
 	typedef soup_container::index<bySeq>::type index;
 	index& c = container.get<bySeq>();
 	index::iterator i = c.begin();
+	double cost = 0;
 	for(; i != c.end(); ++i) {
-		double initial_energy = i->energy;
-		c.modify(i, runner);
-		energy_used += initial_energy - i->energy;
+		c.modify(i, boost::bind(engine, _1, boost::ref(cost), trace));
 	}
-	return energy_used;
+	release_incubator();
+	return cost;
 }
 
 soup_t soup;

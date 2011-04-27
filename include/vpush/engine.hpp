@@ -2,14 +2,7 @@
 
 namespace vpush {
 
-struct ProteinRunner {
-	ProteinRunner() : trace(false), result(0) {}
-	ProteinRunner(bool t) : trace(t), result(0) {}
-	ProteinRunner(double r, bool t=false) : trace(t), result(r) {}
-	void operator()(Protein&);
-	bool trace;
-	double result;
-};
+void engine(Protein&, double&, bool trace = false);
 
 // for python testing
 double run_protein(Protein&, bool trace = false);

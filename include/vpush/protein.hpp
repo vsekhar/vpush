@@ -28,7 +28,8 @@ namespace fus = ::boost::fusion;
 
 struct Protein {
 	Protein()
-		: x(0), y(0), z(0),	facing(util::normalized(util::random_vector())), energy(0) {}
+		: x(0), y(0), z(0),	facing(util::normalized(util::random_vector())),
+		  energy(0), running(false) {}
 
 	// code and data stacks
 	typedef fus::map<
@@ -71,6 +72,8 @@ struct Protein {
 	// energy
 	double energy;
 	
+	bool running;
+	
 private:
 	friend class ::boost::serialization::access;
 
@@ -87,6 +90,7 @@ private:
 		a & y;
 		a & z;
 		a & energy;
+		a & running;
 	}
 
 }; // struct Protein

@@ -12,12 +12,10 @@
 
 namespace vpush {
 
-void ProteinRunner::operator()(Protein& p) {
+void engine(Protein& p, double& total_cost, bool trace) {
 	using detail::Exec;
-	double init_energy = p.energy;
-
-	while(!empty<Exec>(p) && p.energy > 0) {
-
+	p.running = true;
+	while(!empty<Exec>(p) && p.energy > 0 && p.running) {
 		if(top<Exec>(p).type == Exec::OPEN)
 			detail::unwind(stack<Exec>(p));
 		else if(top<Exec>(p).type == Exec::CLOSE)
@@ -29,10 +27,11 @@ void ProteinRunner::operator()(Protein& p) {
 			if(functions.get_types(e.fptr).check(p)) {
 				try {
 					double cost = e.fptr(p);
-					p.energy -= cost;
 #ifdef _DEBUG
 					BOOST_ASSERT(cost >= 0);
 #endif
+					p.energy -= cost;
+					total_cost += cost;
 					if(cost > 0 && trace)
 						std::cout << "Energy after " << e << ": " << p.energy << std::endl;
 				}
@@ -43,20 +42,15 @@ void ProteinRunner::operator()(Protein& p) {
 			}
 		}
 	}
-	
 	detach_gestator();
-	
 	//fitness testing and energy rewards??
-	
-	// Energy consumed
-	result += init_energy - p.energy;
 }
 
 // for python testing
 double run_protein(Protein &p, bool trace) {
-	ProteinRunner runner = ProteinRunner(trace);
-	runner(p);
-	return runner.result;
+	double ret = 0;
+	engine(p, ret, trace);
+	return ret;
 }
 
 } // namespace vpush
