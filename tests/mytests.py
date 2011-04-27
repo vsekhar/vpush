@@ -46,8 +46,10 @@ class TestProteins(unittest.TestCase):
 		import tempfile
 		import pickle
 		src = vpush.Protein.random(100)
-		with tempfile.SpooledTemporaryFile(max_size=1024*1024) as file:
+		name = 'tmp'
+		with open(name, 'w+b') as file:
 			pickle.dump(src, file)
+		with open(name, 'r+b') as file:
 			dst = pickle.load(file)
 		self.assertEqual(src.energy, dst.energy)
 		self.assertEqual(vpush.run_protein(src), vpush.run_protein(dst))
@@ -96,8 +98,10 @@ class TestSoup(unittest.TestCase):
 		import copy
 		vpush.get_soup().set_size(100, 100, 100)
 		src = copy.deepcopy(vpush.get_soup())
-		with tempfile.SpooledTemporaryFile(max_size=1024*1024) as file:
+		name = 'tmp'
+		with open(name, 'w+b') as file:
 			pickle.dump(src, file)
+		with open(name, 'r+b') as file:
 			dst = pickle.load(file)
 		vpush.get_soup().clear()
 		vpush.set_soup(src)
