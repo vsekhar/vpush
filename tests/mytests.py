@@ -151,15 +151,19 @@ class RunTests(unittest.TestCase):
 		p.push_exec(vpush.functions().get_code("DUP.CODE"))
 
 		initial_energy = p.energy
+		vpush.dump_gestator()
 		consumed_energy = vpush.run_protein(p)
-		self.assertTrue(test_triangle(initial_energy, consumed_energy, p.energy))
+		gestator_energy = vpush.gestator_energy()
+		self.assertTrue(consumed_energy + gestator_energy, initial_energy - p.energy)
+		#self.assertTrue(test_triangle(initial_energy, consumed_energy+gestator_energy, p.energy))
 	
 	def test_protein_random_run(self):
 		p = vpush.Protein.random(500)
 		initial_energy = 100.0
 		p.energy = initial_energy
 		consumed_energy = vpush.run_protein(p)
-		self.assertEqual(consumed_energy, initial_energy - p.energy)
+		gestator_energy = vpush.gestator_energy()
+		self.assertEqual(consumed_energy + gestator_energy, initial_energy - p.energy)
 	
 	def test_soup_run(self):
 		proteins = 1000
@@ -173,7 +177,8 @@ class RunTests(unittest.TestCase):
 			print("Consumed: ", consumed_energy)
 			print("Remaining: ", remaining_energy)
 			print("Residue: ", abs(remaining_energy + consumed_energy - (initial_energy*proteins)))
-		self.assertTrue(test_triangle(initial_energy*proteins, consumed_energy, remaining_energy))
+		#self.assertTrue(test_triangle(initial_energy*proteins, consumed_energy, remaining_energy))
+		self.assertTrue(consumed_energy, initial_energy*proteins - consumed_energy)
 
 	@staticmethod
 	def stdev(sequence):
