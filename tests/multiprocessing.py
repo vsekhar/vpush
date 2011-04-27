@@ -78,5 +78,5 @@ class TestMultiprocessing(unittest.TestCase):
 
 	def tearDown(self):
 		self._processes.end()
-		self._processes.dump_results()
+		#self._processes.dump_results()
 

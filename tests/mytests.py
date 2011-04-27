@@ -44,20 +44,23 @@ class TestProteins(unittest.TestCase):
 		
 	def test_protein_serialization(self):
 		import tempfile
-		import pickle
 		src = vpush.Protein.random(100)
-		name = 'tmp'
-		src.save(name)
+		tmpfile = tempfile.NamedTemporaryFile(delete=False)
+		tmpfile.close()
+		src.save(tmpfile.name)
 		dst = vpush.Protein()
-		dst.load(name)
+		dst.load(tmpfile.name)
 		self.assertEqual(src.energy, dst.energy)
 		self.assertEqual(vpush.run_protein(src), vpush.run_protein(dst))
 		self.assertEqual(src.energy, dst.energy)
 
 def test_triangle(initial, consumed, final):
 	if abs(final + consumed - initial) > 1e-9:
+		print(initial, "-", consumed, "!=", final, "(difference:", initial-consumed-final, ")")
 		return False
-	if final < 0 and abs(final) > (0.01 * initial):
+	overshoot_threshold = 0.01
+	if final < 0 and abs(final) > (overshoot_threshold * initial):
+		print("Overshoot threshold violated: ", final, " > ", overshoot_threshold, " * ", initial)
 		return False
 	return True
 
@@ -93,13 +96,14 @@ class TestSoup(unittest.TestCase):
 	
 	def test_soup_serialization(self):
 		import tempfile
-		import pickle
 		vpush.get_soup().set_size(100, 100, 100)
 		src = vpush.Soup(vpush.get_soup())
-		name = 'tmp'
-		src.save(name)
+		tmpfile = tempfile.NamedTemporaryFile(delete=False)
+		tmpfile.close()
+		src.save(tmpfile.name)
 		dst = vpush.Soup()
-		dst.load(name)
+		dst.load(tmpfile.name)
+
 		vpush.get_soup().clear()
 		vpush.set_soup(src)
 		src_initial_energy = vpush.get_soup().energy()
@@ -148,7 +152,7 @@ class RunTests(unittest.TestCase):
 
 		initial_energy = p.energy
 		consumed_energy = vpush.run_protein(p)
-		self.assertEqual(consumed_energy, initial_energy - p.energy)
+		self.assertTrue(test_triangle(initial_energy, consumed_energy, p.energy))
 	
 	def test_protein_random_run(self):
 		p = vpush.Protein.random(500)
@@ -170,3 +174,24 @@ class RunTests(unittest.TestCase):
 			print("Remaining: ", remaining_energy)
 			print("Residue: ", abs(remaining_energy + consumed_energy - (initial_energy*proteins)))
 		self.assertTrue(test_triangle(initial_energy*proteins, consumed_energy, remaining_energy))
+
+	@staticmethod
+	def stdev(sequence):
+		if len(sequence) < 1: 
+			return None
+		else:
+			avg = float(sum(sequence) / len(sequence))
+			sdsq = sum([(i - avg) ** 2 for i in sequence])
+			stdev = (sdsq / (len(sequence) - 1)) ** .5
+			return stdev
+
+	def test_gestation(self):
+		vpush.get_soup().clear()
+		vpush.get_soup().set_size(1000, 500, 100)
+		sizes = [len(vpush.get_soup())]
+		for _ in range(5):
+			vpush.get_soup().run(trace=False)
+			sizes.append(len(vpush.get_soup()))
+		print("Sizes: ", sizes)
+		self.assertTrue(self.stdev(sizes) != 0)
+

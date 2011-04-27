@@ -5,7 +5,8 @@
 namespace vpush {
 
 extern Protein* gestator;
-extern ::boost::ptr_vector<Protein> incubator;
+typedef ::boost::ptr_vector<Protein> incubator_t;
+extern incubator_t incubator;
 
 void ensure_gestator(const Protein&);
 bool detach_gestator();

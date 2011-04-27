@@ -3,6 +3,8 @@
 #include <iterator>
 
 #include <boost/python.hpp>
+#include <boost/python/iterator.hpp>
+#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 
@@ -19,11 +21,28 @@ using namespace ::vpush::detail;
 
 namespace py = ::boost::python;
 
+// Code helpers
+
 Exec code_close() { return Exec::CLOSE; }
 Exec code_open() { return Exec::OPEN; }
-
 Exec byName(string n) { return functions.get_code(n); }
 Exec random() { return functions.get_random(); }
+
+// Stack access
+
+template <typename T>
+void push_wrap(Protein *p, T t) { push<T>(*p, t); }
+
+template <typename T>
+T pop_wrap(Protein *p) { return pop<T>(*p); }
+
+// Soup and function access
+
+const vpush::soup_t& get_soup() { return vpush::soup; }
+void set_soup(const vpush::soup_t& s) { vpush::soup = s; }
+const vpush::detail::functions_t& get_functions() { return vpush::functions; }
+
+// Protein and soup serialization
 
 void load_protein(Protein* p, string filename) {
 	std::ifstream i(filename);
@@ -51,25 +70,24 @@ void save_soup(const soup_t* s, string filename) {
 	ar << *s;
 }
 
-template <typename T>
-void push_wrap(Protein *p, T t) { push<T>(*p, t); }
+// Gestation and incubator
+list copy_incubator() {
+	py::list ret;
+	BOOST_FOREACH(const Protein& p, incubator)
+		ret.append(Protein(p));
+	return ret;
+}
 
-template <typename T>
-T pop_wrap(Protein *p) { return pop<T>(*p); }
-
-vpush::soup_t& get_soup() { return vpush::soup; }
-void set_soup(const vpush::soup_t& s) { vpush::soup = s; }
-const vpush::detail::functions_t& get_functions() { return vpush::functions; }
+object copy_gestator() {
+	if(gestator)
+		return object(Protein(*gestator));
+	else
+		return object();
+}
 
 BOOST_PYTHON_MODULE(vpush) {
 	// on import
 	vpush::initialize();
-	
-	// utils
-	class_<util::vector>("Vector")
-		;
-	class_<util::toroidal_dimension>("ToroidalDimension")
-		;
 	
 	// Code and Exec types
 	enum_<Code::codetype>("CodeType")
@@ -117,11 +135,6 @@ BOOST_PYTHON_MODULE(vpush) {
 		;
 
 	// Engine (for running proteins)
-	class_<ProteinRunner>("ProteinRunner")
-		.def("__call__", &ProteinRunner::operator())
-		.def_readwrite("trace", &ProteinRunner::trace)
-		.def_readonly("result", &ProteinRunner::result)
-		;
 	def("run_protein", run_protein,
 		(arg("protein"), arg("trace") = false));
 
@@ -129,6 +142,7 @@ BOOST_PYTHON_MODULE(vpush) {
 	class_<soup_t>("Soup")
 		.def(init<const soup_t&>())
 		.def("__len__", &soup_t::size)
+//		.def("__iter__", py::range<copy_const_reference>(&soup_t::begin, &soup_t::end))
 		.def("set_size", &soup_t::set_size,
 			(arg("soup_size"), "protein_size", "initial_energy"))
 		.def("deep_size", &soup_t::deep_size)
@@ -146,7 +160,8 @@ BOOST_PYTHON_MODULE(vpush) {
 	
 	// Gestation and incubation
 	def("release_incubator", release_incubator);
-	// TODO: incubator access for testing?
+	def("copy_incubator", copy_incubator);
+	def("copy_gestator", copy_gestator);
 	
 	// Parameters
 	// TODO: Parameter setters/getters (they have to be globals)

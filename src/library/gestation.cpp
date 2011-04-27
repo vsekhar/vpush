@@ -19,8 +19,11 @@ double transfer_energy(Protein &p) {
 
 	ensure_gestator(p);
 	double amount = pop<double>(p);
-	gestator->energy += amount;
-	p.energy -= amount;
+	amount = std::min(amount, p.energy-1);
+	if(amount > 0) {
+		gestator->energy += amount;
+		p.energy -= amount;
+	}
 	return 1;
 }
 
