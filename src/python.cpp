@@ -85,6 +85,20 @@ object copy_gestator() {
 		return object();
 }
 
+double gestator_energy() {
+	if(gestator)
+		return gestator->energy;
+	else
+		return 0;
+}
+
+double incubator_energy() {
+	double ret = 0;
+	BOOST_FOREACH(const Protein&p, incubator)
+		ret += p.energy;
+	return ret;
+}
+
 BOOST_PYTHON_MODULE(vpush) {
 	// on import
 	vpush::initialize();
@@ -115,7 +129,7 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def("open", code_open)
 		.staticmethod("open")
 		;
-	def("functions", get_functions, return_value_policy<copy_const_reference>());
+	def("functions", get_functions, return_value_policy<reference_existing_object>());
 	
 	// Protein
 	class_<Protein>("Protein")
@@ -158,10 +172,17 @@ BOOST_PYTHON_MODULE(vpush) {
 	def("get_soup", get_soup, return_value_policy<reference_existing_object>());
 	def("set_soup", set_soup);
 	
-	// Gestation and incubation
-	def("release_incubator", release_incubator);
-	def("copy_incubator", copy_incubator);
+	// Gestation and incubation management
+	def("clear_gestator", clear_gestator);
+	def("detach_gestator", detach_gestator);
+	def("clear_incubator", clear_incubator);
+	def("flush_incubator", flush_incubator);
+
+	// Gestation and incubation python access
 	def("copy_gestator", copy_gestator);
+	def("gestator_energy", gestator_energy);
+	def("copy_incubator", copy_incubator);
+	def("incubator_energy", incubator_energy);
 	
 	// Parameters
 	// TODO: Parameter setters/getters (they have to be globals)

@@ -27,7 +27,17 @@ bool detach_gestator() {
 		return false;
 }
 
-void release_incubator() {
+void clear_gestator() {
+	if(gestator)
+		delete gestator;
+	gestator = NULL;
+}
+
+void clear_incubator() {
+	incubator.clear();
+}
+
+void flush_incubator() {
 	BOOST_FOREACH(const Protein& p, incubator)
 		soup.push_back(p);
 	incubator.clear();

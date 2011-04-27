@@ -10,7 +10,9 @@ extern incubator_t incubator;
 
 void ensure_gestator(const Protein&);
 bool detach_gestator();
-void release_incubator();
+void clear_gestator();
+void clear_incubator();
+void flush_incubator();
 
 } // namespace vpush
 

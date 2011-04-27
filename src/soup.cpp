@@ -66,16 +66,16 @@ double soup_t::energy() const {
 }
 
 double soup_t::run(bool trace) {
-	// can't use this->for_each(runner); because modify() takes functor
-	// by value
 	typedef soup_container::index<bySeq>::type index;
 	index& c = container.get<bySeq>();
 	index::iterator i = c.begin();
 	double cost = 0;
+	clear_incubator();
 	for(; i != c.end(); ++i) {
 		c.modify(i, boost::bind(engine, _1, boost::ref(cost), trace));
+		detach_gestator();
 	}
-	release_incubator();
+	flush_incubator();
 	return cost;
 }
 
