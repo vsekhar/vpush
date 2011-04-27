@@ -10,6 +10,7 @@ void initialize() {
 	code::initialize();
 	combinators::initialize();
 	comparison::initialize();
+	conditional::initialize();
 	gestation::initialize();
 	math::initialize();
 	movement::initialize();
