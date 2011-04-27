@@ -74,6 +74,11 @@ struct soup_t {
 	double run(bool trace=false);
 	void swap(soup_t& s) { container.swap(s.container); }
 	
+	typedef soup_container::index<bySeq>::type::const_iterator const_iterator;
+	typedef soup_container::value_type value_type;
+	const_iterator begin() const { return container.begin(); }
+	const_iterator end() const { return container.end(); }
+	
 private:
 	friend class ::boost::serialization::access;
 	template <typename A> void serialize(A& a, unsigned int) { a & container; }
