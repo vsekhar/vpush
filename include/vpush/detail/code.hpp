@@ -1,6 +1,7 @@
 #ifndef __VPUSH_DETAIL_CODE_HPP__
 #define __VPUSH_DETAIL_CODE_HPP__
 
+#include <string>
 #include <ostream>
 #include <stdexcept>
 
@@ -19,6 +20,7 @@ struct Code {
 #endif
 	}
 	explicit Code(op_func_t f) : fptr(f), type(CODE) {}
+	explicit Code(std::string);
 	Code(const Code& c) : fptr(c.fptr), type(c.type) {}
 
 	op_func_t fptr;
@@ -28,6 +30,7 @@ struct Code {
 struct Exec : public Code {
 	Exec(codetype t) : Code(t) {}
 	Exec(op_func_t f) : Code(f) {}
+	Exec(std::string s) : Code(s) {}
 	Exec(const Code& c) : Code(c) {}
 	Exec(const Exec& e) : Code(e) {}
 };
