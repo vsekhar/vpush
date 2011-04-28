@@ -151,7 +151,7 @@ class RunTests(unittest.TestCase):
 		p.push_exec(vpush.functions().get_code("DUP.CODE"))
 
 		initial_energy = p.energy
-		vpush.dump_gestator()
+		vpush.clear_gestator()
 		consumed_energy = vpush.run_protein(p)
 		gestator_energy = vpush.gestator_energy()
 		self.assertTrue(consumed_energy + gestator_energy, initial_energy - p.energy)
