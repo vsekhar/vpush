@@ -87,6 +87,9 @@ double rotate_code(Protein &p) {
 	return a.container.size() + b.container.size() + c.container.size();
 }
 
+template <typename T>
+double clear(Protein& p) { vpush::clear<T>(p); return 1; }
+
 void initialize() {
 	functions.add("EAT.INT", eat<int>, type<int>());
 	functions.add("EAT.DBL", eat<double>, type<double>());
@@ -129,6 +132,13 @@ void initialize() {
 	functions.add("ROTATE.STRING", rotate<std::string>, type<std::string>() * 3);
 	functions.add("ROTATE.CODE", rotate_code<Code>, type<Code>() * 3);
 	functions.add("ROTATE.EXEC", rotate_code<Exec>, type<Exec>() * 3);
+	
+	functions.add("CLEAR.INT", clear<int>, type<int>());
+	functions.add("CLEAR.DBL", clear<double>, type<double>());
+	functions.add("CLEAR.BOOL", clear<bool>, type<bool>());
+	functions.add("CLEAR.STRING", clear<std::string>, type<std::string>());
+	functions.add("CLEAR.CODE", clear<Code>, type<Code>());
+	functions.add("CLEAR.Exec", clear<Exec>, type<Exec>());
 }
 
 }
