@@ -155,11 +155,11 @@ class RunTests(unittest.TestCase):
 		p.push_exec(vpush.functions().get_code("DUP.CODE"))
 
 		initial_energy = p.energy
-		vpush.clear_gestator()
+		vpush.clear_incubator()
 		consumed_energy = vpush.run_protein(p)
-		gestator_energy = vpush.gestator_energy()
-		self.assertTrue(consumed_energy + gestator_energy, initial_energy - p.energy)
-		#self.assertTrue(test_triangle(initial_energy, consumed_energy+gestator_energy, p.energy))
+		vpush.detach_gestator()
+		incubator_energy = vpush.incubator_energy()
+		self.assertTrue(test_triangle(initial_energy, consumed_energy+incubator_energy, p.energy))
 	
 	def test_protein_random_run(self):
 		p = vpush.Protein.random(500)
@@ -169,22 +169,24 @@ class RunTests(unittest.TestCase):
 		consumed_energy = vpush.run_protein(p)
 		vpush.detach_gestator()
 		incubator_energy = vpush.incubator_energy()
-		self.assertEqual(consumed_energy + incubator_energy, initial_energy - p.energy)
+		self.assertTrue(test_triangle(initial_energy, consumed_energy + incubator_energy, p.energy))
 	
 	def test_soup_run(self):
 		proteins = 1000
 		protein_size = 500
-		initial_energy = 100
-		vpush.get_soup().set_size(proteins, protein_size, initial_energy)
+		initial_protein_energy = 100
+		vpush.get_soup().set_size(proteins, protein_size, initial_protein_energy)
+		initial_energy = vpush.get_soup().energy()
+		vpush.clear_incubator()
 		consumed_energy = vpush.get_soup().run(trace=False)
+		vpush.flush_incubator()
 		remaining_energy = vpush.get_soup().energy()
 		if False:
-			print("Initial energy: ", initial_energy*proteins)
+			print("Initial energy: ", initial_energy)
 			print("Consumed: ", consumed_energy)
 			print("Remaining: ", remaining_energy)
-			print("Residue: ", abs(remaining_energy + consumed_energy - (initial_energy*proteins)))
-		#self.assertTrue(test_triangle(initial_energy*proteins, consumed_energy, remaining_energy))
-		self.assertTrue(consumed_energy, initial_energy*proteins - consumed_energy)
+			print("Residue: ", abs(remaining_energy + consumed_energy - (initial_energy)))
+		self.assertTrue(test_triangle(initial_energy, consumed_energy, remaining_energy))
 
 	@staticmethod
 	def stdev(sequence):
