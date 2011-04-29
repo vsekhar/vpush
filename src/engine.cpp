@@ -45,7 +45,6 @@ double step(Protein& p, bool trace) {
 void engine(Protein& p, double& total_cost, bool trace) {
 	using detail::Exec;
 	p.running = true;
-	clear_gestator();
 	while(!empty<Exec>(p) && p.energy >= 1 && p.running)
 		total_cost += step(p, trace);
 	//fitness testing and energy rewards??

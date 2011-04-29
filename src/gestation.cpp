@@ -34,6 +34,7 @@ void clear_gestator() {
 }
 
 void clear_incubator() {
+	clear_gestator();
 	incubator.clear();
 }
 

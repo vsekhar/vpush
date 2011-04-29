@@ -72,10 +72,10 @@ double soup_t::run(bool trace) {
 	double cost = 0;
 	clear_incubator();
 	for(; i != c.end(); ++i) {
+		clear_gestator();
 		c.modify(i, boost::bind(engine, _1, boost::ref(cost), trace));
 		detach_gestator();
 	}
-	flush_incubator();
 	return cost;
 }
 

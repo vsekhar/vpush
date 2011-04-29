@@ -109,7 +109,9 @@ class TestSoup(unittest.TestCase):
 		src_initial_energy = vpush.get_soup().energy()
 		src_initial_count = len(vpush.get_soup())
 		src_initial_deepcount = vpush.get_soup().deep_count()
+		vpush.clear_incubator()
 		src_consumed_energy = vpush.get_soup().run(trace=False)
+		vpush.flush_incubator()
 		src_final_energy = vpush.get_soup().energy()
 		self.assertTrue(test_triangle(src_initial_energy, src_consumed_energy, src_final_energy))
 		
@@ -118,7 +120,9 @@ class TestSoup(unittest.TestCase):
 		dst_initial_energy = vpush.get_soup().energy()
 		dst_initial_count = len(vpush.get_soup())
 		dst_initial_deepcount = vpush.get_soup().deep_count()
+		vpush.clear_incubator()
 		dst_consumed_energy = vpush.get_soup().run(trace=False)
+		vpush.flush_incubator()
 		dst_final_energy = vpush.get_soup().energy()
 		self.assertTrue(test_triangle(dst_initial_energy, dst_consumed_energy, dst_final_energy))
 		
@@ -161,9 +165,11 @@ class RunTests(unittest.TestCase):
 		p = vpush.Protein.random(500)
 		initial_energy = 100.0
 		p.energy = initial_energy
+		vpush.clear_gestator()
 		consumed_energy = vpush.run_protein(p)
-		gestator_energy = vpush.gestator_energy()
-		self.assertEqual(consumed_energy + gestator_energy, initial_energy - p.energy)
+		vpush.detach_gestator()
+		incubator_energy = vpush.incubator_energy()
+		self.assertEqual(consumed_energy + incubator_energy, initial_energy - p.energy)
 	
 	def test_soup_run(self):
 		proteins = 1000
@@ -195,7 +201,9 @@ class RunTests(unittest.TestCase):
 		vpush.get_soup().set_size(1000, 500, 100)
 		sizes = [len(vpush.get_soup())]
 		for _ in range(5):
+			vpush.clear_incubator()
 			vpush.get_soup().run(trace=False)
+			vpush.flush_incubator()
 			sizes.append(len(vpush.get_soup()))
 		print("Sizes: ", sizes)
 		self.assertTrue(self.stdev(sizes) != 0)
