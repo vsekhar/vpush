@@ -181,11 +181,6 @@ class RunTests(unittest.TestCase):
 		consumed_energy = vpush.get_soup().run(trace=False)
 		vpush.flush_incubator()
 		remaining_energy = vpush.get_soup().energy()
-		if False:
-			print("Initial energy: ", initial_energy)
-			print("Consumed: ", consumed_energy)
-			print("Remaining: ", remaining_energy)
-			print("Residue: ", abs(remaining_energy + consumed_energy - (initial_energy)))
 		self.assertTrue(test_triangle(initial_energy, consumed_energy, remaining_energy))
 
 	@staticmethod
