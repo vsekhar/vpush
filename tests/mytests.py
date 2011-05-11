@@ -106,10 +106,10 @@ class TestSoup(unittest.TestCase):
 
 		vpush.get_soup().clear()
 		vpush.set_soup(src)
+		vpush.clear_incubator()
 		src_initial_energy = vpush.get_soup().energy()
 		src_initial_count = len(vpush.get_soup())
 		src_initial_deepcount = vpush.get_soup().deep_count()
-		vpush.clear_incubator()
 		src_consumed_energy = vpush.get_soup().run(trace=False)
 		vpush.flush_incubator()
 		src_final_energy = vpush.get_soup().energy()
@@ -117,10 +117,10 @@ class TestSoup(unittest.TestCase):
 		
 		vpush.get_soup().clear()
 		vpush.set_soup(dst)
+		vpush.clear_incubator()
 		dst_initial_energy = vpush.get_soup().energy()
 		dst_initial_count = len(vpush.get_soup())
 		dst_initial_deepcount = vpush.get_soup().deep_count()
-		vpush.clear_incubator()
 		dst_consumed_energy = vpush.get_soup().run(trace=False)
 		vpush.flush_incubator()
 		dst_final_energy = vpush.get_soup().energy()
@@ -175,9 +175,9 @@ class RunTests(unittest.TestCase):
 		proteins = 1000
 		protein_size = 500
 		initial_protein_energy = 100
+		vpush.clear_incubator()
 		vpush.get_soup().set_size(proteins, protein_size, initial_protein_energy)
 		initial_energy = vpush.get_soup().energy()
-		vpush.clear_incubator()
 		consumed_energy = vpush.get_soup().run(trace=False)
 		vpush.flush_incubator()
 		remaining_energy = vpush.get_soup().energy()
