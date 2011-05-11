@@ -38,8 +38,8 @@ double step(Protein& p, bool trace) {
 	}
 }
 
-// NB: have to use double& to output cost because multi_index_container takes
-// functor by value...
+// NB: have to use double& to output cost because multi_index_container.modify()
+// takes functor by value...
 void engine(Protein& p, double& total_cost, bool trace) {
 	using detail::Exec;
 	p.running = true;
