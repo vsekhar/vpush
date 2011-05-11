@@ -73,7 +73,7 @@ struct soup_t {
 	
 	double energy() const;	
 
-	double run(bool trace=false);
+	double run(double, bool trace=false);
 	void swap(soup_t& s) { container.swap(s.container); }
 	
 	typedef soup_container::index<bySeq>::type::const_iterator const_iterator;

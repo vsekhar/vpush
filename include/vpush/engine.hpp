@@ -2,10 +2,10 @@
 
 namespace vpush {
 
-void engine(Protein&, double&, bool trace = false);
+void engine(Protein& p, double&, double max_energy, bool trace = false);
 
 // for python testing
-double run_protein(Protein&, bool trace = false);
+double run_protein(Protein& p, double max_energy, bool trace = false);
 
 } // namespace vpush
 

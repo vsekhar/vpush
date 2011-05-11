@@ -65,14 +65,14 @@ double soup_t::energy() const {
 	return es.result;
 }
 
-double soup_t::run(bool trace) {
+double soup_t::run(double max_energy, bool trace) {
 	typedef soup_container::index<bySeq>::type index;
 	index& c = container.get<bySeq>();
 	index::iterator i = c.begin();
 	double cost = 0;
 	for(; i != c.end(); ++i) {
 		detach_gestator();
-		c.modify(i, boost::bind(engine, _1, boost::ref(cost), trace));
+		c.modify(i, boost::bind(engine, _1, boost::ref(cost), max_energy, trace));
 	}
 	return cost;
 }

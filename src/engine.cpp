@@ -40,18 +40,22 @@ inline double step(Protein& p, bool trace) {
 
 // NB: have to use double& to output cost because multi_index_container.modify()
 // takes functor by value...
-void engine(Protein& p, double& total_cost, bool trace) {
+void engine(Protein& p, double& total_cost, double max_energy, bool trace) {
 	using detail::Exec;
 	p.running = true;
-	while(!empty<Exec>(p) && p.energy >= 1 && p.running)
+	double starting_cost = total_cost;
+	while(!empty<Exec>(p)
+			&& p.energy >= 1
+			&& p.running
+			&& (!max_energy || total_cost-starting_cost < max_energy))
 		total_cost += step(p, trace);
 	//fitness testing and energy rewards??
 }
 
 // for python testing
-double run_protein(Protein &p, bool trace) {
+double run_protein(Protein &p, double max_energy, bool trace) {
 	double ret = 0;
-	engine(p, ret, trace);
+	engine(p, ret, max_energy, trace);
 	return ret;
 }
 

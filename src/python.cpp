@@ -150,7 +150,7 @@ BOOST_PYTHON_MODULE(vpush) {
 
 	// Engine (for running proteins)
 	def("run_protein", run_protein,
-		(arg("protein"), arg("trace") = false));
+		(arg("protein"), arg("max_energy")=0, arg("trace") = false));
 
 	// Soup
 	class_<soup_t>("Soup")
@@ -167,7 +167,7 @@ BOOST_PYTHON_MODULE(vpush) {
 		.def("push_back", &soup_t::push_back)
 		.def("clear", &soup_t::clear)
 		.def("run", &soup_t::run,
-			(arg("trace")=false))
+			(arg("max_energy")=0, arg("trace")=false))
 		;
 	def("get_soup", get_soup, return_value_policy<reference_existing_object>());
 	def("set_soup", set_soup);
