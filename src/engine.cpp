@@ -10,7 +10,7 @@
 
 namespace vpush {
 
-double step(Protein& p, bool trace) {
+inline double step(Protein& p, bool trace) {
 	using detail::Exec;
 	if(top<Exec>(p).type == Exec::OPEN) {
 		detail::unwind(stack<Exec>(p));
