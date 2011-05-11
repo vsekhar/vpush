@@ -74,6 +74,7 @@ double soup_t::run(double max_energy, bool trace) {
 		detach_gestator();
 		c.modify(i, boost::bind(engine, _1, boost::ref(cost), max_energy, trace));
 	}
+	detach_gestator();
 	return cost;
 }
 
