@@ -1,12 +1,12 @@
 #!/bin/bash
 
-if [ -n $1 ] ; then
-	cmd='./test.py'
+if [ -z $1 ] ; then
+	while $(./test.py); do
+		true
+	done
 else
-	cmd='./test.py > $1'
+	while $(./test.py &> $1); do
+		true
+	done
 fi
-
-while $cmd; do
-	true
-done
 
