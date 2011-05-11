@@ -71,9 +71,8 @@ double soup_t::run(bool trace) {
 	index::iterator i = c.begin();
 	double cost = 0;
 	for(; i != c.end(); ++i) {
-		clear_gestator();
-		c.modify(i, boost::bind(engine, _1, boost::ref(cost), trace));
 		detach_gestator();
+		c.modify(i, boost::bind(engine, _1, boost::ref(cost), trace));
 	}
 	return cost;
 }
