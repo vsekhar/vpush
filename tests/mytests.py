@@ -202,6 +202,6 @@ class RunTests(unittest.TestCase):
 			vpush.get_soup().run(trace=False)
 			vpush.flush_incubator()
 			sizes.append(len(vpush.get_soup()))
-		print("Sizes: ", sizes)
+		# print("Sizes: ", sizes)
 		self.assertTrue(self.stdev(sizes) != 0)
 

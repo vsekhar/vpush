@@ -92,8 +92,9 @@ class TestMultiprocessing(unittest.TestCase):
 		self._processes = SymmetricPool(4)
 	
 	def test_multiprocessing(self):
-		print(self._processes.do_all('task'))
-		print(self._processes.do_all('soup_size'))
+		# print(self._processes.do_all('task'))
+		# print(self._processes.do_all('soup_size'))
+		pass
 
 	def tearDown(self):
 		self._processes.end()
