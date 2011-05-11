@@ -23,9 +23,7 @@ double step(Protein& p, bool trace) {
 		if(functions.get_types(e.fptr).check(p)) {
 			try {
 				double cost = e.fptr(p);
-				// for Boost 1.46
-				// BOOST_ASSERT_MSG(cost >= 0, "Function returned negative cost: " + functions.get_name(e));
-				BOOST_ASSERT(cost >= 0);
+				BOOST_ASSERT_MSG(cost >= 0, ("Function returned negative cost: " + functions.get_name(e)).c_str());
 				p.energy -= cost;
 				if(cost > 0 && trace)
 					std::cout << "Energy after " << e << ": " << p.energy << std::endl;
