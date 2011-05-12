@@ -12,6 +12,7 @@ void initialize() {
 	comparison::initialize();
 	conditional::initialize();
 	gestation::initialize();
+	interaction::initialize();
 	math::initialize();
 	movement::initialize();
 	soup::initialize();
