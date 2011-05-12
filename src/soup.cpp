@@ -69,13 +69,19 @@ double soup_t::run(double max_energy, bool trace) {
 	typedef soup_container::index<bySeq>::type index;
 	index& c = container.get<bySeq>();
 	index::iterator i = c.begin();
-	double cost = 0;
+	bool energy_limit = max_energy > 0;
+	double total_cost = 0;
 	for(; i != c.end(); ++i) {
+		double cost = 0;
 		detach_gestator();
 		c.modify(i, boost::bind(engine, _1, boost::ref(cost), max_energy, trace));
+		total_cost += cost;
+		max_energy -= cost;
+		if(energy_limit && max_energy <= 0)
+			break;
 	}
 	detach_gestator();
-	return cost;
+	return total_cost;
 }
 
 soup_t soup;
