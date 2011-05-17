@@ -6,6 +6,7 @@
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
+#include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/random_access_index.hpp>
 #include <boost/multi_index/member.hpp>
 
@@ -28,6 +29,7 @@ private:
 struct bySeq;
 struct byRAC;
 struct byName;
+struct byOrderedName;
 struct byFptr;
 
 using namespace ::boost::multi_index;
@@ -39,6 +41,10 @@ typedef multi_index_container <
 		random_access<tag<byRAC> >,
 		hashed_unique<
 			tag<byName>,
+			member<function_entry, std::string, &function_entry::name>
+		>,
+		ordered_unique<
+			tag<byOrderedName>,
 			member<function_entry, std::string, &function_entry::name>
 		>,
 		hashed_unique<
@@ -61,11 +67,13 @@ public:
 	bool contains(op_func_t) const;
 
 	bool is_superset_of(const functions_t&) const;
+	std::size_t hash() const;
 
 private:
 	typedef const functions_container::index<bySeq>::type functions_by_seq;
 	typedef const functions_container::index<byRAC>::type functions_by_rac;
 	typedef const functions_container::index<byName>::type functions_by_name;
+	typedef const functions_container::index<byOrderedName>::type functions_by_ordered_name;
 	typedef const functions_container::index<byFptr>::type functions_by_fptr;
 
 	typedef functions_container::index<byName>::type functions_by_name_mutable;

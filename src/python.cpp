@@ -124,6 +124,7 @@ BOOST_PYTHON_MODULE(vpush) {
 	class_<functions_t>("Functions", no_init)
 		.def("get_code", &functions_t::get_code)
 		.def("get_name", &functions_t::get_name)
+		.def("hash", &functions_t::hash)
 		.def("close", code_close)
 		.staticmethod("close")
 		.def("open", code_open)
