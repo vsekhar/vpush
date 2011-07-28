@@ -15,6 +15,8 @@ namespace vpush {
 namespace python {
 
 using std::string;
+using std::cout;
+using std::endl;
 using namespace ::boost::python;
 using namespace ::vpush;
 using namespace ::vpush::detail;
@@ -99,9 +101,48 @@ double incubator_energy() {
 	return ret;
 }
 
+soup_t::const_iterator soup_begin(const soup_t& s) { return s.begin(); }
+soup_t::const_iterator soup_end(const soup_t& s) { return s.end(); }
+
+struct Blabber {
+	Blabber() : value(0) { cout << "Blabber: default constructed" << endl; }
+	Blabber(int i) : value(i) { cout << "Blabber: constructed with value = " << i << endl;}
+	~Blabber() { cout << "Blabber: destroyed" << endl; }
+	Blabber (const Blabber& b) : value(b.value) { cout << "Blabber: copied" << endl; }
+	Blabber& operator=(const Blabber& b) { value = b.value; cout << "Blabber: assigned" << endl; return *this; }
+	int value;
+};
+
+Blabber make_blabber(int i) { return Blabber(i); }
+Blabber top_blabber(list& l) {
+	stl_input_iterator<Blabber&> begin(l), end;
+	stl_input_iterator<Blabber&> max_itr;
+	int max = 0;
+	bool first = true;
+	for(; begin != end; ++begin) {
+		if(first) {
+			max = begin->value;
+			first = false;
+		}
+		else if(begin->value > max) {
+			max = begin->value;
+			max_itr = begin;
+		}
+	}
+	return *max_itr;
+}
+
 BOOST_PYTHON_MODULE(vpush) {
 	// on import
 	vpush::initialize();
+
+	// Blabber
+	class_<Blabber>("Blabber", init<int>((arg("value"))))
+		.def(init<const Blabber&>())
+		.def_readwrite("value", &Blabber::value)
+		;
+	def("make_blabber", make_blabber, (arg("value") = 0));
+	def("top_blabber", top_blabber);
 	
 	// Code and Exec types
 	enum_<Code::codetype>("CodeType")
