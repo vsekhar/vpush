@@ -2,6 +2,7 @@
 
 #include <boost/foreach.hpp>
 #include <boost/assert.hpp>
+#include <boost/functional/hash.hpp>
 
 #include <vpush/detail/functions.hpp>
 #include <vpush/detail/code.hpp>
@@ -96,6 +97,14 @@ bool functions_t::is_superset_of(const functions_t& other) const {
 		if(!contains(fe.name) || !contains(fe.func))
 			return false;
 	return true;
+}
+
+std::size_t functions_t::hash() const {
+	std::size_t seed = 0;
+	functions_by_ordered_name& funcs = _container.get<byOrderedName>();
+	BOOST_FOREACH(const function_entry& fe, funcs)
+		boost::hash_combine(seed, fe.name);
+	return seed;
 }
 
 } // namespace detail
