@@ -197,7 +197,8 @@ BOOST_PYTHON_MODULE(vpush) {
 	class_<soup_t>("Soup")
 		.def(init<const soup_t&>())
 		.def("__len__", &soup_t::size)
-//		.def("__iter__", py::range<copy_const_reference>(&soup_t::begin, &soup_t::end))
+//		.def("__iter__", py::range<reference_existing_object>(&soup_t::begin, &soup_t::end))
+		.def("__iter__", py::range(soup_begin, soup_end))
 		.def("set_size", &soup_t::set_size,
 			(arg("soup_size"), "protein_size", "initial_energy"))
 		.def("deep_size", &soup_t::deep_size)
