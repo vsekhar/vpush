@@ -14,12 +14,15 @@ double get_nearest_neighbor() {
 	// use normalized distances as probability distribution to choose a neighbor
 	// (closest neighbor has exponentially highest probability, tunable using
 	// a parameter)
+	return 1;
 }
 
 double clear_neighbor() {
+	return 1;
 }
 
 double consume() {
+	return 1;
 }
 
 void initialize() {
