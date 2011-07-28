@@ -122,6 +122,7 @@ Blabber top_blabber(list& l) {
 	for(; begin != end; ++begin) {
 		if(first) {
 			max = begin->value;
+			max_itr = begin;
 			first = false;
 		}
 		else if(begin->value > max) {
