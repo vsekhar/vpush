@@ -9,12 +9,12 @@ src/library
 
 ### END USER MODIFIABLES ###
 
-lib_target  = 'vpush'
+lib_target  = 'cvpush'
 subdirs = usrdirs
 
 Import('env')
-env.Append(CPPPATH = ['/usr/include/python3.2', 'include'])
-env.Append(LIBS = ['boost_serialization', 'boost_python3'])
+env.Append(CPPPATH = ['/usr/include/python2.7', 'include'])
+env.Append(LIBS = ['boost_serialization', 'boost_python'])
 env.Append(CCFLAGS = ['-std=c++0x', '-Wall', '-fmessage-length=0'])
 
 globpatterns = [s+'/*.cpp' for s in subdirs]

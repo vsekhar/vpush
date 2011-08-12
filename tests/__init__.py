@@ -1,3 +1,3 @@
 from .mytests import *
-from .multiprocessing import *
+from .mp import *
 

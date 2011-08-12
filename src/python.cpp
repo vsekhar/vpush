@@ -133,7 +133,7 @@ Blabber top_blabber(list& l) {
 	return *max_itr;
 }
 
-BOOST_PYTHON_MODULE(vpush) {
+BOOST_PYTHON_MODULE(cvpush) {
 	// on import
 	vpush::initialize();
 

@@ -1,8 +1,8 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 import sys
 import multiprocessing
-import queue
+from Queue import Empty as QueueEmpty
 import random
 import unittest
 import time
@@ -43,7 +43,7 @@ def run_loop(tasks=None, results=None):
 				kwargs = dict()
 			result = functions[func_name](*args, **kwargs)
 			results.put(result)
-		except queue.Empty:
+		except QueueEmpty:
 			pass
 
 		# advance your computation
