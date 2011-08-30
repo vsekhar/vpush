@@ -23,6 +23,9 @@ using namespace ::vpush::detail;
 
 namespace py = ::boost::python;
 
+// Diagnostics
+string hello() { return "Hello from cvpush"; }
+
 // Code helpers
 
 Exec code_close() { return Exec::CLOSE; }
@@ -136,6 +139,8 @@ Blabber top_blabber(list& l) {
 BOOST_PYTHON_MODULE(cvpush) {
 	// on import
 	vpush::initialize();
+
+	def("hello", hello);
 
 	// Blabber
 	class_<Blabber>("Blabber", init<int>((arg("value"))))
