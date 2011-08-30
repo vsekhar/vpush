@@ -13,22 +13,15 @@ a.out
 # editor files
 *~
 
-# eclipse cruft
-.project
-.cproject
-
 # scons cruft
 .sconsign
 .sconsign.dblite
 
-# Be sure to include gitignore eventhough it is a dot file
-!.gitignore
-
-# build directories
-Debug/
-Release/
-
 # Temp data
 tmp
 out
+
+# Dot files (but include .gitignore)
+.*
+!.gitignore
 

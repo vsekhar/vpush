@@ -20,7 +20,7 @@ double k(Protein& p) {
 
 template <typename T>
 double s(Protein& p) {
-	std::vector<typename detail::item<T>> items;
+	std::vector<typename detail::item<T> > items;
 	items.reserve(3);
 	for(unsigned i = 0; i < 3; ++i)
 		items.push_back(detail::get_item(stack<T>(p)));
