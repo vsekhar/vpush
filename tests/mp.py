@@ -37,11 +37,7 @@ def run_loop(tasks=None, results=None):
 			func_name, args, kwargs = tasks.get_nowait()
 			if func_name is None: # stop sentinel
 				break
-			if args is None:
-				args = []
-			if kwargs is None:
-				kwargs = dict()
-			result = functions[func_name](*args, **kwargs)
+			result = functions[func_name](*(args or []), **(kwargs or dict()))
 			results.put(result)
 		except QueueEmpty:
 			pass
@@ -88,13 +84,21 @@ class SymmetricPool:
 #
 class TestMultiprocessing(unittest.TestCase):
 	def setUp(self):
+		self.size = 4
 		vpush.get_soup().clear()
-		self._processes = SymmetricPool(4)
+		self._processes = SymmetricPool(self.size)
 	
 	def test_multiprocessing(self):
-		# print(self._processes.do_all('task'))
-		# print(self._processes.do_all('soup_size'))
-		pass
+		results1 = self._processes.do_all('task')
+		self.assertEqual(len(results1), self.size)
+
+		results2 = self._processes.do_all('soup_size')
+		self.assertEqual(len(results2), self.size)
+
+		# check that soups are persisted between calls
+		# NB: SymmetricPool maintains process order, so results should be ordered
+		for r1, r2 in zip(results1, results2):
+			self.assertEqual(r1['final_size'], r2['soup_size'])
 
 	def tearDown(self):
 		self._processes.end()
