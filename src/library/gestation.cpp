@@ -1,6 +1,7 @@
 #include <string>
 
 #include <boost/foreach.hpp>
+#include <boost/numeric/conversion/converter.hpp>
 
 #include <vpush/library.hpp>
 #include <vpush/gestation.hpp>
@@ -11,51 +12,62 @@ namespace gestation {
 
 using std::string;
 
+typedef typename ::boost::numeric::converter<std::size_t, double> Double2UInt;
+
 double detach_protein(Protein &p) { return detach_gestator() ? 1 : 0; }
 
 double transfer_energy(Protein &p) {
+	static const double transfer_cost = 1.0;
 	if(top<double>(p) < 0 || p.energy < top<double>(p))
 		return 0;
 
 	ensure_gestator(p);
-	double amount = pop<double>(p);
-	amount = std::min(amount, p.energy-1);
-	if(amount > 0) {
-		gestator->energy += amount;
-		p.energy -= amount;
-	}
-	return 1;
+	double amount = pop<double>(p); // get an amount
+	if(amount > 0)
+		// can't transfer more than we have (less transfer_cost)
+		amount = std::min(amount, p.energy-transfer_cost);
+	else if(amount < 0)
+		// can't leave gestatee with negative energy
+		amount = std::max(amount, -gestator->energy);
+	gestator->energy += amount;
+	p.energy -= amount;
+	return transfer_cost;
 }
 
 template <typename T>
 double move_data(Protein &p) {
+	static const double move_cost = 1.0;
+
 	if(top<int>(p) < 0)
 		return 0;
 	
 	ensure_gestator(p);
 	std::list<T> buffer;
-	unsigned count = (unsigned)pop<int>(p);
-	count = std::min(count, size<T>(p));
-	count = std::min(count, (unsigned)p.energy);
-	for(unsigned i = 0; i < count; ++i)
+	std::size_t count = std::abs(pop<int>(p));
+	count = std::min(count, size<T>(p)); // can't move more than we have
+	std::size_t max_count = Double2UInt::convert(p.energy/move_cost);
+	count = std::min(count, max_count); // can't move more than we have energy for
+	for(std::size_t i = 0; i < count; ++i)
 		buffer.push_front(pop<T>(p));
 	BOOST_FOREACH(const T& t, buffer)
 		push<T>(*gestator, t);
-	return count;
+	return count * move_cost;
 }
 
 template <typename T>
 double move_code(Protein &p) {
+	static const double move_cost = 1.0;
 	if(top<int>(p) < 0)
 		return 0;
 
 	ensure_gestator(p);
 	std::list<item<T> > items;
-	unsigned count = (unsigned) pop<int>(p);
-	count = std::min(count, (unsigned)p.energy);
-	unsigned actual_count = 0;
+	std::size_t count = std::abs(pop<int>(p));
+	std::size_t max_count = Double2UInt::convert(p.energy/move_cost);
+	count = std::min(count, max_count);
+	std::size_t actual_count = 0;
 	try {
-		for(unsigned i = 0; i < count; ++i) {
+		for(std::size_t i = 0; i < count; ++i) {
 			items.push_front(get_item<T>(stack<T>(p)));
 			++actual_count;
 		}
@@ -63,7 +75,7 @@ double move_code(Protein &p) {
 	catch(const detail::stack_underflow&) {}
 	BOOST_FOREACH(const item<T>& i, items)
 		put_item(i, stack<T>(*gestator));
-	return actual_count;
+	return actual_count * move_cost;
 }
 
 void initialize() {
