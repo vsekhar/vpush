@@ -7,6 +7,7 @@
 #include <vpush/detail/functions.hpp>
 
 #define VPUSH_DECL_LIBRARY(name) namespace name {void initialize();}
+#define VPUSH_DEF_LIBRARY(name) namespace name
 
 namespace vpush {
 namespace library {

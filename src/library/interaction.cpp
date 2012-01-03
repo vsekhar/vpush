@@ -9,19 +9,28 @@ namespace interaction {
 //		- 'proteinref' stack... but how to handle invalidated pointers?
 //			- every protein has a GUID? and multi_index on guid?
 
-double get_nearest_neighbor() {
-	// build sorted list of distances
-	// use normalized distances as probability distribution to choose a neighbor
-	// (closest neighbor has exponentially highest probability, tunable using
-	// a parameter)
+
+// TODO: Need a state... with gestator... or a simplifying choice...
+
+double random_protein(Protein &p) {
+	// find another protein? label it? hold it? GUID it?
 	return 1;
 }
 
-double clear_neighbor() {
+double read(Protein &p) {
+	// examine the other protein...?
+	return 1;
+}
+
+double other_energy(Protein &p) {
+	// push<double>(p, other_protein_energy);
 	return 1;
 }
 
 double consume() {
+	// enter combat, probabilistically winning or losing based on energy levels
+	// loser ends up with 0 energy
+	// winner ends up with some fraction of loser's energy (less combat costs)
 	return 1;
 }
 

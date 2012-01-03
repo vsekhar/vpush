@@ -10,31 +10,30 @@ namespace combinators {
 
 template <typename T>
 double k(Protein& p) {
-	double count = 0;
-	typename detail::item<T> i1 = detail::get_item(stack<T>(p));
-	count += i1.container.size();
-	count += detail::get_item(stack<T>(p)).container.size(); // toss
-	detail::put_item(i1, stack<T>(p));
-	return count;
+	// Kxy = x
+	typename detail::item<T> x = detail::get_item(stack<T>(p));
+	typename detail::item<T> y = detail::get_item(stack<T>(p));
+	detail::put_item(x, stack<T>(p));
+	// toss y
+	return x.container.size() + y.container.size();
 }
 
 template <typename T>
 double s(Protein& p) {
+	
 	std::vector<typename detail::item<T> > items;
-	items.reserve(3);
-	for(unsigned i = 0; i < 3; ++i)
-		items.push_back(detail::get_item(stack<T>(p)));
+	typename detail::item<T> x = detail::get_item(stack<T>(p));
+	typename detail::item<T> y = detail::get_item(stack<T>(p));
+	typename detail::item<T> z = detail::get_item(stack<T>(p));
 	
 	push<T>(p, T::CLOSE);
-	detail::put_item(items[2], stack<T>(p));
-	detail::put_item(items[1], stack<T>(p));
+	detail::put_item(z, stack<T>(p));
+	detail::put_item(y, stack<T>(p));
 	push<T>(p, T::OPEN);
-	detail::put_item(items[2], stack<T>(p));
-	detail::put_item(items[0], stack<T>(p));
+	detail::put_item(z, stack<T>(p));
+	detail::put_item(x, stack<T>(p));
 
-	return items[0].container.size()
-		+ items[1].container.size()
-		+ items[2].container.size();
+	return x.container.size() + y.container.size() + z.container.size();
 }
 
 void initialize() {

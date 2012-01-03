@@ -47,17 +47,23 @@ void do_yank(Protein &p, int index) {
 
 template <typename T, bool erase = true>
 double yank(Protein &p) {
+	if(top<int>(p) < 0) return 0;
 	int index = pop<int>(p);
-	if(index < 0 || (unsigned)(index+1) > size<T>(p)) return 0;
-	do_yank<T>(p, index);
-	return index+1;
+	try {
+		do_yank<T, erase>(p, index);
+	}
+	catch(const detail::stack_underflow&) {
+		push<int>(p, index);
+		return 0;
+	}
+	return 1;
 }
 
 template <typename T, bool erase = true>
 double yank_code(Protein &p) {
+	if(top<int>(p) < 0) return 0;
 	int index = pop<int>(p);
 	std::size_t count;
-	if(index < 0) return 0;
 	try {
 		item<T> i = get_nth_item(stack<T>(p), (unsigned)index, erase);
 		put_item(i, stack<T>(p));
@@ -72,8 +78,8 @@ double yank_code(Protein &p) {
 
 template <typename T>
 double rotate(Protein &p) {
-	do_yank<T>(p, 2);
-	return 3;
+	do_yank<T, true>(p, 2);
+	return 1;
 }
 
 template <typename T>

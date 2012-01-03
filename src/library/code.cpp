@@ -14,7 +14,7 @@
 
 namespace vpush {
 namespace library {
-namespace code {
+VPUSH_DEF_LIBRARY(code) {
 
 using ::std::string;
 
