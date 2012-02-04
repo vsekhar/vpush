@@ -9,6 +9,8 @@
 *.pyc
 *.pyo
 a.out
+Debug/
+Release/
 
 # editor files
 *~
