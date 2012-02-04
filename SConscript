@@ -17,6 +17,9 @@ env.Append(CPPPATH = ['/usr/include/python2.7', 'include'])
 env.Append(LIBS = ['boost_serialization', 'boost_python'])
 env.Append(CCFLAGS = ['-std=c++0x', '-Wall', '-fmessage-length=0'])
 
+# does not work because stock GCC is not compiled with -fPIC
+# env.Append(LINKFLAGS = ['-static-libgcc', '-static-libstdc++'])
+
 globpatterns = [s+'/*.cpp' for s in subdirs]
 filelist = map(Glob, globpatterns)
 files = reduce(lambda x,y:x+y, filelist)
